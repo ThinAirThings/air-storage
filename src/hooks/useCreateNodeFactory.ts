@@ -1,4 +1,3 @@
-import { AirNode } from "../AirNodeTemplate/defineAirNodeType.js";
 import { LiveIndexNode, MutationHook } from "../LiveObjects/LiveIndexNode.js";
 import {v4 as uuidv4} from 'uuid'
 

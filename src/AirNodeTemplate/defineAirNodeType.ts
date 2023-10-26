@@ -15,24 +15,24 @@ type TreeNodeProps<
 }
 
 export type TreeNodeType<
-    CustomType extends string = string,
+    Type extends string = string,
     Metadata extends JsonObject=JsonObject,
     State extends LsonObject=LsonObject,
     ChildNodeTypes extends TreeNodeType[]|[]=TreeNodeType<any, any, any, any>[]|[]
 > = {
-    customType: CustomType,
+    type: Type,
     metadata: Metadata,
     state: State,
     children: ChildNodeTypes
 }
 
 export type AirNodeType<
-    CustomType extends string = string,
+    Type extends string = string,
     Metadata extends JsonObject=JsonObject,
     State extends LsonObject=LsonObject,
     ChildNodeTypes extends string=string
 > = {
-    customType: CustomType,
+    type: Type,
     metadata: Metadata,
     state: State,
     childTypes: ChildNodeTypes
@@ -40,13 +40,13 @@ export type AirNodeType<
 
 export type FlattenTree<T extends TreeNodeType> =  
     IsEmptyArray<T['children']> extends true
-        ? (AirNodeType<T['customType'], T['metadata'], T['state'], never>)
-        : (AirNodeType<T['customType'], T['metadata'], T['state'], T['children'][number]['customType']>) 
+        ? (AirNodeType<T['type'], T['metadata'], T['state'], never>)
+        : (AirNodeType<T['type'], T['metadata'], T['state'], T['children'][number]['type']>) 
         | ({
-            [ChildType in T['children'][number]['customType']]: FlattenTree<
-                (T['children'][number]&{customType: ChildType})
+            [ChildType in T['children'][number]['type']]: FlattenTree<
+                (T['children'][number]&{type: ChildType})
             >
-        }[T['children'][number]['customType']])
+        }[T['children'][number]['type']])
 
 //   ___          _   _             ___             _   _             
 //  | _ \_  _ _ _| |_(_)_ __  ___  | __|  _ _ _  __| |_(_)___ _ _  ___
@@ -64,20 +64,20 @@ export const defineAirNodeSchema = <
 )
 
 export const defineAirNodeType= <
-    CustomType extends string = string,
+    Type extends string = string,
     Metadata extends JsonObject=JsonObject,
     State extends LsonObject=LsonObject,
     ChildNodeTypes extends TreeNodeType[]|[] = []
 >(
-    customType: CustomType,
+    type: Type,
     props: TreeNodeProps<Metadata, State>,
     children: ChildNodeTypes
 ) => ({
-    customType,
+    type,
     metadata: props.metadata??{},
     state: props.initialState??{},
     children: children??[]
-}) as TreeNodeType<CustomType, Metadata, State, ChildNodeTypes>
+}) as TreeNodeType<Type, Metadata, State, ChildNodeTypes>
 
 
 

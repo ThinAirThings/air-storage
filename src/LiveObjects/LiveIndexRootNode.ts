@@ -9,7 +9,7 @@ export class LiveIndexRootNode extends LiveIndexNode {
             nodeId: 'root',
             metadata: {},
             uixNodeType: 'Root',
-            customType: 'Root',
+            type: 'Root',
             parentNodeId: null,
             parentType: null,
             stateDisplayKey: 'root',

@@ -4,17 +4,16 @@ import {createRoomContext} from '@liveblocks/react'
 export type LiveIndexStorageModel = {
     liveNodeMap: LiveMap<string, ILiveIndexNode>
 }
-
+type ChildTypeUnion = string
+type ChildNodeId = string
 export type ILiveIndexNode = LiveObject<{
     nodeId: string
     metadata: JsonObject
-    uixNodeType: string
-    customType: string
+    type: string
     parentNodeId: string | null
     parentType: string | null
-    stateDisplayKey: string   // You can probably get rid of this
     state: LiveObject<LsonObject>
-    childNodeIds: LiveMap<string, null>
+    childNodeIds: LiveMap<ChildTypeUnion, LiveMap<ChildNodeId, null>>
 }>
 
 export class LiveIndexNode extends LiveObject<
@@ -23,12 +22,10 @@ export class LiveIndexNode extends LiveObject<
     constructor(data: {
         nodeId: string
         metadata: JsonObject
-        uixNodeType: string
-        customType: string
+        type: string
         parentNodeId: string | null
         parentType: string | null
-        childNodeIds: LiveMap<string, null>
-        stateDisplayKey: string
+        childNodeIds: LiveMap<string, LiveMap<string, null>>
         state: LiveObject<LsonObject>
     }) {
         super(data)

@@ -1,7 +1,7 @@
-type FlattenTreeNode<T extends TreeNode<any, any> = TreeNode<any, any>> = T extends TreeNode<infer CustomType, infer ChildNodeTypes>
+type FlattenTreeNode<T extends TreeNode<any, any> = TreeNode<any, any>> = T extends TreeNode<infer Type, infer ChildNodeTypes>
   ? {
       type: string;
-      customType: CustomType;
+      type: Type;
       childTypes: ChildNodeTypes extends TreeNode<any, any>[]
         ? {
             [K in keyof ChildNodeTypes]: ChildNodeTypes[K] extends TreeNode<any, any>
@@ -13,11 +13,11 @@ type FlattenTreeNode<T extends TreeNode<any, any> = TreeNode<any, any>> = T exte
   : never;
 
 type TreeNode<
-  CustomType extends string | 'empty' = string,
+  Type extends string | 'empty' = string,
   ChildNodeTypes extends TreeNode[] | [] = TreeNode<any, any>[] | []
 > = {
   type: string;
-  customType: CustomType;
+  type: Type;
   childTypes: ChildNodeTypes;
 };
 
