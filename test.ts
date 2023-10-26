@@ -2,45 +2,7 @@ import {CreateAirNodeType, TreeNode, defineAirNodeSchema, defineAirNodeType} fro
 
 
 
-
-// const Level1NodeA = defineAirNodeType('Level1NodeA', [
-//         defineAirNodeType('Level2NodeA', [
-//             defineAirNodeType('Level3ANodeA', [
-//                 defineAirNodeType('Level4ANodeA', [
-//                     defineAirNodeType('Level5ANodeA', [
-//                         defineAirNodeType('Level6ANodeA')
-//                     ])
-//                 ])
-//             ]),
-//             defineAirNodeType('Level3ANodeB')
-//         ]),
-//         defineAirNodeType('Level2NodeB', [
-//             defineAirNodeType('Level3BNodeA'),
-//             defineAirNodeType('Level3BNodeB')
-//         ])
-//     ]
-// )
-
-// const schema = defineAirNodeSchema([
-//     defineAirNodeType('Level1NodeA', [
-//             defineAirNodeType('Level2NodeA', [
-//                 defineAirNodeType('Level3ANodeA', [
-//                     defineAirNodeType('Level4ANodeA', [
-//                         defineAirNodeType('Level5ANodeA', [
-//                             defineAirNodeType('Level6ANodeA')
-//                         ])
-//                     ])
-//                 ]),
-//                 defineAirNodeType('Level3ANodeB')
-//             ]),
-//             defineAirNodeType('Level2NodeB', [
-//                 defineAirNodeType('Level3BNodeA'),
-//                 defineAirNodeType('Level3BNodeB')
-//             ])
-//         ]
-//     )
-// ])
-const schema2 = defineAirNodeType('root', [
+const schema2 = defineAirNodeSchema([
     defineAirNodeType('Level1NodeA', [
         defineAirNodeType('Level2NodeA', [
             defineAirNodeType('Level3ANodeA', [

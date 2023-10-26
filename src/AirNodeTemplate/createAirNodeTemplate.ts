@@ -39,6 +39,7 @@ type AirNode<
 }
 
 
+
 // export type CreateAirNodeType<T extends TreeNode> = 
 //     (AirNode<T['type'], IsNotEmptyArray<T['children']> extends true ? T['children'][number]['type']:never>)
 //     | (IsNotEmptyArray<T['children']> extends true
