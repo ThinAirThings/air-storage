@@ -1,4 +1,4 @@
-import {FlattenTree, TreeNode, defineAirNodeSchema, defineAirNodeType} from './src/AirNodeTemplate/defineAirNodeType'
+import {FlattenTree, TreeNode, createFunctionSet, defineAirNodeSchema, defineAirNodeType} from './src/AirNodeTemplate/defineAirNodeType'
 import {TypedTreeMap} from './src/structures/TypedTreeMap'
 import {configureStorage} from './src/configureStorage'
 
@@ -83,6 +83,9 @@ export const testSchema = defineAirNodeSchema([
     ])
 ]);
 
+
+
+
 const testStorage = configureStorage<FlattenTree<typeof testSchema>>(testSchema) 
 
 type UnionFromSchema2 = FlattenTree<typeof testSchema>
@@ -92,3 +95,18 @@ const newMap = new TypedTreeMap<FlattenTree<typeof testSchema>>(testSchema)
 const val = newMap.get(
     ''
 ).childTypes
+
+const functionScheme = defineAirNodeType('BusinessNode', 
+    createFunctionSet({
+        businessName: 'New Business'
+    }, () => {
+        // Create any shared resources
+        // ie. bucketName, aws clients, etc.
+        return {
+            create: (liveIndexNode, initialState) => {
+                liveIndexNode.get('state').set(initialState??defaultInitialState)
+                // Do Fancy stuff
+            }
+        }
+    })
+)

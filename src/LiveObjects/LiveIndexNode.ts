@@ -1,40 +1,26 @@
-import { JsonObject, LiveMap, LiveObject, LsonObject } from "@liveblocks/client";
-import {createRoomContext} from '@liveblocks/react'
+import { LiveMap, LiveObject, LsonObject } from "@liveblocks/client";
 
-export type LiveIndexStorageModel = {
-    liveNodeMap: LiveMap<string, ILiveIndexNode>
-}
-type ChildTypeUnion = string
-type ChildNodeId = string
-export type ILiveIndexNode = LiveObject<{
+
+export type ILiveIndexNode<State extends LsonObject=LsonObject> = LiveObject<{
     nodeId: string
-    metadata: JsonObject
     type: string
     parentNodeId: string | null
     parentType: string | null
-    state: LiveObject<LsonObject>
-    childNodeIds: LiveMap<ChildTypeUnion, LiveMap<ChildNodeId, null>>
+    state: LiveObject<State>
+    childNodeSets: LiveMap<string, LiveMap<string, null>>
 }>
 
-export class LiveIndexNode extends LiveObject<
-    ILiveIndexNode extends LiveObject<infer T>? T : never
+export class LiveIndexNode<State extends LsonObject=LsonObject> extends LiveObject<
+    ILiveIndexNode<State> extends LiveObject<infer T>? T : never
 > {
     constructor(data: {
         nodeId: string
-        metadata: JsonObject
         type: string
         parentNodeId: string | null
         parentType: string | null
-        childNodeIds: LiveMap<string, LiveMap<string, null>>
-        state: LiveObject<LsonObject>
+        childNodeSets: LiveMap<string, LiveMap<string, null>>
+        state: LiveObject<State>
     }) {
         super(data)
     }
 }
-
-export type MutationHook = ReturnType<
-    typeof createRoomContext<
-        any,
-        LiveIndexStorageModel
-    >
->
