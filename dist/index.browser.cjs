@@ -178,6 +178,7 @@ var configureAirStorage = (createClientProps, tree) => {
     storageId,
     children
   }) => {
+    console.log("Running provider");
     return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
       liveblocks.RoomProvider,
       {
