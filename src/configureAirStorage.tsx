@@ -2,57 +2,43 @@ import { createRoomContext } from "@liveblocks/react";
 import { FlatAirNode, TreeAirNode, TreeToUnion } from "./types.js";
 import { MappedUnion } from "./types/MappedUnion.js";
 import { ILiveIndexStorageModel, LiveIndexStorageModel } from "./LiveObjects/LiveIndexStorageModel.js";
-import { LiveMap, LiveObject, createClient } from "@liveblocks/client";
-import { CrudUnion, useAirNodeFactory } from "./hooks/useAirNode/useAirNodeFactory.js";
-import { ReactNode, Suspense } from "react";
+import { createClient } from "@liveblocks/client";
 import { NodeKey } from "./hooks/useAirNode/NodeKey.js";
+import { AirNodeProviderFactory } from "./components/AirNodeProviderFactory.js";
+import { useChildrenKeysFactory } from "./hooks/customHooks/useChildrenKeysFactory.js";
+import { useCreateNodeFactory } from "./hooks/customHooks/useCreateNodeFactory.js";
+import { useDeleteNodeFactory } from "./hooks/customHooks/useDeleteNodeFactory.js";
+import { useSelectNodeStateFactory } from "./hooks/customHooks/useSelectNodeFactory.js";
+import { useNodeNameFactory } from "./hooks/customHooks/useNodeNameFactory.js";
+import { useUpdateNodeStateFactory } from "./hooks/customHooks/useUpdateNodeStateFactory.js";
+
 
 export const configureAirStorage = <
     U extends FlatAirNode,
 >(
     createClientProps: Parameters<typeof createClient>[0],
-    tree: TreeAirNode
+    rootAirNode: TreeAirNode
 ) => {
-    const mappedAirNodeUnion = treeToMappedUnion(tree)
+    const mappedAirNodeUnion = treeToMappedUnion(rootAirNode)
     const {suspense: {
         useStorage,
         useMutation,
-        useStatus,
         RoomProvider
     }} = createRoomContext<
         {}, 
         ILiveIndexStorageModel
     >(createClient(createClientProps))
-    const AirNodeProvider = ({
-        storageId, 
-        children
-    }: {
-        storageId: string,
-        children: ReactNode
-    }) => {
-        return <RoomProvider
-            id={storageId}
-            initialPresence={{}}
-            initialStorage={new LiveIndexStorageModel(tree)}
-        >
-            <Suspense fallback={<div>Loading...</div>}>
-                {children}
-            </Suspense>
-        </RoomProvider>
-    }
-    const useAirNode = useAirNodeFactory<U>(
-        useMutation,
-        useStorage,
-        mappedAirNodeUnion
-    )
-    // Only use 'useStorage' here because Liveblocks will throw an error if useStorage isn't called before using mutations.
-    const useRootAirNode = () => useStorage(()=>new NodeKey('root', 'root'))
+
     return {
-        useMutation,
-        useStatus,
-        AirNodeProvider,
-        useAirNode,
-        useRootAirNode,
+        useCreateNode: useCreateNodeFactory<U>(useMutation, mappedAirNodeUnion),
+        useSelectNodeState: useSelectNodeStateFactory<U>(useStorage),
+        useUpdateNodeState: useUpdateNodeStateFactory<U>(useMutation),
+        useNodeName: useNodeNameFactory(useStorage),
+        useDeleteNode: useDeleteNodeFactory<U>(useMutation),
+        useChildrenKeys: useChildrenKeysFactory<U>(useStorage),
+        AirNodeProvider: AirNodeProviderFactory(rootAirNode, RoomProvider),
+        // Only use 'useStorage' here because Liveblocks will throw an error if useStorage isn't called before using mutations.
+        useRootAirNode: () => useStorage(()=>new NodeKey('root', 'root')),
         mappedAirNodeUnion
     }
 }

@@ -1,8 +1,7 @@
 import { LsonObject, LiveObject, LiveMap, createClient } from '@liveblocks/client';
 import * as react_jsx_runtime from 'react/jsx-runtime';
-import * as _liveblocks_react from '@liveblocks/react';
+import * as react from 'react';
 import * as _liveblocks_core from '@liveblocks/core';
-import { ReactNode } from 'react';
 
 type TreeAirNode<T extends string = string, S extends AirNodeState = AirNodeState, C extends TreeAirNode[] | [] = TreeAirNode<string, AirNodeState, any>[] | []> = {
     type: T;
@@ -12,10 +11,6 @@ type TreeAirNode<T extends string = string, S extends AirNodeState = AirNodeStat
 type AirNodeState = LsonObject & {
     nodeName: string;
 };
-declare const defineAirNode: <T extends string = string, S extends AirNodeState = AirNodeState, C extends [] | TreeAirNode<string, AirNodeState, TreeAirNode<string, AirNodeState, any>[] | []>[] = []>(type: T, defaultInitialState: S, children: C) => TreeAirNode<T, S, C>;
-declare const defineRootAirNode: <C extends TreeAirNode<string, AirNodeState, TreeAirNode<string, AirNodeState, any>[] | []>[]>(children: C) => TreeAirNode<"root", {
-    nodeName: string;
-}, C>;
 type ExtractChildTypeUnion<N extends FlatAirNode> = N['childTypeSet'] extends Set<infer CT extends string> ? CT : never;
 type FlatAirNode<T extends string = string, S extends AirNodeState = AirNodeState, CK extends string = string> = {
     type: T;
@@ -38,13 +33,6 @@ type NodeKey$1<T extends string = string> = {
     type: T;
 };
 
-declare class MappedUnion<U extends FlatAirNode = FlatAirNode> extends Map<U['type'], U> {
-    constructor(unionMap: Array<[U['type'], U]>);
-    get<T extends U['type']>(type: T): (U & {
-        type: T;
-    });
-}
-
 type ILiveIndexNode<S extends AirNodeState = AirNodeState> = LiveObject<{
     nodeId: string;
     type: string;
@@ -64,9 +52,12 @@ declare class LiveIndexNode<S extends AirNodeState = AirNodeState> extends LiveO
     });
 }
 
-type ILiveIndexStorageModel = {
-    liveIndex: LiveMap<string, ILiveIndexNode>;
-};
+declare class MappedUnion<U extends FlatAirNode = FlatAirNode> extends Map<U['type'], U> {
+    constructor(unionMap: Array<[U['type'], U]>);
+    get<T extends U['type']>(type: T): (U & {
+        type: T;
+    });
+}
 
 declare class NodeKey<T extends string = string> {
     nodeId: string;
@@ -74,74 +65,47 @@ declare class NodeKey<T extends string = string> {
     constructor(nodeId: string, type: T);
 }
 
-type AirNodeCreate<U extends FlatAirNode = FlatAirNode, T extends U['type'] = U['type']> = <CT extends ExtractChildTypeUnion<(U & {
-    type: T;
-})>>(childType: CT, callback?: (liveIndexNode: LiveIndexNode<(U & {
-    type: CT;
-})['state']>) => void) => NodeKey<CT>;
-
-type AirNodeDelete<U extends FlatAirNode = FlatAirNode, T extends U['type'] = U['type'], S extends (U & {
-    type: T;
-})['state'] = (U & {
-    type: T;
-})['state']> = (callback: (liveIndexNode: LiveIndexNode<S>) => void) => NodeKey<T>;
-
-type AirNodeUseSelect<U extends FlatAirNode = FlatAirNode, T extends U['type'] = U['type'], S extends (U & {
-    type: T;
-})['state'] = (U & {
-    type: T;
-})['state']> = <R>(selector: (immutableIndexNode: ReturnType<LiveIndexNode<S>['toImmutable']>) => R) => R;
-
-type AirNodeUpdate<U extends FlatAirNode = FlatAirNode, T extends U['type'] = U['type'], S extends (U & {
-    type: T;
-})['state'] = (U & {
-    type: T;
-})['state']> = (callback: (liveIndexNode: LiveObject<S>) => void) => void;
-
-type AirNodeUseChildren<U extends FlatAirNode = FlatAirNode, T extends U['type'] = U['type']> = <CT extends ExtractChildTypeUnion<(U & {
-    type: T;
-})>>(childType: CT) => Set<NodeKey<CT>>;
-
-type AirNodeUseNodeName = () => string;
-
-type CrudUnion<U extends FlatAirNode = FlatAirNode, T extends U['type'] = U['type'], S extends (U & {
-    type: T;
-})['state'] = (U & {
-    type: T;
-})['state']> = {
-    fnType: 'create';
-    fnSignature: AirNodeCreate<U, T>;
-} | {
-    fnType: 'useSelect';
-    fnSignature: AirNodeUseSelect<U, T, S>;
-} | {
-    fnType: 'useNodeName';
-    fnSignature: AirNodeUseNodeName;
-} | {
-    fnType: 'useChildren';
-    fnSignature: AirNodeUseChildren<U, T>;
-} | {
-    fnType: 'update';
-    fnSignature: AirNodeUpdate<U, T, S>;
-} | {
-    fnType: 'delete';
-    fnSignature: AirNodeDelete<U, T, S>;
-};
-
-declare const configureAirStorage: <U extends FlatAirNode>(createClientProps: Parameters<typeof createClient>[0], tree: TreeAirNode) => {
-    useMutation: <F extends (context: _liveblocks_react.MutationContext<{}, ILiveIndexStorageModel, _liveblocks_core.BaseUserMeta>, ...args: any[]) => any>(callback: F, deps: readonly unknown[]) => F extends (first: any, ...rest: infer A) => infer R ? (...args: A) => R : never;
-    useStatus: () => _liveblocks_core.Status;
+declare const configureAirStorage: <U extends FlatAirNode>(createClientProps: Parameters<typeof createClient>[0], rootAirNode: TreeAirNode) => {
+    useCreateNode: <T extends U["type"], CT extends ExtractChildTypeUnion<U & {
+        type: T;
+    }>>(nodeKey: NodeKey<T>, childType: CT, callback?: ((liveIndexNode: LiveIndexNode<(U & {
+        type: T;
+    })["state"]>) => void) | undefined) => () => NodeKey<CT>;
+    useSelectNodeState: <T_1 extends U["type"]>(nodeKey: NodeKey<T_1>, selector: <R>(immutableIndexNode: {
+        nodeId: string;
+        type: string;
+        parentNodeId: string | null;
+        parentType: string | null;
+        state: _liveblocks_core.LiveObject<(U & {
+            type: T_1;
+        })["state"]>;
+        childNodeSets: _liveblocks_core.LiveMap<string, _liveblocks_core.LiveMap<string, null>>;
+    } extends infer T_2 ? T_2 extends {
+        nodeId: string;
+        type: string;
+        parentNodeId: string | null;
+        parentType: string | null;
+        state: _liveblocks_core.LiveObject<(U & {
+            type: T_1;
+        })["state"]>;
+        childNodeSets: _liveblocks_core.LiveMap<string, _liveblocks_core.LiveMap<string, null>>;
+    } ? T_2 extends _liveblocks_core.LsonObject ? { readonly [K in keyof T_2]: _liveblocks_core.ToImmutable<Exclude<T_2[K], undefined>> | (undefined extends T_2[K] ? T_2[K] & undefined : never); } : T_2 extends _liveblocks_core.Json ? T_2 : never : never : never) => R) => unknown;
+    useUpdateNodeState: <T_3 extends U["type"]>(nodeKey: NodeKey<T_3>, callback: (liveIndexState: _liveblocks_core.LiveObject<(U & {
+        type: T_3;
+    })["state"]>) => void) => () => void;
+    useNodeName: (nodeKey: NodeKey<string>) => string;
+    useDeleteNode: <T_4 extends U["type"]>(nodeKey: NodeKey<T_4>, callback?: ((liveIndexNode: LiveIndexNode<(U & {
+        type: T_4;
+    })["state"]>) => void) | undefined) => () => NodeKey<T_4>;
+    useChildrenKeys: <T_5 extends U["type"], CT_1 extends ExtractChildTypeUnion<U & {
+        type: T_5;
+    }>>(nodeKey: NodeKey<T_5>, childType: CT_1) => Set<NodeKey<string>>;
     AirNodeProvider: ({ storageId, children }: {
         storageId: string;
-        children: ReactNode;
+        children: react.ReactNode;
     }) => react_jsx_runtime.JSX.Element;
-    useAirNode: <T extends U["type"], FnT extends "delete" | "update" | "create" | "useSelect" | "useNodeName" | "useChildren">(nodeKey: NodeKey$1<T>, fnType: FnT) => (CrudUnion<U, T, (U & {
-        type: T;
-    })["state"]> & {
-        fnType: FnT;
-    })["fnSignature"];
     useRootAirNode: () => NodeKey<"root">;
     mappedAirNodeUnion: MappedUnion<FlatAirNode>;
 };
 
-export { AirNodeIndexedUnion, AirNodeState, ExtractChildTypeUnion, FlatAirNode, NodeKey$1 as NodeKey, TreeAirNode, TreeToUnion, configureAirStorage, defineAirNode, defineRootAirNode };
+export { AirNodeIndexedUnion, AirNodeState, ExtractChildTypeUnion, FlatAirNode, NodeKey$1 as NodeKey, TreeAirNode, TreeToUnion, configureAirStorage };

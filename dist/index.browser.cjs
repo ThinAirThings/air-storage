@@ -30,22 +30,12 @@ var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: tru
 // src/index.browser.ts
 var index_browser_exports = {};
 __export(index_browser_exports, {
-  configureAirStorage: () => configureAirStorage,
-  defineAirNode: () => defineAirNode,
-  defineRootAirNode: () => defineRootAirNode
+  configureAirStorage: () => configureAirStorage
 });
 module.exports = __toCommonJS(index_browser_exports);
 
-// src/types.ts
-var defineAirNode = (type, defaultInitialState, children) => ({
-  type,
-  state: defaultInitialState,
-  children: children ?? []
-});
-var defineRootAirNode = (children) => defineAirNode("root", { nodeName: "root" }, children);
-
 // src/configureAirStorage.tsx
-var import_react = require("@liveblocks/react");
+var import_react2 = require("@liveblocks/react");
 
 // src/types/MappedUnion.ts
 var MappedUnion = class extends Map {
@@ -56,6 +46,20 @@ var MappedUnion = class extends Map {
     return super.get(type);
   }
 };
+
+// src/configureAirStorage.tsx
+var import_client4 = require("@liveblocks/client");
+
+// src/hooks/useAirNode/NodeKey.ts
+var NodeKey = class {
+  constructor(nodeId, type) {
+    this.nodeId = nodeId;
+    this.type = type;
+  }
+};
+
+// src/components/AirNodeProviderFactory.tsx
+var import_react = require("react");
 
 // src/LiveObjects/LiveIndexStorageModel.ts
 var import_client2 = require("@liveblocks/client");
@@ -89,23 +93,33 @@ var LiveIndexStorageModel = class {
   }
 };
 
-// src/configureAirStorage.tsx
-var import_client4 = require("@liveblocks/client");
-
-// src/hooks/useAirNode/fns/airNodeCreateFactory.ts
-var import_uuid = require("uuid");
-var import_client3 = require("@liveblocks/client");
-
-// src/hooks/useAirNode/NodeKey.ts
-var NodeKey = class {
-  constructor(nodeId, type) {
-    this.nodeId = nodeId;
-    this.type = type;
-  }
+// src/components/AirNodeProviderFactory.tsx
+var import_jsx_runtime = require("react/jsx-runtime");
+var AirNodeProviderFactory = (rootAirNode, LiveblocksRoomProvider) => ({
+  storageId,
+  children
+}) => {
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+    LiveblocksRoomProvider,
+    {
+      id: storageId,
+      initialPresence: {},
+      initialStorage: new LiveIndexStorageModel(rootAirNode),
+      children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_react.Suspense, { fallback: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: "Loading..." }), children })
+    }
+  );
 };
 
-// src/hooks/useAirNode/fns/airNodeCreateFactory.ts
-var airNodeCreateFactory = (useMutation, mappedAirNodeUnion) => (nodeKey) => useMutation(({ storage }, childType, callback) => {
+// src/hooks/customHooks/useChildrenKeysFactory.ts
+var import_lodash = __toESM(require("lodash.isequal"), 1);
+var useChildrenKeysFactory = (useStorage) => (nodeKey, childType) => useStorage(({ liveIndex }) => new Set(
+  [...liveIndex.get(nodeKey.nodeId).childNodeSets.get(childType).keys()].map((nodeId) => new NodeKey(childType, nodeId))
+), (a, b) => (0, import_lodash.default)(a, b));
+
+// src/hooks/customHooks/useCreateNodeFactory.ts
+var import_client3 = require("@liveblocks/client");
+var import_uuid = require("uuid");
+var useCreateNodeFactory = (useMutation, mappedAirNodeUnion) => (nodeKey, childType, callback) => useMutation(({ storage }) => {
   const nodeId = (0, import_uuid.v4)();
   const newLiveIndexNode = new LiveIndexNode({
     nodeId,
@@ -123,8 +137,8 @@ var airNodeCreateFactory = (useMutation, mappedAirNodeUnion) => (nodeKey) => use
   return new NodeKey(nodeId, childType);
 }, []);
 
-// src/hooks/useAirNode/fns/airNodeDeleteFactory.ts
-var airNodeDeleteFactory = (useMutation) => (nodeKey) => useMutation(({ storage }, callback) => {
+// src/hooks/customHooks/useDeleteNodeFactory.ts
+var useDeleteNodeFactory = (useMutation) => (nodeKey, callback) => useMutation(({ storage }) => {
   callback?.(storage.get("liveIndex").get(nodeKey.nodeId));
   const liveIndex = storage.get("liveIndex");
   const thisNode = liveIndex.get(nodeKey.nodeId);
@@ -143,75 +157,40 @@ var airNodeDeleteFactory = (useMutation) => (nodeKey) => useMutation(({ storage 
   return new NodeKey(sibblingNodeId, nodeKey.type);
 }, []);
 
-// src/hooks/useAirNode/fns/useSelectAirNodeFactory.ts
-var import_lodash = __toESM(require("lodash.isequal"), 1);
-var useSelectAirNodeFactory = (useStorage) => (nodeKey) => (selector) => useStorage(({ liveIndex }) => {
-  return selector(liveIndex.get(nodeKey.nodeId));
-}, (a, b) => (0, import_lodash.default)(a, b));
-
-// src/hooks/useAirNode/fns/airNodeUpdateFactory.ts
-var airNodeUpdateFactory = (useMutation) => (nodeKey) => useMutation(({ storage }, callback) => {
-  callback(storage.get("liveIndex").get(nodeKey.nodeId).get("state"));
-}, []);
-
-// src/hooks/useAirNode/fns/useChildrenAirNodeFactory.ts
+// src/hooks/customHooks/useSelectNodeFactory.ts
 var import_lodash2 = __toESM(require("lodash.isequal"), 1);
-var useChildrenAirNodeFactory = (useStorage) => (nodeKey) => (childType) => useStorage(
-  ({ liveIndex }) => new Set(
-    [...liveIndex.get(nodeKey.nodeId).childNodeSets.get(childType).keys()].map((nodeId) => new NodeKey(childType, nodeId))
-  ),
-  (a, b) => (0, import_lodash2.default)(a, b)
-);
+var useSelectNodeStateFactory = (useStorage) => (nodeKey, selector) => useStorage(({ liveIndex }) => selector(
+  liveIndex.get(nodeKey.nodeId)
+), (a, b) => (0, import_lodash2.default)(a, b));
 
-// src/hooks/useAirNode/fns/useNodeNameFactory.ts
-var useAirNodeNameFactory = (useStorage) => (nodeKey) => useStorage(({ liveIndex }) => {
+// src/hooks/customHooks/useNodeNameFactory.ts
+var useNodeNameFactory = (useStorage) => (nodeKey) => useStorage(({ liveIndex }) => {
   return liveIndex.get(nodeKey.nodeId).state.nodeName;
 });
 
-// src/hooks/useAirNode/useAirNodeFactory.ts
-var useAirNodeFactory = (useMutation, useStorage, mappedAirNodeUnion) => (nodeKey, fnType) => {
-  return fnType === "create" ? airNodeCreateFactory(useMutation, mappedAirNodeUnion)(nodeKey) : fnType === "useSelect" ? useSelectAirNodeFactory(useStorage)(nodeKey) : fnType === "useNodeName" ? useAirNodeNameFactory(useStorage)(nodeKey) : fnType === "useChildren" ? useChildrenAirNodeFactory(useStorage)(nodeKey) : fnType === "update" ? airNodeUpdateFactory(useMutation)(nodeKey) : fnType === "delete" ? airNodeDeleteFactory(useMutation)(nodeKey) : (() => {
-    throw new Error("Invalid fnType");
-  })();
-};
+// src/hooks/customHooks/useUpdateNodeStateFactory.ts
+var useUpdateNodeStateFactory = (useMutation) => (nodeKey, callback) => useMutation(({ storage }) => {
+  callback(storage.get("liveIndex").get(nodeKey.nodeId).get("state"));
+}, [nodeKey, callback]);
 
 // src/configureAirStorage.tsx
-var import_react2 = require("react");
-var import_jsx_runtime = require("react/jsx-runtime");
-var configureAirStorage = (createClientProps, tree) => {
-  const mappedAirNodeUnion = treeToMappedUnion(tree);
+var configureAirStorage = (createClientProps, rootAirNode) => {
+  const mappedAirNodeUnion = treeToMappedUnion(rootAirNode);
   const { suspense: {
     useStorage,
     useMutation,
-    useStatus,
     RoomProvider
-  } } = (0, import_react.createRoomContext)((0, import_client4.createClient)(createClientProps));
-  const AirNodeProvider = ({
-    storageId,
-    children
-  }) => {
-    return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
-      RoomProvider,
-      {
-        id: storageId,
-        initialPresence: {},
-        initialStorage: new LiveIndexStorageModel(tree),
-        children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_react2.Suspense, { fallback: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: "Loading..." }), children })
-      }
-    );
-  };
-  const useAirNode = useAirNodeFactory(
-    useMutation,
-    useStorage,
-    mappedAirNodeUnion
-  );
-  const useRootAirNode = () => useStorage(() => new NodeKey("root", "root"));
+  } } = (0, import_react2.createRoomContext)((0, import_client4.createClient)(createClientProps));
   return {
-    useMutation,
-    useStatus,
-    AirNodeProvider,
-    useAirNode,
-    useRootAirNode,
+    useCreateNode: useCreateNodeFactory(useMutation, mappedAirNodeUnion),
+    useSelectNodeState: useSelectNodeStateFactory(useStorage),
+    useUpdateNodeState: useUpdateNodeStateFactory(useMutation),
+    useNodeName: useNodeNameFactory(useStorage),
+    useDeleteNode: useDeleteNodeFactory(useMutation),
+    useChildrenKeys: useChildrenKeysFactory(useStorage),
+    AirNodeProvider: AirNodeProviderFactory(rootAirNode, RoomProvider),
+    // Only use 'useStorage' here because Liveblocks will throw an error if useStorage isn't called before using mutations.
+    useRootAirNode: () => useStorage(() => new NodeKey("root", "root")),
     mappedAirNodeUnion
   };
 };
@@ -229,7 +208,5 @@ var treeToMappedUnion = (tree) => {
 };
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
-  configureAirStorage,
-  defineAirNode,
-  defineRootAirNode
+  configureAirStorage
 });
