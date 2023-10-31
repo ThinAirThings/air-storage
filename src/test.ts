@@ -1,10 +1,10 @@
 import { configureAirStorage } from "./configureAirStorage.js";
 import { NodeKey } from "./hooks/useAirNode/NodeKey.js";
-import { defineAirNodeTree, defineAirNode, TreeToUnion } from "./types.js";
+import { defineRootAirNode, defineAirNode, TreeToUnion } from "./types.js";
 
 
 
-const airNodeTree = defineAirNodeTree([
+const airNodeTree = defineRootAirNode([
     defineAirNode('Level1NodeA', {
         stuff: 'stuff',
         name: 5
@@ -57,7 +57,7 @@ const createFirstNode = useAirNode(
     'create'
 )
 
-const node = createFirstNode('Level1NodeB', (node) => {
+const node = createFirstNode('', (node) => {
 
 })
 const updateState = useAirNode(node, 'update')

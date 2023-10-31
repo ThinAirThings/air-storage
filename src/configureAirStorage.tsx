@@ -38,8 +38,10 @@ export const configureAirStorage = <
         liveblocks.useStorage,
         mappedAirNodeUnion
     )
-    const useRootAirNode = () => new NodeKey('root', 'root')
-
+    const useRootAirNode = <FnT extends CrudUnion['fnType']>(fnType: FnT) => useAirNode(
+        new NodeKey('root', 'root'),
+        fnType
+    )
     return {
         AirNodeProvider,
         useAirNode,
