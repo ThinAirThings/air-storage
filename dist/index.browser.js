@@ -154,10 +154,7 @@ var configureAirStorage = (createClientProps, tree) => {
     liveblocks.useStorage,
     mappedAirNodeUnion
   );
-  const useRootAirNode = (fnType) => useAirNode(
-    new NodeKey("root", "root"),
-    fnType
-  );
+  const useRootAirNode = () => new NodeKey("root", "root");
   return {
     AirNodeProvider,
     useAirNode,
