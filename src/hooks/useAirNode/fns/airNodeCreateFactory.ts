@@ -15,7 +15,7 @@ export type AirNodeCreate<
     CT extends ExtractChildTypeUnion<(U&{type: T})>
 >(childType: CT, callback?:(liveIndexNode: LiveIndexNode<(U&{type: CT})['state']>) => void)=> NodeKey<CT>
 
-export const createAirNodeFactory = (
+export const airNodeCreateFactory = (
     useMutation: LiveblocksHooks['useMutation'],
     mappedAirNodeUnion: MappedUnion
 ) => (

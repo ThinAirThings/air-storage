@@ -10,7 +10,7 @@ export type AirNodeUpdate<
     S extends (U&{type: T})['state']=(U&{type: T})['state']
 > = (callback: (liveIndexNode: LiveObject<S>) => void) => void
 
-export const updateAirNodeFactory = <
+export const airNodeUpdateFactory = <
     U extends FlatAirNode=FlatAirNode, 
 >(
     useMutation: LiveblocksHooks['useMutation'],

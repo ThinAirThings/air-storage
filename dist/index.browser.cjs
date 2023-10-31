@@ -42,7 +42,7 @@ var defineAirNode = (type, defaultInitialState, children) => ({
   state: defaultInitialState,
   children: children ?? []
 });
-var defineRootAirNode = (children) => defineAirNode("root", {}, children);
+var defineRootAirNode = (children) => defineAirNode("root", { nodeName: "root" }, children);
 
 // src/configureAirStorage.tsx
 var import_react = require("@liveblocks/react");
@@ -81,7 +81,9 @@ var LiveIndexStorageModel = class {
         childNodeSets: new import_client2.LiveMap(treeRoot.children.map(
           (child) => [child.type, new import_client2.LiveMap()]
         )),
-        state: new import_client2.LiveObject({})
+        state: new import_client2.LiveObject({
+          nodeName: "root"
+        })
       })
     ]]);
   }
@@ -90,7 +92,7 @@ var LiveIndexStorageModel = class {
 // src/configureAirStorage.tsx
 var import_client4 = require("@liveblocks/client");
 
-// src/hooks/useAirNode/fns/createAirNodeFactory.ts
+// src/hooks/useAirNode/fns/airNodeCreateFactory.ts
 var import_uuid = require("uuid");
 var import_client3 = require("@liveblocks/client");
 
@@ -102,8 +104,8 @@ var NodeKey = class {
   }
 };
 
-// src/hooks/useAirNode/fns/createAirNodeFactory.ts
-var createAirNodeFactory = (useMutation, mappedAirNodeUnion) => (nodeKey) => useMutation(({ storage }, childType, callback) => {
+// src/hooks/useAirNode/fns/airNodeCreateFactory.ts
+var airNodeCreateFactory = (useMutation, mappedAirNodeUnion) => (nodeKey) => useMutation(({ storage }, childType, callback) => {
   const nodeId = (0, import_uuid.v4)();
   const newLiveIndexNode = new LiveIndexNode({
     nodeId,
@@ -121,8 +123,8 @@ var createAirNodeFactory = (useMutation, mappedAirNodeUnion) => (nodeKey) => use
   return new NodeKey(nodeId, childType);
 }, []);
 
-// src/hooks/useAirNode/fns/deleteAirNodeFactory.ts
-var deleteAirNodeFactory = (useMutation) => (nodeKey) => useMutation(({ storage }, callback) => {
+// src/hooks/useAirNode/fns/airNodeDeleteFactory.ts
+var airNodeDeleteFactory = (useMutation) => (nodeKey) => useMutation(({ storage }, callback) => {
   callback?.(storage.get("liveIndex").get(nodeKey.nodeId));
   const liveIndex = storage.get("liveIndex");
   const thisNode = liveIndex.get(nodeKey.nodeId);
@@ -147,8 +149,8 @@ var useSelectAirNodeFactory = (useStorage) => (nodeKey) => (selector) => useStor
   return selector(liveIndex.get(nodeKey.nodeId));
 }, (a, b) => (0, import_lodash.default)(a, b));
 
-// src/hooks/useAirNode/fns/updateAirNodeFactory.ts
-var updateAirNodeFactory = (useMutation) => (nodeKey) => useMutation(({ storage }, callback) => {
+// src/hooks/useAirNode/fns/airNodeUpdateFactory.ts
+var airNodeUpdateFactory = (useMutation) => (nodeKey) => useMutation(({ storage }, callback) => {
   callback(storage.get("liveIndex").get(nodeKey.nodeId).get("state"));
 }, []);
 
@@ -163,7 +165,7 @@ var useChildrenAirNodeFactory = (useStorage) => (nodeKey) => (childType) => useS
 
 // src/hooks/useAirNode/useAirNodeFactory.ts
 var useAirNodeFactory = (useMutation, useStorage, mappedAirNodeUnion) => (nodeKey, fnType) => {
-  return fnType === "create" ? createAirNodeFactory(useMutation, mappedAirNodeUnion)(nodeKey) : fnType === "useSelect" ? useSelectAirNodeFactory(useStorage)(nodeKey) : fnType === "useChildren" ? useChildrenAirNodeFactory(useStorage)(nodeKey) : fnType === "update" ? updateAirNodeFactory(useMutation)(nodeKey) : fnType === "delete" ? deleteAirNodeFactory(useMutation)(nodeKey) : (() => {
+  return fnType === "create" ? airNodeCreateFactory(useMutation, mappedAirNodeUnion)(nodeKey) : fnType === "useSelect" ? useSelectAirNodeFactory(useStorage)(nodeKey) : fnType === "useChildren" ? useChildrenAirNodeFactory(useStorage)(nodeKey) : fnType === "update" ? airNodeUpdateFactory(useMutation)(nodeKey) : fnType === "delete" ? airNodeDeleteFactory(useMutation)(nodeKey) : (() => {
     throw new Error("Invalid fnType");
   })();
 };

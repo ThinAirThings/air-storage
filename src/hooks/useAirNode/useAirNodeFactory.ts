@@ -1,8 +1,8 @@
 import { FlatAirNode, NodeKey } from "../../types.js";
-import { AirNodeCreate, createAirNodeFactory } from "./fns/createAirNodeFactory.js";
-import { AirNodeDelete, deleteAirNodeFactory } from "./fns/deleteAirNodeFactory.js";
+import { AirNodeCreate, airNodeCreateFactory } from "./fns/airNodeCreateFactory.js";
+import { AirNodeDelete, airNodeDeleteFactory } from "./fns/airNodeDeleteFactory.js";
 import { AirNodeUseSelect, useSelectAirNodeFactory } from "./fns/useSelectAirNodeFactory.js";
-import { AirNodeUpdate, updateAirNodeFactory } from "./fns/updateAirNodeFactory.js";
+import { AirNodeUpdate, airNodeUpdateFactory } from "./fns/airNodeUpdateFactory.js";
 import { AirNodeUseChildren, useChildrenAirNodeFactory } from "./fns/useChildrenAirNodeFactory.js";
 import { LiveblocksHooks } from "../../LiveObjects/LiveIndexStorageModel.js";
 import { MappedUnion } from "../../types/MappedUnion.js";
@@ -48,14 +48,14 @@ export const useAirNodeFactory = <
 ): (CrudUnion<U, T>&{fnType: FnT})['fnSignature'] => {
     return fnType === "create" 
         // Not sure why TS can't handle this. Think it has something to do with returning a generic function.
-        ? createAirNodeFactory(useMutation, mappedAirNodeUnion)(nodeKey) as any
+        ? airNodeCreateFactory(useMutation, mappedAirNodeUnion)(nodeKey) as any
         : fnType === "useSelect"
         ? useSelectAirNodeFactory(useStorage)(nodeKey)
         : fnType === "useChildren"
         ? useChildrenAirNodeFactory(useStorage)(nodeKey)
         : fnType === "update"
-        ? updateAirNodeFactory(useMutation)(nodeKey)
+        ? airNodeUpdateFactory(useMutation)(nodeKey)
         : fnType === "delete"
-        ? deleteAirNodeFactory(useMutation)(nodeKey)
+        ? airNodeDeleteFactory(useMutation)(nodeKey)
         : (() => {throw new Error('Invalid fnType')})()
 }

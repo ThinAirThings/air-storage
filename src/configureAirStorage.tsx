@@ -6,7 +6,6 @@ import { LiveMap, LiveObject, createClient } from "@liveblocks/client";
 import { CrudUnion, useAirNodeFactory } from "./hooks/useAirNode/useAirNodeFactory.js";
 import { ReactNode, Suspense } from "react";
 import { NodeKey } from "./hooks/useAirNode/NodeKey.js";
-import { LiveIndexNode } from "./LiveObjects/LiveIndexNode.js";
 
 export const configureAirStorage = <
     U extends FlatAirNode,

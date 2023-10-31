@@ -1,20 +1,20 @@
-import { LsonObject } from "@liveblocks/client";
-
-
+import { LsonObject } from "@liveblocks/client"
 
 export type TreeAirNode<
     T extends string=string,
-    S extends LsonObject=LsonObject,
-    C extends TreeAirNode[]|[]=TreeAirNode<string, LsonObject, any>[]|[]
+    S extends AirNodeState=AirNodeState,
+    C extends TreeAirNode[]|[]=TreeAirNode<string, AirNodeState, any>[]|[]
 > = {
     type: T,
     state: S,
     children: C
 }
 
+export type AirNodeState = LsonObject & {nodeName: string}
+
 export const defineAirNode = <
     T extends string=string,
-    S extends LsonObject=LsonObject,
+    S extends AirNodeState=AirNodeState,
     C extends TreeAirNode[]|[]=[]
 >(
     type: T,
@@ -30,14 +30,14 @@ export const defineRootAirNode = <
     C extends TreeAirNode[]
 >(
     children: C
-) => defineAirNode('root', {}, children)
+) => defineAirNode('root', {nodeName: 'root'}, children)
 
 export type ExtractChildTypeUnion<N extends FlatAirNode> = 
     N['childTypeSet'] extends Set<infer CT extends string> ? CT : never
 
 export type FlatAirNode<
     T extends string=string,
-    S extends LsonObject=LsonObject,
+    S extends AirNodeState=AirNodeState,
     CK extends string=string
 > = {
     type: T,

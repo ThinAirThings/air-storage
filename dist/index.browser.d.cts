@@ -4,15 +4,20 @@ import * as _liveblocks_react from '@liveblocks/react';
 import * as _liveblocks_core from '@liveblocks/core';
 import { ReactNode } from 'react';
 
-type TreeAirNode<T extends string = string, S extends LsonObject = LsonObject, C extends TreeAirNode[] | [] = TreeAirNode<string, LsonObject, any>[] | []> = {
+type TreeAirNode<T extends string = string, S extends AirNodeState = AirNodeState, C extends TreeAirNode[] | [] = TreeAirNode<string, AirNodeState, any>[] | []> = {
     type: T;
     state: S;
     children: C;
 };
-declare const defineAirNode: <T extends string = string, S extends LsonObject = LsonObject, C extends [] | TreeAirNode<string, LsonObject, TreeAirNode<string, LsonObject, any>[] | []>[] = []>(type: T, defaultInitialState: S, children: C) => TreeAirNode<T, S, C>;
-declare const defineRootAirNode: <C extends TreeAirNode<string, LsonObject, TreeAirNode<string, LsonObject, any>[] | []>[]>(children: C) => TreeAirNode<"root", {}, C>;
+type AirNodeState = LsonObject & {
+    nodeName: string;
+};
+declare const defineAirNode: <T extends string = string, S extends AirNodeState = AirNodeState, C extends [] | TreeAirNode<string, AirNodeState, TreeAirNode<string, AirNodeState, any>[] | []>[] = []>(type: T, defaultInitialState: S, children: C) => TreeAirNode<T, S, C>;
+declare const defineRootAirNode: <C extends TreeAirNode<string, AirNodeState, TreeAirNode<string, AirNodeState, any>[] | []>[]>(children: C) => TreeAirNode<"root", {
+    nodeName: string;
+}, C>;
 type ExtractChildTypeUnion<N extends FlatAirNode> = N['childTypeSet'] extends Set<infer CT extends string> ? CT : never;
-type FlatAirNode<T extends string = string, S extends LsonObject = LsonObject, CK extends string = string> = {
+type FlatAirNode<T extends string = string, S extends AirNodeState = AirNodeState, CK extends string = string> = {
     type: T;
     state: S;
     childTypeSet: Set<CK>;
@@ -40,7 +45,7 @@ declare class MappedUnion<U extends FlatAirNode = FlatAirNode> extends Map<U['ty
     });
 }
 
-type ILiveIndexNode<S extends LsonObject = LsonObject> = LiveObject<{
+type ILiveIndexNode<S extends AirNodeState = AirNodeState> = LiveObject<{
     nodeId: string;
     type: string;
     parentNodeId: string | null;
@@ -48,7 +53,7 @@ type ILiveIndexNode<S extends LsonObject = LsonObject> = LiveObject<{
     state: LiveObject<S>;
     childNodeSets: LiveMap<string, LiveMap<string, null>>;
 }>;
-declare class LiveIndexNode<S extends LsonObject = LsonObject> extends LiveObject<ILiveIndexNode<S> extends LiveObject<infer T> ? T : never> {
+declare class LiveIndexNode<S extends AirNodeState = AirNodeState> extends LiveObject<ILiveIndexNode<S> extends LiveObject<infer T> ? T : never> {
     constructor(data: {
         nodeId: string;
         type: string;
@@ -134,4 +139,4 @@ declare const configureAirStorage: <U extends FlatAirNode>(createClientProps: Pa
     mappedAirNodeUnion: MappedUnion<FlatAirNode>;
 };
 
-export { AirNodeIndexedUnion, ExtractChildTypeUnion, FlatAirNode, NodeKey$1 as NodeKey, TreeAirNode, TreeToUnion, configureAirStorage, defineAirNode, defineRootAirNode };
+export { AirNodeIndexedUnion, AirNodeState, ExtractChildTypeUnion, FlatAirNode, NodeKey$1 as NodeKey, TreeAirNode, TreeToUnion, configureAirStorage, defineAirNode, defineRootAirNode };

@@ -9,7 +9,7 @@ export type AirNodeDelete<
     S extends (U&{type: T})['state']=(U&{type: T})['state'],
 > = (callback: (liveIndexNode: LiveIndexNode<S>) => void) => NodeKey<T>
 
-export const deleteAirNodeFactory = <
+export const airNodeDeleteFactory = <
     U extends FlatAirNode=FlatAirNode,
 >(
     useMutation: LiveblocksHooks['useMutation'],
