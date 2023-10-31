@@ -26,7 +26,6 @@ export const configureAirStorage = <
         storageId: string,
         children: ReactNode
     }) => {
-        console.log("Running provider")
         return <liveblocks.RoomProvider
             id={storageId}
             initialPresence={{}}
@@ -55,6 +54,7 @@ export const configureAirStorage = <
     )
     const useRootAirNode = () => new NodeKey('root', 'root')
     return {
+        useStatus: liveblocks.useStatus,
         AirNodeProvider,
         useAirNode,
         useRootAirNode,

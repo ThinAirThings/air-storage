@@ -1,5 +1,6 @@
 import { LsonObject, LiveObject, LiveMap, createClient } from '@liveblocks/client';
 import * as react_jsx_runtime from 'react/jsx-runtime';
+import * as _liveblocks_core from '@liveblocks/core';
 import { ReactNode } from 'react';
 
 type TreeAirNode<T extends string = string, S extends LsonObject = LsonObject, C extends TreeAirNode[] | [] = TreeAirNode<string, LsonObject, any>[] | []> = {
@@ -113,6 +114,7 @@ type CrudUnion<U extends FlatAirNode = FlatAirNode, T extends U['type'] = U['typ
 };
 
 declare const configureAirStorage: <U extends FlatAirNode>(createClientProps: Parameters<typeof createClient>[0], tree: TreeAirNode) => {
+    useStatus: () => _liveblocks_core.Status;
     AirNodeProvider: ({ storageId, children }: {
         storageId: string;
         children: ReactNode;

@@ -156,7 +156,6 @@ var configureAirStorage = (createClientProps, tree) => {
     storageId,
     children
   }) => {
-    console.log("Running provider");
     return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
       liveblocks.RoomProvider,
       {
@@ -185,6 +184,7 @@ var configureAirStorage = (createClientProps, tree) => {
   );
   const useRootAirNode = () => new NodeKey("root", "root");
   return {
+    useStatus: liveblocks.useStatus,
     AirNodeProvider,
     useAirNode,
     useRootAirNode,
