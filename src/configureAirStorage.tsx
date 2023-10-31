@@ -15,7 +15,12 @@ export const configureAirStorage = <
     tree: TreeAirNode
 ) => {
     const mappedAirNodeUnion = treeToMappedUnion(tree)
-    const {suspense: liveblocks} = createRoomContext<
+    const {suspense: {
+        useStorage,
+        useMutation,
+        useStatus,
+        RoomProvider
+    }} = createRoomContext<
         {}, 
         ILiveIndexStorageModel
     >(createClient(createClientProps))
@@ -26,35 +31,26 @@ export const configureAirStorage = <
         storageId: string,
         children: ReactNode
     }) => {
-        return <liveblocks.RoomProvider
+        return <RoomProvider
             id={storageId}
             initialPresence={{}}
-            initialStorage={{
-                liveIndex: new LiveMap([['root', new LiveIndexNode({
-                    nodeId: 'root',
-                    type: 'RootNode',
-                    parentNodeId: null,
-                    parentType: null,
-                    childNodeSets: new LiveMap(tree.children.map(child => 
-                        [child.type, new LiveMap<string, null>()]
-                    )),
-                    state: new LiveObject({})
-                })]])
-            }}
+            initialStorage={new LiveIndexStorageModel(tree)}
         >
             <Suspense fallback={<div>Loading...</div>}>
                 {children}
             </Suspense>
-        </liveblocks.RoomProvider>
+        </RoomProvider>
     }
     const useAirNode = useAirNodeFactory<U>(
-        liveblocks.useMutation,
-        liveblocks.useStorage,
+        useMutation,
+        useStorage,
         mappedAirNodeUnion
     )
-    const useRootAirNode = () => new NodeKey('root', 'root')
+    // Only use 'useStorage' here because Liveblocks will throw an error if useStorage isn't called before using mutations.
+    const useRootAirNode = () => useStorage(()=>new NodeKey('root', 'root'))
     return {
-        useStatus: liveblocks.useStatus,
+        useMutation,
+        useStatus,
         AirNodeProvider,
         useAirNode,
         useRootAirNode,

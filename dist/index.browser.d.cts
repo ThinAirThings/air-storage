@@ -1,5 +1,6 @@
 import { LsonObject, LiveObject, LiveMap, createClient } from '@liveblocks/client';
 import * as react_jsx_runtime from 'react/jsx-runtime';
+import * as _liveblocks_react from '@liveblocks/react';
 import * as _liveblocks_core from '@liveblocks/core';
 import { ReactNode } from 'react';
 
@@ -39,12 +40,6 @@ declare class MappedUnion<U extends FlatAirNode = FlatAirNode> extends Map<U['ty
     });
 }
 
-declare class NodeKey<T extends string = string> {
-    nodeId: string;
-    type: T;
-    constructor(nodeId: string, type: T);
-}
-
 type ILiveIndexNode<S extends LsonObject = LsonObject> = LiveObject<{
     nodeId: string;
     type: string;
@@ -62,6 +57,16 @@ declare class LiveIndexNode<S extends LsonObject = LsonObject> extends LiveObjec
         childNodeSets: LiveMap<string, LiveMap<string, null>>;
         state: LiveObject<S>;
     });
+}
+
+type ILiveIndexStorageModel = {
+    liveIndex: LiveMap<string, ILiveIndexNode>;
+};
+
+declare class NodeKey<T extends string = string> {
+    nodeId: string;
+    type: T;
+    constructor(nodeId: string, type: T);
 }
 
 type AirNodeCreate<U extends FlatAirNode = FlatAirNode, T extends U['type'] = U['type']> = <CT extends ExtractChildTypeUnion<(U & {
@@ -114,6 +119,7 @@ type CrudUnion<U extends FlatAirNode = FlatAirNode, T extends U['type'] = U['typ
 };
 
 declare const configureAirStorage: <U extends FlatAirNode>(createClientProps: Parameters<typeof createClient>[0], tree: TreeAirNode) => {
+    useMutation: <F extends (context: _liveblocks_react.MutationContext<{}, ILiveIndexStorageModel, _liveblocks_core.BaseUserMeta>, ...args: any[]) => any>(callback: F, deps: readonly unknown[]) => F extends (first: any, ...rest: infer A) => infer R ? (...args: A) => R : never;
     useStatus: () => _liveblocks_core.Status;
     AirNodeProvider: ({ storageId, children }: {
         storageId: string;

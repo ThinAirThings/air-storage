@@ -19,26 +19,48 @@ var MappedUnion = class extends Map {
   }
 };
 
-// src/configureAirStorage.tsx
-import { LiveMap as LiveMap3, LiveObject as LiveObject3, createClient } from "@liveblocks/client";
-
-// src/hooks/useAirNode/fns/createAirNodeFactory.ts
-import { v4 as uuidv4 } from "uuid";
+// src/LiveObjects/LiveIndexStorageModel.ts
 import { LiveMap as LiveMap2, LiveObject as LiveObject2 } from "@liveblocks/client";
-
-// src/hooks/useAirNode/NodeKey.ts
-var NodeKey = class {
-  constructor(nodeId, type) {
-    this.nodeId = nodeId;
-    this.type = type;
-  }
-};
 
 // src/LiveObjects/LiveIndexNode.ts
 import { LiveObject } from "@liveblocks/client";
 var LiveIndexNode = class extends LiveObject {
   constructor(data) {
     super(data);
+  }
+};
+
+// src/LiveObjects/LiveIndexStorageModel.ts
+var LiveIndexStorageModel = class {
+  constructor(treeRoot) {
+    this.liveIndex = new LiveMap2([[
+      "root",
+      new LiveIndexNode({
+        nodeId: "root",
+        type: "RootNode",
+        parentNodeId: null,
+        parentType: null,
+        childNodeSets: new LiveMap2(treeRoot.children.map(
+          (child) => [child.type, new LiveMap2()]
+        )),
+        state: new LiveObject2({})
+      })
+    ]]);
+  }
+};
+
+// src/configureAirStorage.tsx
+import { createClient } from "@liveblocks/client";
+
+// src/hooks/useAirNode/fns/createAirNodeFactory.ts
+import { v4 as uuidv4 } from "uuid";
+import { LiveMap as LiveMap3, LiveObject as LiveObject3 } from "@liveblocks/client";
+
+// src/hooks/useAirNode/NodeKey.ts
+var NodeKey = class {
+  constructor(nodeId, type) {
+    this.nodeId = nodeId;
+    this.type = type;
   }
 };
 
@@ -50,9 +72,9 @@ var createAirNodeFactory = (useMutation, mappedAirNodeUnion) => (nodeKey) => use
     type: childType,
     parentNodeId: nodeKey.nodeId,
     parentType: nodeKey.type,
-    state: new LiveObject2(mappedAirNodeUnion.get(childType).state),
-    childNodeSets: new LiveMap2(
-      [...mappedAirNodeUnion.get(childType).childTypeSet].map((childType2) => [childType2, new LiveMap2()])
+    state: new LiveObject3(mappedAirNodeUnion.get(childType).state),
+    childNodeSets: new LiveMap3(
+      [...mappedAirNodeUnion.get(childType).childTypeSet].map((childType2) => [childType2, new LiveMap3()])
     )
   });
   callback?.(newLiveIndexNode);
@@ -113,40 +135,35 @@ import { Suspense } from "react";
 import { jsx } from "react/jsx-runtime";
 var configureAirStorage = (createClientProps, tree) => {
   const mappedAirNodeUnion = treeToMappedUnion(tree);
-  const { suspense: liveblocks } = createRoomContext(createClient(createClientProps));
+  const { suspense: {
+    useStorage,
+    useMutation,
+    useStatus,
+    RoomProvider
+  } } = createRoomContext(createClient(createClientProps));
   const AirNodeProvider = ({
     storageId,
     children
   }) => {
     return /* @__PURE__ */ jsx(
-      liveblocks.RoomProvider,
+      RoomProvider,
       {
         id: storageId,
         initialPresence: {},
-        initialStorage: {
-          liveIndex: new LiveMap3([["root", new LiveIndexNode({
-            nodeId: "root",
-            type: "RootNode",
-            parentNodeId: null,
-            parentType: null,
-            childNodeSets: new LiveMap3(tree.children.map(
-              (child) => [child.type, new LiveMap3()]
-            )),
-            state: new LiveObject3({})
-          })]])
-        },
+        initialStorage: new LiveIndexStorageModel(tree),
         children: /* @__PURE__ */ jsx(Suspense, { fallback: /* @__PURE__ */ jsx("div", { children: "Loading..." }), children })
       }
     );
   };
   const useAirNode = useAirNodeFactory(
-    liveblocks.useMutation,
-    liveblocks.useStorage,
+    useMutation,
+    useStorage,
     mappedAirNodeUnion
   );
-  const useRootAirNode = () => new NodeKey("root", "root");
+  const useRootAirNode = () => useStorage(() => new NodeKey("root", "root"));
   return {
-    useStatus: liveblocks.useStatus,
+    useMutation,
+    useStatus,
     AirNodeProvider,
     useAirNode,
     useRootAirNode,
