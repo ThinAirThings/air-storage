@@ -184,7 +184,7 @@ var configureAirStorage = (createClientProps, tree) => {
       {
         id: storageId,
         initialPresence: {},
-        initialStorage: new LiveIndexStorageModel(tree),
+        initialStorage: () => new LiveIndexStorageModel(tree),
         children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_react2.Suspense, { fallback: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: "Loading..." }), children })
       }
     );

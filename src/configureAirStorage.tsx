@@ -29,7 +29,7 @@ export const configureAirStorage = <
         return <liveblocks.RoomProvider
             id={storageId}
             initialPresence={{}}
-            initialStorage={new LiveIndexStorageModel(tree)}
+            initialStorage={() => new LiveIndexStorageModel(tree)}
         >
             <Suspense fallback={<div>Loading...</div>}>
                 {children}
