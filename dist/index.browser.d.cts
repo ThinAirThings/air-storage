@@ -122,11 +122,7 @@ declare const configureAirStorage: <U extends FlatAirNode>(createClientProps: Pa
     })["state"]> & {
         fnType: FnT;
     })["fnSignature"];
-    useRootAirNode: <FnT_1 extends "delete" | "update" | "create" | "useSelect" | "useChildren">(fnType: FnT_1) => (CrudUnion<U, "root", (U & {
-        type: "root";
-    })["state"]> & {
-        fnType: FnT_1;
-    })["fnSignature"];
+    useRootAirNode: () => NodeKey<"root">;
     mappedAirNodeUnion: MappedUnion<FlatAirNode>;
 };
 
