@@ -1,7 +1,7 @@
 import { LiveObject } from "@liveblocks/client"
-import { LiveblocksHooks } from "../../../../createFunctionSet.js"
 import { FlatAirNode } from "../../../types.js"
 import { NodeKey } from "../NodeKey.js"
+import { LiveblocksHooks } from "../../../LiveObjects/LiveIndexStorageModel.js"
 
 
 export type AirNodeUpdate<

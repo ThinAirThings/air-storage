@@ -1,7 +1,7 @@
 {
-    "name": "@thinairthings/liveblocks-model",
-    "version": "2.0.241",
-    "description": "Thin Air Liveblocks Model",
+    "name": "@thinairthings/air-storage",
+    "version": "0.1.0",
+    "description": "Thin Air Storage",
     "types": "dist/index.browser.d.ts",
     "type": "module",
     "exports": {
@@ -43,7 +43,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/ThinAirThings/liveblocks-model.git"
+        "url": "https://github.com/ThinAirThings/air-storage.git"
     },
     "scripts": {
         "build": "tsup",

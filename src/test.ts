@@ -25,6 +25,23 @@ const airNodeTree = defineAirNodeTree([
             defineAirNode('Level3NodeI', {}, []),
         ]),
     ]),
+    defineAirNode('Level1NodeB', {}, [
+        defineAirNode('Level2NodeD', {}, [
+            defineAirNode('Level3NodeJ', {}, []),
+            defineAirNode('Level3NodeK', {}, []),
+            defineAirNode('Level3NodeL', {}, []),
+        ]),
+        defineAirNode('Level2NodeE', {}, [
+            defineAirNode('Level3NodeM', {}, []),
+            defineAirNode('Level3NodeN', {}, []),
+            defineAirNode('Level3NodeO', {}, []),
+        ]),
+        defineAirNode('Level2NodeF', {}, [
+            defineAirNode('Level3NodeP', {}, []),
+            defineAirNode('Level3NodeQ', {}, []),
+            defineAirNode('Level3NodeR', {}, []),
+        ]),
+    ]),
 ])
 
 type Union = TreeToUnion<typeof airNodeTree>
@@ -40,7 +57,7 @@ const createFirstNode = useAirNode(
     'create'
 )
 
-const node = createFirstNode('Level1NodeA', (node) => {
+const node = createFirstNode('Level1NodeB', (node) => {
 
 })
 const updateState = useAirNode(node, 'update')

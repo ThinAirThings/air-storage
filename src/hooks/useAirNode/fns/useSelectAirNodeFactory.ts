@@ -1,8 +1,8 @@
 import isEqual from "lodash.isequal";
-import { LiveblocksHooks } from "../../../../createFunctionSet.js";
-import { LiveIndexNode } from "../../../LiveObjects/LiveIndexNode.js";
 import { FlatAirNode } from "../../../types.js";
 import { NodeKey } from "../NodeKey.js";
+import { LiveblocksHooks } from "../../../LiveObjects/LiveIndexStorageModel.js";
+import { LiveIndexNode } from "../../../LiveObjects/LiveIndexNode.js";
 
 export type AirNodeUseSelect<
     U extends FlatAirNode=FlatAirNode,
