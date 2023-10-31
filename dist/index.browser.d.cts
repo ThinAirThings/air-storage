@@ -102,6 +102,8 @@ type AirNodeUseChildren<U extends FlatAirNode = FlatAirNode, T extends U['type']
     type: T;
 })>>(childType: CT) => Set<NodeKey<CT>>;
 
+type AirNodeUseNodeName = () => string;
+
 type CrudUnion<U extends FlatAirNode = FlatAirNode, T extends U['type'] = U['type'], S extends (U & {
     type: T;
 })['state'] = (U & {
@@ -112,6 +114,9 @@ type CrudUnion<U extends FlatAirNode = FlatAirNode, T extends U['type'] = U['typ
 } | {
     fnType: 'useSelect';
     fnSignature: AirNodeUseSelect<U, T, S>;
+} | {
+    fnType: 'useNodeName';
+    fnSignature: AirNodeUseNodeName;
 } | {
     fnType: 'useChildren';
     fnSignature: AirNodeUseChildren<U, T>;
@@ -130,7 +135,7 @@ declare const configureAirStorage: <U extends FlatAirNode>(createClientProps: Pa
         storageId: string;
         children: ReactNode;
     }) => react_jsx_runtime.JSX.Element;
-    useAirNode: <T extends U["type"], FnT extends "delete" | "update" | "create" | "useSelect" | "useChildren">(nodeKey: NodeKey$1<T>, fnType: FnT) => (CrudUnion<U, T, (U & {
+    useAirNode: <T extends U["type"], FnT extends "delete" | "update" | "create" | "useSelect" | "useNodeName" | "useChildren">(nodeKey: NodeKey$1<T>, fnType: FnT) => (CrudUnion<U, T, (U & {
         type: T;
     })["state"]> & {
         fnType: FnT;

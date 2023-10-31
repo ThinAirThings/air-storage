@@ -6,6 +6,7 @@ import { AirNodeUpdate, airNodeUpdateFactory } from "./fns/airNodeUpdateFactory.
 import { AirNodeUseChildren, useChildrenAirNodeFactory } from "./fns/useChildrenAirNodeFactory.js";
 import { LiveblocksHooks } from "../../LiveObjects/LiveIndexStorageModel.js";
 import { MappedUnion } from "../../types/MappedUnion.js";
+import { AirNodeUseNodeName, useAirNodeNameFactory } from "./fns/useNodeNameFactory.js";
 
 export type CrudUnion<
     U extends FlatAirNode=FlatAirNode,
@@ -21,6 +22,10 @@ export type CrudUnion<
         fnSignature: AirNodeUseSelect<U, T, S>
     }
     | {
+        fnType: 'useNodeName',
+        fnSignature: AirNodeUseNodeName
+    }
+    | {
         fnType: 'useChildren',
         fnSignature: AirNodeUseChildren<U, T>
     }
@@ -32,6 +37,7 @@ export type CrudUnion<
         fnType: 'delete',
         fnSignature: AirNodeDelete<U, T, S>
     }
+
 
 export const useAirNodeFactory = <
     U extends FlatAirNode
@@ -51,6 +57,8 @@ export const useAirNodeFactory = <
         ? airNodeCreateFactory(useMutation, mappedAirNodeUnion)(nodeKey) as any
         : fnType === "useSelect"
         ? useSelectAirNodeFactory(useStorage)(nodeKey)
+        : fnType === "useNodeName"
+        ? useAirNodeNameFactory(useStorage)(nodeKey)
         : fnType === "useChildren"
         ? useChildrenAirNodeFactory(useStorage)(nodeKey)
         : fnType === "update"

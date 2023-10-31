@@ -125,9 +125,14 @@ var useChildrenAirNodeFactory = (useStorage) => (nodeKey) => (childType) => useS
   (a, b) => isEqual2(a, b)
 );
 
+// src/hooks/useAirNode/fns/useNodeNameFactory.ts
+var useAirNodeNameFactory = (useStorage) => (nodeKey) => useStorage(({ liveIndex }) => {
+  return liveIndex.get(nodeKey.nodeId).state.nodeName;
+});
+
 // src/hooks/useAirNode/useAirNodeFactory.ts
 var useAirNodeFactory = (useMutation, useStorage, mappedAirNodeUnion) => (nodeKey, fnType) => {
-  return fnType === "create" ? airNodeCreateFactory(useMutation, mappedAirNodeUnion)(nodeKey) : fnType === "useSelect" ? useSelectAirNodeFactory(useStorage)(nodeKey) : fnType === "useChildren" ? useChildrenAirNodeFactory(useStorage)(nodeKey) : fnType === "update" ? airNodeUpdateFactory(useMutation)(nodeKey) : fnType === "delete" ? airNodeDeleteFactory(useMutation)(nodeKey) : (() => {
+  return fnType === "create" ? airNodeCreateFactory(useMutation, mappedAirNodeUnion)(nodeKey) : fnType === "useSelect" ? useSelectAirNodeFactory(useStorage)(nodeKey) : fnType === "useNodeName" ? useAirNodeNameFactory(useStorage)(nodeKey) : fnType === "useChildren" ? useChildrenAirNodeFactory(useStorage)(nodeKey) : fnType === "update" ? airNodeUpdateFactory(useMutation)(nodeKey) : fnType === "delete" ? airNodeDeleteFactory(useMutation)(nodeKey) : (() => {
     throw new Error("Invalid fnType");
   })();
 };
