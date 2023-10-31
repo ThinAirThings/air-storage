@@ -169,6 +169,7 @@ var useAirNodeFactory = (useMutation, useStorage, mappedAirNodeUnion) => (nodeKe
 };
 
 // src/configureAirStorage.tsx
+var import_react2 = require("react");
 var import_jsx_runtime = require("react/jsx-runtime");
 var configureAirStorage = (createClientProps, tree) => {
   const mappedAirNodeUnion = treeToMappedUnion(tree);
@@ -183,7 +184,7 @@ var configureAirStorage = (createClientProps, tree) => {
         id: storageId,
         initialPresence: {},
         initialStorage: new LiveIndexStorageModel(tree),
-        children
+        children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_react2.Suspense, { fallback: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: "Loading..." }), children })
       }
     );
   };

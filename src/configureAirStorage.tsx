@@ -4,7 +4,7 @@ import { MappedUnion } from "./types/MappedUnion.js";
 import { ILiveIndexStorageModel, LiveIndexStorageModel } from "./LiveObjects/LiveIndexStorageModel.js";
 import { createClient } from "@liveblocks/client";
 import { CrudUnion, useAirNodeFactory } from "./hooks/useAirNode/useAirNodeFactory.js";
-import { ReactNode } from "react";
+import { ReactNode, Suspense } from "react";
 import { NodeKey } from "./hooks/useAirNode/NodeKey.js";
 
 export const configureAirStorage = <
@@ -30,7 +30,9 @@ export const configureAirStorage = <
             initialPresence={{}}
             initialStorage={new LiveIndexStorageModel(tree)}
         >
-            {children}
+            <Suspense fallback={<div>Loading...</div>}>
+                {children}
+            </Suspense>
         </liveblocks.RoomProvider>
     }
     const useAirNode = useAirNodeFactory<U>(

@@ -131,6 +131,7 @@ var useAirNodeFactory = (useMutation, useStorage, mappedAirNodeUnion) => (nodeKe
 };
 
 // src/configureAirStorage.tsx
+import { Suspense } from "react";
 import { jsx } from "react/jsx-runtime";
 var configureAirStorage = (createClientProps, tree) => {
   const mappedAirNodeUnion = treeToMappedUnion(tree);
@@ -145,7 +146,7 @@ var configureAirStorage = (createClientProps, tree) => {
         id: storageId,
         initialPresence: {},
         initialStorage: new LiveIndexStorageModel(tree),
-        children
+        children: /* @__PURE__ */ jsx(Suspense, { fallback: /* @__PURE__ */ jsx("div", { children: "Loading..." }), children })
       }
     );
   };
