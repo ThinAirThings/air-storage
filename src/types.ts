@@ -26,7 +26,7 @@ export const defineAirNode = <
     children: children??[]
 }) as TreeAirNode<T, S, C>
 
-export const defineAirNodeTree = <
+export const defineRootAirNode = <
     C extends TreeAirNode[]
 >(
     children: C

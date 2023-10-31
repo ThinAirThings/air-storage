@@ -8,7 +8,7 @@ type TreeAirNode<T extends string = string, S extends LsonObject = LsonObject, C
     children: C;
 };
 declare const defineAirNode: <T extends string = string, S extends LsonObject = LsonObject, C extends [] | TreeAirNode<string, LsonObject, TreeAirNode<string, LsonObject, any>[] | []>[] = []>(type: T, defaultInitialState: S, children: C) => TreeAirNode<T, S, C>;
-declare const defineAirNodeTree: <C extends TreeAirNode<string, LsonObject, TreeAirNode<string, LsonObject, any>[] | []>[]>(children: C) => TreeAirNode<"root", {}, C>;
+declare const defineRootAirNode: <C extends TreeAirNode<string, LsonObject, TreeAirNode<string, LsonObject, any>[] | []>[]>(children: C) => TreeAirNode<"root", {}, C>;
 type ExtractChildTypeUnion<N extends FlatAirNode> = N['childTypeSet'] extends Set<infer CT extends string> ? CT : never;
 type FlatAirNode<T extends string = string, S extends LsonObject = LsonObject, CK extends string = string> = {
     type: T;
@@ -130,4 +130,4 @@ declare const configureAirStorage: <U extends FlatAirNode>(createClientProps: Pa
     mappedAirNodeUnion: MappedUnion<FlatAirNode>;
 };
 
-export { AirNodeIndexedUnion, ExtractChildTypeUnion, FlatAirNode, NodeKey$1 as NodeKey, TreeAirNode, TreeToUnion, configureAirStorage, defineAirNode, defineAirNodeTree };
+export { AirNodeIndexedUnion, ExtractChildTypeUnion, FlatAirNode, NodeKey$1 as NodeKey, TreeAirNode, TreeToUnion, configureAirStorage, defineAirNode, defineRootAirNode };

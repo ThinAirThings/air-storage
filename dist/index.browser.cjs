@@ -32,7 +32,7 @@ var index_browser_exports = {};
 __export(index_browser_exports, {
   configureAirStorage: () => configureAirStorage,
   defineAirNode: () => defineAirNode,
-  defineAirNodeTree: () => defineAirNodeTree
+  defineRootAirNode: () => defineRootAirNode
 });
 module.exports = __toCommonJS(index_browser_exports);
 
@@ -42,7 +42,7 @@ var defineAirNode = (type, defaultInitialState, children) => ({
   state: defaultInitialState,
   children: children ?? []
 });
-var defineAirNodeTree = (children) => defineAirNode("root", {}, children);
+var defineRootAirNode = (children) => defineAirNode("root", {}, children);
 
 // src/configureAirStorage.tsx
 var import_react = require("@liveblocks/react");
@@ -219,5 +219,5 @@ var treeToMappedUnion = (tree) => {
 0 && (module.exports = {
   configureAirStorage,
   defineAirNode,
-  defineAirNodeTree
+  defineRootAirNode
 });

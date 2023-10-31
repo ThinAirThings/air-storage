@@ -4,7 +4,7 @@ var defineAirNode = (type, defaultInitialState, children) => ({
   state: defaultInitialState,
   children: children ?? []
 });
-var defineAirNodeTree = (children) => defineAirNode("root", {}, children);
+var defineRootAirNode = (children) => defineAirNode("root", {}, children);
 
 // src/configureAirStorage.tsx
 import { createRoomContext } from "@liveblocks/react";
@@ -180,5 +180,5 @@ var treeToMappedUnion = (tree) => {
 export {
   configureAirStorage,
   defineAirNode,
-  defineAirNodeTree
+  defineRootAirNode
 };
