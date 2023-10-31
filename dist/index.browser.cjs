@@ -57,48 +57,26 @@ var MappedUnion = class extends Map {
   }
 };
 
-// src/LiveObjects/LiveIndexStorageModel.ts
-var import_client2 = require("@liveblocks/client");
-
-// src/LiveObjects/LiveIndexNode.ts
-var import_client = require("@liveblocks/client");
-var LiveIndexNode = class extends import_client.LiveObject {
-  constructor(data) {
-    super(data);
-  }
-};
-
-// src/LiveObjects/LiveIndexStorageModel.ts
-var LiveIndexStorageModel = class {
-  constructor(treeRoot) {
-    this.liveIndex = new import_client2.LiveMap([[
-      "root",
-      new LiveIndexNode({
-        nodeId: "root",
-        type: "RootNode",
-        parentNodeId: null,
-        parentType: null,
-        childNodeSets: new import_client2.LiveMap(treeRoot.children.map(
-          (child) => [child.type, new import_client2.LiveMap()]
-        )),
-        state: new import_client2.LiveObject({})
-      })
-    ]]);
-  }
-};
-
 // src/configureAirStorage.tsx
-var import_client4 = require("@liveblocks/client");
+var import_client3 = require("@liveblocks/client");
 
 // src/hooks/useAirNode/fns/createAirNodeFactory.ts
 var import_uuid = require("uuid");
-var import_client3 = require("@liveblocks/client");
+var import_client2 = require("@liveblocks/client");
 
 // src/hooks/useAirNode/NodeKey.ts
 var NodeKey = class {
   constructor(nodeId, type) {
     this.nodeId = nodeId;
     this.type = type;
+  }
+};
+
+// src/LiveObjects/LiveIndexNode.ts
+var import_client = require("@liveblocks/client");
+var LiveIndexNode = class extends import_client.LiveObject {
+  constructor(data) {
+    super(data);
   }
 };
 
@@ -110,9 +88,9 @@ var createAirNodeFactory = (useMutation, mappedAirNodeUnion) => (nodeKey) => use
     type: childType,
     parentNodeId: nodeKey.nodeId,
     parentType: nodeKey.type,
-    state: new import_client3.LiveObject(mappedAirNodeUnion.get(childType).state),
-    childNodeSets: new import_client3.LiveMap(
-      [...mappedAirNodeUnion.get(childType).childTypeSet].map((childType2) => [childType2, new import_client3.LiveMap()])
+    state: new import_client2.LiveObject(mappedAirNodeUnion.get(childType).state),
+    childNodeSets: new import_client2.LiveMap(
+      [...mappedAirNodeUnion.get(childType).childTypeSet].map((childType2) => [childType2, new import_client2.LiveMap()])
     )
   });
   callback?.(newLiveIndexNode);
@@ -173,7 +151,7 @@ var import_react2 = require("react");
 var import_jsx_runtime = require("react/jsx-runtime");
 var configureAirStorage = (createClientProps, tree) => {
   const mappedAirNodeUnion = treeToMappedUnion(tree);
-  const { suspense: liveblocks } = (0, import_react.createRoomContext)((0, import_client4.createClient)(createClientProps));
+  const { suspense: liveblocks } = (0, import_react.createRoomContext)((0, import_client3.createClient)(createClientProps));
   const AirNodeProvider = ({
     storageId,
     children
@@ -184,7 +162,18 @@ var configureAirStorage = (createClientProps, tree) => {
       {
         id: storageId,
         initialPresence: {},
-        initialStorage: () => new LiveIndexStorageModel(tree),
+        initialStorage: {
+          liveIndex: new import_client3.LiveMap([["root", new LiveIndexNode({
+            nodeId: "root",
+            type: "RootNode",
+            parentNodeId: null,
+            parentType: null,
+            childNodeSets: new import_client3.LiveMap(tree.children.map(
+              (child) => [child.type, new import_client3.LiveMap()]
+            )),
+            state: new import_client3.LiveObject({})
+          })]])
+        },
         children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_react2.Suspense, { fallback: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: "Loading..." }), children })
       }
     );

@@ -2,10 +2,11 @@ import { createRoomContext } from "@liveblocks/react";
 import { FlatAirNode, TreeAirNode, TreeToUnion } from "./types.js";
 import { MappedUnion } from "./types/MappedUnion.js";
 import { ILiveIndexStorageModel, LiveIndexStorageModel } from "./LiveObjects/LiveIndexStorageModel.js";
-import { createClient } from "@liveblocks/client";
+import { LiveMap, LiveObject, createClient } from "@liveblocks/client";
 import { CrudUnion, useAirNodeFactory } from "./hooks/useAirNode/useAirNodeFactory.js";
 import { ReactNode, Suspense } from "react";
 import { NodeKey } from "./hooks/useAirNode/NodeKey.js";
+import { LiveIndexNode } from "./LiveObjects/LiveIndexNode.js";
 
 export const configureAirStorage = <
     U extends FlatAirNode,
@@ -29,7 +30,18 @@ export const configureAirStorage = <
         return <liveblocks.RoomProvider
             id={storageId}
             initialPresence={{}}
-            initialStorage={() => new LiveIndexStorageModel(tree)}
+            initialStorage={{
+                liveIndex: new LiveMap([['root', new LiveIndexNode({
+                    nodeId: 'root',
+                    type: 'RootNode',
+                    parentNodeId: null,
+                    parentType: null,
+                    childNodeSets: new LiveMap(tree.children.map(child => 
+                        [child.type, new LiveMap<string, null>()]
+                    )),
+                    state: new LiveObject({})
+                })]])
+            }}
         >
             <Suspense fallback={<div>Loading...</div>}>
                 {children}
