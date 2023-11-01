@@ -192,5 +192,6 @@ var treeToMappedUnion = (tree) => {
 };
 export {
   configureAirStorage,
-  extendAirNodeDefinition
+  extendAirNodeDefinition,
+  treeToExtensionIndex
 };

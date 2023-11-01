@@ -91,5 +91,20 @@ declare const configureAirStorage: <U extends FlatAirNode, ExtIndex extends Reco
 };
 
 declare const extendAirNodeDefinition: <Ext extends Record<string, any>>() => <T extends string = string, S extends LsonObject = LsonObject, C extends [] | TreeAirNode[] = []>(type: T, ext: Ext, defaultInitialState: S, children: C) => TreeAirNode<T, Ext, S, C>;
+declare const treeToExtensionIndex: <Tree extends TreeAirNode>(tree: Tree) => UnionToIntersection<TreeToExtensionUnion<Tree>>;
+type IsEmptyRecord<T> = keyof T extends never ? true : false;
+type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends ((k: infer I) => void) ? I : never;
+type TreeToExtensionUnion<T extends TreeAirNode> = IsEmptyRecord<T['ext']> extends true ? never | ({
+    [ChildType in T['children'][number]['type']]: TreeToExtensionUnion<(T['children'][number] & {
+        type: ChildType;
+    })>;
+}[T['children'][number]['type']]) : {
+    [type in T['type']]: T['ext'];
+} | ({
+    [ChildType in T['children'][number]['type']]: TreeToExtensionUnion<(T['children'][number] & {
+        type: ChildType;
+    })>;
+}[T['children'][number]['type']]);
+type TreeToExtensionIndex<T extends TreeAirNode> = UnionToIntersection<TreeToExtensionUnion<T>>;
 
-export { AirNodeIndexedUnion, AirStorageMutationContext, ExtractChildTypeUnion, FlatAirNode, NodeKey$1 as NodeKey, TreeAirNode, TreeToNodeUnion, configureAirStorage, extendAirNodeDefinition };
+export { AirNodeIndexedUnion, AirStorageMutationContext, ExtractChildTypeUnion, FlatAirNode, NodeKey$1 as NodeKey, TreeAirNode, TreeToExtensionIndex, TreeToExtensionUnion, TreeToNodeUnion, UnionToIntersection, configureAirStorage, extendAirNodeDefinition, treeToExtensionIndex };
