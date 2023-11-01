@@ -4,12 +4,12 @@ import { ILiveIndexStorageModel } from "./LiveObjects/LiveIndexStorageModel.js"
 
 export type TreeAirNode<
     T extends string=string,
-    Ext extends Record<string, any>=Record<string, any>,
+    Skt extends Record<string, any>=Record<string, any>,
     S extends LsonObject=LsonObject ,
     C extends TreeAirNode[]|[]=TreeAirNode<string, Record<string, any>, LsonObject , any>[]|[]
 > = {
     type: T,
-    ext: Ext,
+    struct: Skt,
     state: S,
     children: C
 }
