@@ -18,9 +18,7 @@ export class LiveIndexStorageModel implements ILiveIndexStorageModel{
                 childNodeSets: new LiveMap(treeRoot.children.map(child => 
                     [child.type, new LiveMap<string, null>()]
                 )),
-                state: new LiveObject({
-                    nodeName: 'root'
-                })
+                state: new LiveObject({})
             })
         ]])
     }

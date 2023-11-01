@@ -1,9 +1,9 @@
-import { LiveMap, LiveObject } from "@liveblocks/client";
-import { AirNodeState } from "../types.js";
+import { LiveMap, LiveObject, LsonObject } from "@liveblocks/client";
+
 
 
 export type ILiveIndexNode<
-    S extends AirNodeState=AirNodeState,
+    S extends LsonObject=LsonObject,
 > = LiveObject<{
     nodeId: string
     type: string
@@ -14,7 +14,7 @@ export type ILiveIndexNode<
 }>
 
 export class LiveIndexNode<
-    S extends AirNodeState=AirNodeState,
+    S extends LsonObject=LsonObject,
 > extends LiveObject<
     ILiveIndexNode<S> extends LiveObject<infer T>? T : never
 > {

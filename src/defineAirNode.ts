@@ -1,23 +1,27 @@
-import { AirNodeState, TreeAirNode } from "./types.js"
+import { LsonObject } from "@liveblocks/client"
+import { TreeAirNode } from "./types.js"
 
 
 export const defineAirNode = <
     T extends string=string,
-    S extends AirNodeState=AirNodeState,
+    Ext extends Record<string, any>=Record<string, any>,
+    S extends LsonObject=LsonObject,
     C extends TreeAirNode[]|[]=[]
 >(
     type: T,
+    ext: Ext,
     defaultInitialState: S,
     children: C
 ) => ({
     type,
+    ext,
     state: defaultInitialState,
     children: children??[]
-}) as TreeAirNode<T, S, C>
+}) as TreeAirNode<T, Ext, S, C>
 
 export const defineRootAirNode = <
     C extends TreeAirNode[]
 >(
     children: C
-) => defineAirNode('root', {nodeName: 'root'}, children)
+) => defineAirNode('root', {}, {nodeName: 'root'}, children)
 

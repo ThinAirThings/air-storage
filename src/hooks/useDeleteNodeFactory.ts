@@ -1,28 +1,21 @@
-import { LiveIndexNode } from "../../../LiveObjects/LiveIndexNode.js";
-import { LiveblocksHooks } from "../../../LiveObjects/LiveIndexStorageModel.js";
-import { FlatAirNode } from "../../../types.js";
-import { NodeKey } from "../NodeKey.js";
+import { LiveIndexNode } from "../LiveObjects/LiveIndexNode.js";
+import { LiveblocksHooks } from "../LiveObjects/LiveIndexStorageModel.js";
+import { FlatAirNode } from "../types.js";
+import { NodeKey } from "../types/NodeKey.js";
 
-export type AirNodeDelete<
-    U extends FlatAirNode=FlatAirNode,
-    T extends U['type']=U['type'],
-    S extends (U&{type: T})['state']=(U&{type: T})['state'],
-> = (callback: (liveIndexNode: LiveIndexNode<S>) => void) => NodeKey<T>
 
-export const airNodeDeleteFactory = <
-    U extends FlatAirNode=FlatAirNode,
+export const useDeleteNodeFactory = <
+    U extends FlatAirNode
 >(
     useMutation: LiveblocksHooks['useMutation'],
 ) => <
-    T extends U['type']
+    T extends U['type'],
 >(
-    nodeKey: NodeKey<T>
-) => useMutation((
-    {storage},
-    callback?: (liveIndexNode: LiveIndexNode) => void
-) => {
+    nodeKey: NodeKey<T>,
+    callback?: (liveIndexNode: LiveIndexNode<(U&{type: T})['state']>) => void
+) => useMutation(({storage}) => {
     // Run callback before deleting node
-    callback?.(storage.get('liveIndex').get(nodeKey.nodeId)!)
+    callback?.(storage.get('liveIndex').get(nodeKey.nodeId)! as LiveIndexNode<(U&{type: T})['state']>)
     // Index Cleanup
     const liveIndex = storage.get('liveIndex')
     const thisNode = liveIndex.get(nodeKey.nodeId)!
@@ -42,6 +35,4 @@ export const airNodeDeleteFactory = <
     // Return Sibling NodeKey
     const sibblingNodeId = [...parentNode.get('childNodeSets').get(nodeKey.type)!.keys()][0]
     return new NodeKey(sibblingNodeId, nodeKey.type)
-}, []) as (
-    callback?: (liveIndexNode: LiveIndexNode<(U&{type: T})['state']>) => void
-) => NodeKey<T>
+}, [])

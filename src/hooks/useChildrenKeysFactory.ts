@@ -1,7 +1,7 @@
 import isEqual from "lodash.isequal";
-import { LiveblocksHooks } from "../../LiveObjects/LiveIndexStorageModel.js";
-import { ExtractChildTypeUnion, FlatAirNode } from "../../types.js";
-import { NodeKey } from "../useAirNode/NodeKey.js";
+import { LiveblocksHooks } from "../LiveObjects/LiveIndexStorageModel.js";
+import { ExtractChildTypeUnion, FlatAirNode } from "../types.js";
+import { NodeKey } from "../types/NodeKey.js";
 
 export const useChildrenKeysFactory = <
     U extends FlatAirNode

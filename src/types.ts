@@ -1,23 +1,26 @@
 import { LsonObject } from "@liveblocks/client"
+import { MutationContext } from "@liveblocks/react"
+import { ILiveIndexStorageModel } from "./LiveObjects/LiveIndexStorageModel.js"
 
 export type TreeAirNode<
     T extends string=string,
-    S extends AirNodeState=AirNodeState,
-    C extends TreeAirNode[]|[]=TreeAirNode<string, AirNodeState, any>[]|[]
+    Ext extends Record<string, any>=Record<string, any>,
+    S extends LsonObject=LsonObject ,
+    C extends TreeAirNode[]|[]=TreeAirNode<string, Record<string, any>, LsonObject , any>[]|[]
 > = {
     type: T,
+    ext: Ext,
     state: S,
     children: C
 }
 
-export type AirNodeState = LsonObject & {nodeName: string}
 
 export type ExtractChildTypeUnion<N extends FlatAirNode> = 
     N['childTypeSet'] extends Set<infer CT extends string> ? CT : never
 
 export type FlatAirNode<
     T extends string=string,
-    S extends AirNodeState=AirNodeState,
+    S extends LsonObject=LsonObject ,
     CK extends string=string
 > = {
     type: T,
@@ -26,12 +29,13 @@ export type FlatAirNode<
 }
 
 type IsEmptyArray<T extends any[]> = T['length'] extends 0 ? true : false;
-export type TreeToUnion<T extends TreeAirNode> =
+
+export type TreeToNodeUnion<T extends TreeAirNode> =
     IsEmptyArray<T['children']> extends true
         ? (FlatAirNode<T['type'], T['state'], never>)
         : (FlatAirNode<T['type'], T['state'], T['children'][number]['type']>)
         | ({
-            [ChildType in T['children'][number]['type']]: TreeToUnion<
+            [ChildType in T['children'][number]['type']]: TreeToNodeUnion<
                 (T['children'][number]&{type: ChildType})
             >
         }[T['children'][number]['type']])
@@ -47,3 +51,4 @@ export type NodeKey<T extends string=string> = {
     type: T
 }
 
+export type AirStorageMutationContext = MutationContext<any, ILiveIndexStorageModel, any>
