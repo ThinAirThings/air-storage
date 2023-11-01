@@ -142,6 +142,7 @@ var defineAirNode = (type, ext, defaultInitialState, children) => ({
   children: children ?? []
   // destructor?:
 });
+var defineRootAirNode = (children) => defineAirNode("root", {}, { nodeName: "root" }, children);
 
 // src/extendAirNodeDefinition.ts
 var extendAirNodeDefinition = () => (type, ext, defaultInitialState, children) => defineAirNode(type, ext, defaultInitialState, children);
@@ -192,6 +193,8 @@ var treeToMappedUnion = (tree) => {
 };
 export {
   configureAirStorage,
+  defineAirNode,
+  defineRootAirNode,
   extendAirNodeDefinition,
   treeToExtensionIndex
 };

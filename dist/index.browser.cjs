@@ -31,6 +31,8 @@ var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: tru
 var index_browser_exports = {};
 __export(index_browser_exports, {
   configureAirStorage: () => configureAirStorage,
+  defineAirNode: () => defineAirNode,
+  defineRootAirNode: () => defineRootAirNode,
   extendAirNodeDefinition: () => extendAirNodeDefinition,
   treeToExtensionIndex: () => treeToExtensionIndex
 });
@@ -180,6 +182,7 @@ var defineAirNode = (type, ext, defaultInitialState, children) => ({
   children: children ?? []
   // destructor?:
 });
+var defineRootAirNode = (children) => defineAirNode("root", {}, { nodeName: "root" }, children);
 
 // src/extendAirNodeDefinition.ts
 var extendAirNodeDefinition = () => (type, ext, defaultInitialState, children) => defineAirNode(type, ext, defaultInitialState, children);
@@ -231,6 +234,8 @@ var treeToMappedUnion = (tree) => {
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   configureAirStorage,
+  defineAirNode,
+  defineRootAirNode,
   extendAirNodeDefinition,
   treeToExtensionIndex
 });
