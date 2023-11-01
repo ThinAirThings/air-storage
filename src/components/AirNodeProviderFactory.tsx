@@ -7,6 +7,7 @@ import { TreeAirNode } from "../types.js"
 export const AirNodeProviderFactory = (
     rootAirNode: TreeAirNode,
     LiveblocksRoomProvider: LiveblocksHooks['RoomProvider'],
+    initialLiveblocksPresence: Record<string, any>
 ) => ({
     storageId, 
     children
@@ -16,7 +17,7 @@ export const AirNodeProviderFactory = (
 }) => {
     return <LiveblocksRoomProvider
         id={storageId}
-        initialPresence={{}}
+        initialPresence={initialLiveblocksPresence}
         initialStorage={new LiveIndexStorageModel(rootAirNode)}
     >
         <Suspense fallback={<div>Loading...</div>}>

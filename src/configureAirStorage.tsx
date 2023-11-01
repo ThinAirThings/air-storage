@@ -2,7 +2,7 @@ import { createRoomContext } from "@liveblocks/react";
 import { FlatAirNode, TreeAirNode, TreeToNodeUnion } from "./types.js";
 import { MappedUnion } from "./types/MappedUnion.js";
 import { ILiveIndexStorageModel } from "./LiveObjects/LiveIndexStorageModel.js";
-import { createClient } from "@liveblocks/client";
+import { JsonObject, createClient } from "@liveblocks/client";
 import { NodeKey } from "./types/NodeKey.js";
 import { AirNodeProviderFactory } from "./components/AirNodeProviderFactory.js";
 import { useChildrenNodeKeysFactory } from "./hooks/useChildrenNodeKeysFactory.js";
@@ -15,29 +15,37 @@ import { treeToExtensionIndex } from "./extendAirNodeDefinition.js";
 
 export const configureAirStorage = <
     U extends FlatAirNode,
-    ExtIndex extends Record<string, any>
+    ExtIndex extends Record<string, any>,
+    LiveblocksPresence extends JsonObject={},
 >(
     createClientProps: Parameters<typeof createClient>[0],
-    rootAirNode: TreeAirNode
+    rootAirNode: TreeAirNode,
+    liveblocksPresence?: LiveblocksPresence
 ) => {
     const mappedAirNodeUnion = treeToMappedUnion(rootAirNode)
     const extensionIndex = treeToExtensionIndex(rootAirNode) as ExtIndex
     const {suspense: {
         useStorage,
         useMutation,
-        RoomProvider
+        RoomProvider,
+        useUpdateMyPresence,
+        useSelf
     }} = createRoomContext<
-        {}, 
+        LiveblocksPresence, 
         ILiveIndexStorageModel
     >(createClient(createClientProps))
 
     return {
+        // Liveblocks Hooks
+        useUpdateMyPresence,
+        useSelf,
+        // Air Hooks
         useCreateNode: useCreateNodeFactory<U, ExtIndex>(useMutation, mappedAirNodeUnion, extensionIndex),
         useSelectNodeState: useSelectNodeStateFactory<U, ExtIndex>(useStorage, extensionIndex),
         useUpdateNodeState: useUpdateNodeStateFactory<U, ExtIndex>(useMutation, extensionIndex),
         useDeleteNode: useDeleteNodeFactory<U, ExtIndex>(useMutation, extensionIndex),
         useChildrenNodeKeys: useChildrenNodeKeysFactory<U>(useStorage),
-        AirNodeProvider: AirNodeProviderFactory(rootAirNode, RoomProvider),
+        AirNodeProvider: AirNodeProviderFactory(rootAirNode, RoomProvider, liveblocksPresence??{}),
         // Only use 'useStorage' here because Liveblocks will throw an error if useStorage isn't called before using mutations.
         useRootAirNode: () => useStorage(()=>new NodeKey('root', 'root')),
         extensionIndex

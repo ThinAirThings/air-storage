@@ -98,7 +98,7 @@ var LiveIndexStorageModel = class {
 
 // src/components/AirNodeProviderFactory.tsx
 var import_jsx_runtime = require("react/jsx-runtime");
-var AirNodeProviderFactory = (rootAirNode, LiveblocksRoomProvider) => ({
+var AirNodeProviderFactory = (rootAirNode, LiveblocksRoomProvider, initialLiveblocksPresence) => ({
   storageId,
   children
 }) => {
@@ -106,7 +106,7 @@ var AirNodeProviderFactory = (rootAirNode, LiveblocksRoomProvider) => ({
     LiveblocksRoomProvider,
     {
       id: storageId,
-      initialPresence: {},
+      initialPresence: initialLiveblocksPresence,
       initialStorage: new LiveIndexStorageModel(rootAirNode),
       children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_react.Suspense, { fallback: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: "Loading..." }), children })
     }
@@ -200,21 +200,27 @@ var treeToExtensionIndex = (tree) => {
 };
 
 // src/configureAirStorage.tsx
-var configureAirStorage = (createClientProps, rootAirNode) => {
+var configureAirStorage = (createClientProps, rootAirNode, liveblocksPresence) => {
   const mappedAirNodeUnion = treeToMappedUnion(rootAirNode);
   const extensionIndex = treeToExtensionIndex(rootAirNode);
   const { suspense: {
     useStorage,
     useMutation,
-    RoomProvider
+    RoomProvider,
+    useUpdateMyPresence,
+    useSelf
   } } = (0, import_react2.createRoomContext)((0, import_client4.createClient)(createClientProps));
   return {
+    // Liveblocks Hooks
+    useUpdateMyPresence,
+    useSelf,
+    // Air Hooks
     useCreateNode: useCreateNodeFactory(useMutation, mappedAirNodeUnion, extensionIndex),
     useSelectNodeState: useSelectNodeStateFactory(useStorage, extensionIndex),
     useUpdateNodeState: useUpdateNodeStateFactory(useMutation, extensionIndex),
     useDeleteNode: useDeleteNodeFactory(useMutation, extensionIndex),
     useChildrenNodeKeys: useChildrenNodeKeysFactory(useStorage),
-    AirNodeProvider: AirNodeProviderFactory(rootAirNode, RoomProvider),
+    AirNodeProvider: AirNodeProviderFactory(rootAirNode, RoomProvider, liveblocksPresence ?? {}),
     // Only use 'useStorage' here because Liveblocks will throw an error if useStorage isn't called before using mutations.
     useRootAirNode: () => useStorage(() => new NodeKey("root", "root")),
     extensionIndex

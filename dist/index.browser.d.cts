@@ -1,4 +1,4 @@
-import { LsonObject, LiveObject, LiveMap, createClient } from '@liveblocks/client';
+import { LsonObject, LiveObject, LiveMap, JsonObject, createClient } from '@liveblocks/client';
 import { MutationContext } from '@liveblocks/react';
 import * as react_jsx_runtime from 'react/jsx-runtime';
 import * as react from 'react';
@@ -64,24 +64,31 @@ declare class NodeKey<T extends string = string> {
 
 type ImmutableLsonObject<T extends FlatAirNode> = ReturnType<LiveIndexNode<T['state']>['toImmutable']>['state'];
 
-declare const configureAirStorage: <U extends FlatAirNode, ExtIndex extends Record<string, any>>(createClientProps: Parameters<typeof createClient>[0], rootAirNode: TreeAirNode) => {
-    useCreateNode: <T extends U["type"]>(nodeKey: NodeKey<T>) => <CT extends ExtractChildTypeUnion<U & {
-        type: T;
+declare const configureAirStorage: <U extends FlatAirNode, ExtIndex extends Record<string, any>, LiveblocksPresence extends JsonObject = {}>(createClientProps: Parameters<typeof createClient>[0], rootAirNode: TreeAirNode, liveblocksPresence?: LiveblocksPresence | undefined) => {
+    useUpdateMyPresence: () => (patch: Partial<LiveblocksPresence>, options?: {
+        addToHistory: boolean;
+    } | undefined) => void;
+    useSelf: {
+        (): _liveblocks_core.User<LiveblocksPresence, _liveblocks_core.BaseUserMeta>;
+        <T>(selector: (me: _liveblocks_core.User<LiveblocksPresence, _liveblocks_core.BaseUserMeta>) => T, isEqual?: ((prev: T, curr: T) => boolean) | undefined): T;
+    };
+    useCreateNode: <T_1 extends U["type"]>(nodeKey: NodeKey<T_1>) => <CT extends ExtractChildTypeUnion<U & {
+        type: T_1;
     }>, R extends NodeKey<CT>>(childType: CT, callback?: ((liveIndexNode: LiveIndexNode<(U & {
         type: CT;
     })["state"]>, extensionIndex: ExtIndex[CT]) => void) | undefined) => R;
-    useSelectNodeState: <T_1 extends U["type"], R_1>(nodeKey: NodeKey<T_1>, selector: (immutableState: ImmutableLsonObject<U & {
-        type: T_1;
-    }>, ext: ExtIndex[T_1]) => R_1) => R_1;
-    useUpdateNodeState: <T_2 extends U["type"]>(nodeKey: NodeKey<T_2>) => (callback: (liveIndexState: _liveblocks_core.LiveObject<(U & {
+    useSelectNodeState: <T_2 extends U["type"], R_1>(nodeKey: NodeKey<T_2>, selector: (immutableState: ImmutableLsonObject<U & {
         type: T_2;
-    })["state"]>, ext: ExtIndex[T_2]) => void) => void;
-    useDeleteNode: <T_3 extends U["type"]>(nodeKey: NodeKey<T_3>, callback?: ((liveIndexNode: LiveIndexNode<(U & {
+    }>, ext: ExtIndex[T_2]) => R_1) => R_1;
+    useUpdateNodeState: <T_3 extends U["type"]>(nodeKey: NodeKey<T_3>) => (callback: (liveIndexState: _liveblocks_core.LiveObject<(U & {
         type: T_3;
-    })["state"]>, ext: ExtIndex[T_3]) => void) | undefined) => () => NodeKey<T_3>;
-    useChildrenNodeKeys: <T_4 extends U["type"], CT_1 extends ExtractChildTypeUnion<U & {
+    })["state"]>, ext: ExtIndex[T_3]) => void) => void;
+    useDeleteNode: <T_4 extends U["type"]>(nodeKey: NodeKey<T_4>, callback?: ((liveIndexNode: LiveIndexNode<(U & {
         type: T_4;
-    }>>(nodeKey: NodeKey<T_4>, childType: CT_1) => Set<NodeKey<CT_1>>;
+    })["state"]>, ext: ExtIndex[T_4]) => void) | undefined) => () => NodeKey<T_4>;
+    useChildrenNodeKeys: <T_5 extends U["type"], CT_1 extends ExtractChildTypeUnion<U & {
+        type: T_5;
+    }>>(nodeKey: NodeKey<T_5>, childType: CT_1) => Set<NodeKey<CT_1>>;
     AirNodeProvider: ({ storageId, children }: {
         storageId: string;
         children: react.ReactNode;

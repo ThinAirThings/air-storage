@@ -57,7 +57,7 @@ var LiveIndexStorageModel = class {
 
 // src/components/AirNodeProviderFactory.tsx
 import { jsx } from "react/jsx-runtime";
-var AirNodeProviderFactory = (rootAirNode, LiveblocksRoomProvider) => ({
+var AirNodeProviderFactory = (rootAirNode, LiveblocksRoomProvider, initialLiveblocksPresence) => ({
   storageId,
   children
 }) => {
@@ -65,7 +65,7 @@ var AirNodeProviderFactory = (rootAirNode, LiveblocksRoomProvider) => ({
     LiveblocksRoomProvider,
     {
       id: storageId,
-      initialPresence: {},
+      initialPresence: initialLiveblocksPresence,
       initialStorage: new LiveIndexStorageModel(rootAirNode),
       children: /* @__PURE__ */ jsx(Suspense, { fallback: /* @__PURE__ */ jsx("div", { children: "Loading..." }), children })
     }
@@ -159,21 +159,27 @@ var treeToExtensionIndex = (tree) => {
 };
 
 // src/configureAirStorage.tsx
-var configureAirStorage = (createClientProps, rootAirNode) => {
+var configureAirStorage = (createClientProps, rootAirNode, liveblocksPresence) => {
   const mappedAirNodeUnion = treeToMappedUnion(rootAirNode);
   const extensionIndex = treeToExtensionIndex(rootAirNode);
   const { suspense: {
     useStorage,
     useMutation,
-    RoomProvider
+    RoomProvider,
+    useUpdateMyPresence,
+    useSelf
   } } = createRoomContext(createClient(createClientProps));
   return {
+    // Liveblocks Hooks
+    useUpdateMyPresence,
+    useSelf,
+    // Air Hooks
     useCreateNode: useCreateNodeFactory(useMutation, mappedAirNodeUnion, extensionIndex),
     useSelectNodeState: useSelectNodeStateFactory(useStorage, extensionIndex),
     useUpdateNodeState: useUpdateNodeStateFactory(useMutation, extensionIndex),
     useDeleteNode: useDeleteNodeFactory(useMutation, extensionIndex),
     useChildrenNodeKeys: useChildrenNodeKeysFactory(useStorage),
-    AirNodeProvider: AirNodeProviderFactory(rootAirNode, RoomProvider),
+    AirNodeProvider: AirNodeProviderFactory(rootAirNode, RoomProvider, liveblocksPresence ?? {}),
     // Only use 'useStorage' here because Liveblocks will throw an error if useStorage isn't called before using mutations.
     useRootAirNode: () => useStorage(() => new NodeKey("root", "root")),
     extensionIndex
