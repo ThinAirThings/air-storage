@@ -3,7 +3,7 @@ import { LiveblocksHooks } from "../LiveObjects/LiveIndexStorageModel.js";
 import { ExtractChildTypeUnion, FlatAirNode } from "../types.js";
 import { NodeKey } from "../types/NodeKey.js";
 
-export const useChildrenKeysFactory = <
+export const useChildrenNodeKeysFactory = <
     U extends FlatAirNode
 >(
     useStorage: LiveblocksHooks['useStorage']
@@ -13,7 +13,7 @@ export const useChildrenKeysFactory = <
 >(
     nodeKey: NodeKey<T>,
     childType: CT
-) => useStorage(({liveIndex}) => new Set(
+): Set<NodeKey<CT>> => useStorage(({liveIndex}) => new Set(
     [...liveIndex.get(nodeKey.nodeId)!.childNodeSets.get(childType)!.keys()]
-    .map(nodeId => new NodeKey(childType, nodeId))
+    .map(nodeId => new NodeKey(nodeId, childType))
 ), (a, b) => isEqual(a, b))

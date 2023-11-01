@@ -72,10 +72,10 @@ var AirNodeProviderFactory = (rootAirNode, LiveblocksRoomProvider) => ({
   );
 };
 
-// src/hooks/useChildrenKeysFactory.ts
+// src/hooks/useChildrenNodeKeysFactory.ts
 import isEqual from "lodash.isequal";
-var useChildrenKeysFactory = (useStorage) => (nodeKey, childType) => useStorage(({ liveIndex }) => new Set(
-  [...liveIndex.get(nodeKey.nodeId).childNodeSets.get(childType).keys()].map((nodeId) => new NodeKey(childType, nodeId))
+var useChildrenNodeKeysFactory = (useStorage) => (nodeKey, childType) => useStorage(({ liveIndex }) => new Set(
+  [...liveIndex.get(nodeKey.nodeId).childNodeSets.get(childType).keys()].map((nodeId) => new NodeKey(nodeId, childType))
 ), (a, b) => isEqual(a, b));
 
 // src/hooks/useCreateNodeFactory.ts
@@ -172,7 +172,7 @@ var configureAirStorage = (createClientProps, rootAirNode) => {
     useSelectNodeState: useSelectNodeStateFactory(useStorage, extensionIndex),
     useUpdateNodeState: useUpdateNodeStateFactory(useMutation, extensionIndex),
     useDeleteNode: useDeleteNodeFactory(useMutation, extensionIndex),
-    useChildrenKeys: useChildrenKeysFactory(useStorage),
+    useChildrenNodeKeys: useChildrenNodeKeysFactory(useStorage),
     AirNodeProvider: AirNodeProviderFactory(rootAirNode, RoomProvider),
     // Only use 'useStorage' here because Liveblocks will throw an error if useStorage isn't called before using mutations.
     useRootAirNode: () => useStorage(() => new NodeKey("root", "root")),
