@@ -192,6 +192,7 @@ var treeToMappedUnion = (tree) => {
   return treeToUnionMap(new MappedUnion([]), tree);
 };
 export {
+  LiveIndexNode,
   configureAirStorage,
   defineAirNode,
   defineRootAirNode,
