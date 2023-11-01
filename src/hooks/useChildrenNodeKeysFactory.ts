@@ -16,4 +16,5 @@ export const useChildrenNodeKeysFactory = <
 ): Set<NodeKey<CT>> => useStorage(({liveIndex}) => new Set(
     [...liveIndex.get(nodeKey.nodeId)!.childNodeSets.get(childType)!.keys()]
     .map(nodeId => new NodeKey(nodeId, childType))
+
 ), (a, b) => isEqual(a, b))
