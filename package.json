@@ -1,6 +1,6 @@
 {
     "name": "@thinairthings/air-storage",
-    "version": "0.1.22",
+    "version": "0.1.23",
     "description": "Thin Air Storage",
     "types": "dist/index.browser.d.ts",
     "type": "module",
