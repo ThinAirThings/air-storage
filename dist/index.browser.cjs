@@ -176,9 +176,9 @@ var useUpdateNodeStateFactory = (useMutation, extensionIndex) => (nodeKey) => us
 }, [nodeKey]);
 
 // src/defineAirNode.ts
-var defineAirNode = (type, ext, defaultInitialState, children) => ({
+var defineAirNode = (type, struct, defaultInitialState, children) => ({
   type,
-  ext,
+  struct,
   state: defaultInitialState,
   children: children ?? []
   // destructor?:
@@ -190,8 +190,8 @@ var extendAirNodeDefinition = () => (type, ext, defaultInitialState, children) =
 var treeToExtensionIndex = (tree) => {
   const index = {};
   const visit = (node) => {
-    if (node.ext.keys().length > 0) {
-      index[node.type] = node.ext;
+    if (node.struct.keys().length > 0) {
+      index[node.type] = node.struct;
     }
     node.children.forEach(visit);
   };
