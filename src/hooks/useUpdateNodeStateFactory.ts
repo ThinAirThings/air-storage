@@ -5,16 +5,21 @@ import { NodeKey } from "../types/NodeKey.js";
 
 
 export const useUpdateNodeStateFactory = <
-    U extends FlatAirNode
+    U extends FlatAirNode,
+    ExtIndex extends Record<string, any>
 >(
-    useMutation: LiveblocksHooks['useMutation']
+    useMutation: LiveblocksHooks['useMutation'],
+    extensionIndex: ExtIndex
 ) => <
     T extends U['type']
 >(
     nodeKey: NodeKey<T>,
 ) => useMutation((
     {storage}: AirStorageMutationContext,
-    callback: (liveIndexState: LiveObject<(U&{type: T})['state']> ) => void
+    callback: (
+        liveIndexState: LiveObject<(U&{type: T})['state']>,
+        ext: ExtIndex[T]
+    ) => void
 )=>{
-    callback(storage.get('liveIndex').get(nodeKey.nodeId)!.get('state'))
+    callback(storage.get('liveIndex').get(nodeKey.nodeId)!.get('state'), extensionIndex[nodeKey.type])
 }, [nodeKey])

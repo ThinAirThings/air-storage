@@ -16,7 +16,8 @@ export const defineAirNode = <
     type,
     ext,
     state: defaultInitialState,
-    children: children??[]
+    children: children??[],
+    // destructor?:
 }) as TreeAirNode<T, Ext, S, C>
 
 export const defineRootAirNode = <

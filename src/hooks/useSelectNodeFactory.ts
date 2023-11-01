@@ -8,15 +8,21 @@ import { NodeKey } from "../types/NodeKey.js";
 export type ImmutableLsonObject<T extends FlatAirNode> = ReturnType<LiveIndexNode<T['state']>['toImmutable']>['state']
 
 export const useSelectNodeStateFactory = <
-    U extends FlatAirNode
+    U extends FlatAirNode,
+    ExtIndex extends Record<string, any>
 >(
-    useStorage: LiveblocksHooks['useStorage']
+    useStorage: LiveblocksHooks['useStorage'],
+    extensionIndex: ExtIndex
 ) => <
     T extends U['type'],
     R
 >(
     nodeKey: NodeKey<T>,
-    selector: (immutableState: ImmutableLsonObject<(U&{type: T})>) => R
+    selector: (
+        immutableState: ImmutableLsonObject<(U&{type: T})>,
+        ext: ExtIndex[T]
+    ) => R
 ): R => useStorage(({liveIndex}) => selector(
-    (liveIndex.get(nodeKey.nodeId)!.state as ImmutableLsonObject<(U&{type: T})>) 
+    (liveIndex.get(nodeKey.nodeId)!.state as ImmutableLsonObject<(U&{type: T})>),
+    extensionIndex[nodeKey.type]
 ), (a,b) => isEqual(a,b))

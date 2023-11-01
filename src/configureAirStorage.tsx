@@ -21,6 +21,7 @@ export const configureAirStorage = <
     rootAirNode: TreeAirNode
 ) => {
     const mappedAirNodeUnion = treeToMappedUnion(rootAirNode)
+    const extensionIndex = treeToExtensionIndex(rootAirNode) as ExtIndex
     const {suspense: {
         useStorage,
         useMutation,
@@ -31,15 +32,15 @@ export const configureAirStorage = <
     >(createClient(createClientProps))
 
     return {
-        useCreateNode: useCreateNodeFactory<U>(useMutation, mappedAirNodeUnion),
-        useSelectNodeState: useSelectNodeStateFactory<U>(useStorage),
-        useUpdateNodeState: useUpdateNodeStateFactory<U>(useMutation),
-        useDeleteNode: useDeleteNodeFactory<U>(useMutation),
+        useCreateNode: useCreateNodeFactory<U, ExtIndex>(useMutation, mappedAirNodeUnion, extensionIndex),
+        useSelectNodeState: useSelectNodeStateFactory<U, ExtIndex>(useStorage, extensionIndex),
+        useUpdateNodeState: useUpdateNodeStateFactory<U, ExtIndex>(useMutation, extensionIndex),
+        useDeleteNode: useDeleteNodeFactory<U, ExtIndex>(useMutation, extensionIndex),
         useChildrenKeys: useChildrenKeysFactory<U>(useStorage),
         AirNodeProvider: AirNodeProviderFactory(rootAirNode, RoomProvider),
         // Only use 'useStorage' here because Liveblocks will throw an error if useStorage isn't called before using mutations.
         useRootAirNode: () => useStorage(()=>new NodeKey('root', 'root')),
-        extensionIndex: treeToExtensionIndex(rootAirNode) as ExtIndex
+        extensionIndex
     }
 }
 
