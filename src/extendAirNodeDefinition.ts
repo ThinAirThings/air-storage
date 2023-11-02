@@ -22,7 +22,7 @@ export const treeToStructureIndex = <Tree extends TreeAirNode>(
     const index = {} as Record<string, any>
     const visit = (node: TreeAirNode) => {
         console.log(node)
-        if(node.struct.keys().length > 0) {
+        if(Object.keys(node.struct).length > 0) {
             index[node.type] = node.struct
         }
         node.children.forEach(visit)
