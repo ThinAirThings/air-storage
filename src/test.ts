@@ -75,9 +75,11 @@ const {
 extensionIndex['Level2NodeA'].pickles
 const rootNode = useRootAirNode()
 const createNode = useCreateNode(rootNode)
-const level1Node = createNode('Level1NodeA', (node) => node.get('state').set('stuff', 'fdsa'))
+const level1Node = createNode('Level1NodeA', (node, ext) => node.get('state').set('stuff', 'fdsa'))
 const createLevel2 = useCreateNode(level1Node)
 const level2NodeA = createLevel2('Level2NodeA')
+const level2NodeAUpdater = useUpdateNodeState(level2NodeA)
+level2NodeAUpdater((node, ext) => {})
 const createLevel3 = useCreateNode(level2NodeA)
 const level3NodeA = createLevel3('Level3NodeA')
 const updateLevel1Node = useUpdateNodeState(level1Node)

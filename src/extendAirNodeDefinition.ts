@@ -16,7 +16,7 @@ export const extendAirNodeDefinition = <
     children: C
 ) => defineAirNode(type, ext, defaultInitialState, children)
 
-export const treeToExtensionIndex = <Tree extends TreeAirNode>(
+export const treeToStructureIndex = <Tree extends TreeAirNode>(
     tree: Tree
 ): TreeToExtensionIndex<Tree> => {
     const index = {} as Record<string, any>

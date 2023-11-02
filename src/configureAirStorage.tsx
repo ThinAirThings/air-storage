@@ -10,8 +10,7 @@ import { useCreateNodeFactory } from "./hooks/useCreateNodeFactory.js";
 import { useDeleteNodeFactory } from "./hooks/useDeleteNodeFactory.js";
 import { useSelectNodeStateFactory } from "./hooks/useSelectNodeFactory.js";
 import { useUpdateNodeStateFactory } from "./hooks/useUpdateNodeStateFactory.js";
-import { treeToExtensionIndex } from "./extendAirNodeDefinition.js";
-
+import { treeToStructureIndex } from "./extendAirNodeDefinition.js";
 
 export const configureAirStorage = <
     U extends FlatAirNode,
@@ -23,7 +22,7 @@ export const configureAirStorage = <
     liveblocksPresence?: LiveblocksPresence
 ) => {
     const mappedAirNodeUnion = treeToMappedUnion(rootAirNode)
-    const extensionIndex = treeToExtensionIndex(rootAirNode) as ExtIndex
+    const StructureIndex = treeToStructureIndex(rootAirNode) as ExtIndex
     const {suspense: {
         useStorage,
         useMutation,
@@ -40,15 +39,15 @@ export const configureAirStorage = <
         useUpdateMyPresence,
         useSelf,
         // Air Hooks
-        useCreateNode: useCreateNodeFactory<U, ExtIndex>(useMutation, mappedAirNodeUnion, extensionIndex),
-        useSelectNodeState: useSelectNodeStateFactory<U, ExtIndex>(useStorage, extensionIndex),
-        useUpdateNodeState: useUpdateNodeStateFactory<U, ExtIndex>(useMutation, extensionIndex),
-        useDeleteNode: useDeleteNodeFactory<U, ExtIndex>(useMutation, extensionIndex),
+        useCreateNode: useCreateNodeFactory<U, ExtIndex>(useMutation, mappedAirNodeUnion, StructureIndex),
+        useSelectNodeState: useSelectNodeStateFactory<U, ExtIndex>(useStorage, StructureIndex),
+        useUpdateNodeState: useUpdateNodeStateFactory<U, ExtIndex>(useMutation, StructureIndex),
+        useDeleteNode: useDeleteNodeFactory<U, ExtIndex>(useMutation, StructureIndex),
         useChildrenNodeKeys: useChildrenNodeKeysFactory<U>(useStorage),
         AirNodeProvider: AirNodeProviderFactory(rootAirNode, RoomProvider, liveblocksPresence??{}),
         // Only use 'useStorage' here because Liveblocks will throw an error if useStorage isn't called before using mutations.
         useRootAirNode: () => useStorage(()=>new NodeKey('root', 'root')),
-        extensionIndex
+        StructureIndex
     }
 }
 
