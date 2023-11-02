@@ -21,7 +21,6 @@ export const treeToStructureIndex = <Tree extends TreeAirNode>(
 ): TreeToExtensionIndex<Tree> => {
     const index = {} as Record<string, any>
     const visit = (node: TreeAirNode) => {
-        console.log(node)
         if(Object.keys(node.struct).length > 0) {
             index[node.type] = node.struct
         }

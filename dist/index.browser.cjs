@@ -190,7 +190,6 @@ var extendAirNodeDefinition = () => (type, ext, defaultInitialState, children) =
 var treeToStructureIndex = (tree) => {
   const index = {};
   const visit = (node) => {
-    console.log(node);
     if (Object.keys(node.struct).length > 0) {
       index[node.type] = node.struct;
     }
