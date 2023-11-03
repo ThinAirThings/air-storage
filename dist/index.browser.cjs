@@ -202,9 +202,9 @@ var treeToStructureIndex = (tree) => {
 
 // src/hooks/useNodeSetFactory.ts
 var import_lodash3 = __toESM(require("lodash.isequal"), 1);
-var useNodeSetFactory = (useStorage) => (nodeSet, predicate) => useStorage(({ liveIndex }) => {
+var useNodeSetFactory = (useStorage) => (predicate) => useStorage(({ liveIndex }) => {
   return new Set(
-    nodeSet === "universal" ? [...liveIndex.values()].filter(predicate) : [...nodeSet].filter(predicate)
+    [...liveIndex.values()].filter(predicate)
   );
 }, (a, b) => (0, import_lodash3.default)(a, b));
 

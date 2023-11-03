@@ -73,11 +73,35 @@ declare const configureAirStorage: <U extends FlatAirNode, ExtIndex extends Reco
         (): _liveblocks_core.User<LiveblocksPresence, _liveblocks_core.BaseUserMeta>;
         <T>(selector: (me: _liveblocks_core.User<LiveblocksPresence, _liveblocks_core.BaseUserMeta>) => T, isEqual?: ((prev: T, curr: T) => boolean) | undefined): T;
     };
-    useNodeSet: <S extends "universal" | Set<NodeKey<U["type"]>>, P extends S extends "universal" ? U : S extends Set<NodeKey<infer T_1 extends string>> ? U & {
-        type: T_1;
-    } : never>(nodeSet: S, predicate: (node: S extends "universal" ? LiveIndexNode<U["state"]> : S extends Set<NodeKey<infer T_2 extends string>> ? LiveIndexNode<(U & {
-        type: T_2;
-    })["state"]> : never) => P) => Set<NodeKey<P["type"]>>;
+    useNodeSet: <P extends {
+        nodeId: string;
+        type: string;
+        parentNodeId: string | null;
+        parentType: string | null;
+        state: _liveblocks_core.LiveObject<U["state"]>;
+        childNodeSets: _liveblocks_core.LiveMap<string, _liveblocks_core.LiveMap<string, null>>;
+    } extends infer T_1 ? T_1 extends {
+        nodeId: string;
+        type: string;
+        parentNodeId: string | null;
+        parentType: string | null;
+        state: _liveblocks_core.LiveObject<U["state"]>;
+        childNodeSets: _liveblocks_core.LiveMap<string, _liveblocks_core.LiveMap<string, null>>;
+    } ? T_1 extends _liveblocks_core.LsonObject ? { readonly [K in keyof T_1]: _liveblocks_core.ToImmutable<Exclude<T_1[K], undefined>> | (undefined extends T_1[K] ? T_1[K] & undefined : never); } : T_1 extends _liveblocks_core.Json ? T_1 : never : never : never>(predicate: (node: {
+        nodeId: string;
+        type: string;
+        parentNodeId: string | null;
+        parentType: string | null;
+        state: _liveblocks_core.LiveObject<U["state"]>;
+        childNodeSets: _liveblocks_core.LiveMap<string, _liveblocks_core.LiveMap<string, null>>;
+    } extends infer T_2 ? T_2 extends {
+        nodeId: string;
+        type: string;
+        parentNodeId: string | null;
+        parentType: string | null;
+        state: _liveblocks_core.LiveObject<U["state"]>;
+        childNodeSets: _liveblocks_core.LiveMap<string, _liveblocks_core.LiveMap<string, null>>;
+    } ? T_2 extends _liveblocks_core.LsonObject ? { readonly [K_1 in keyof T_2]: _liveblocks_core.ToImmutable<Exclude<T_2[K_1], undefined>> | (undefined extends T_2[K_1] ? T_2[K_1] & undefined : never); } : T_2 extends _liveblocks_core.Json ? T_2 : never : never : never) => node is P) => Set<NodeKey<P["type"]>>;
     useCreateNode: <T_3 extends U["type"]>(nodeKey: NodeKey<T_3>) => <CT extends ExtractChildTypeUnion<U & {
         type: T_3;
     }>, R extends NodeKey<CT>>(childType: CT, callback?: ((liveIndexNode: LiveIndexNode<(U & {

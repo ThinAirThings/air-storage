@@ -160,9 +160,9 @@ var treeToStructureIndex = (tree) => {
 
 // src/hooks/useNodeSetFactory.ts
 import isEqual3 from "lodash.isequal";
-var useNodeSetFactory = (useStorage) => (nodeSet, predicate) => useStorage(({ liveIndex }) => {
+var useNodeSetFactory = (useStorage) => (predicate) => useStorage(({ liveIndex }) => {
   return new Set(
-    nodeSet === "universal" ? [...liveIndex.values()].filter(predicate) : [...nodeSet].filter(predicate)
+    [...liveIndex.values()].filter(predicate)
   );
 }, (a, b) => isEqual3(a, b));
 
