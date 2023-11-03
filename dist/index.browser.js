@@ -206,6 +206,7 @@ var treeToMappedUnion = (tree) => {
 };
 export {
   LiveIndexNode,
+  NodeKey,
   configureAirStorage,
   defineAirNode,
   defineRootAirNode,

@@ -31,6 +31,7 @@ var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: tru
 var index_browser_exports = {};
 __export(index_browser_exports, {
   LiveIndexNode: () => LiveIndexNode,
+  NodeKey: () => NodeKey,
   configureAirStorage: () => configureAirStorage,
   defineAirNode: () => defineAirNode,
   defineRootAirNode: () => defineRootAirNode,
@@ -248,6 +249,7 @@ var treeToMappedUnion = (tree) => {
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   LiveIndexNode,
+  NodeKey,
   configureAirStorage,
   defineAirNode,
   defineRootAirNode,
