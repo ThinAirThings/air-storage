@@ -73,7 +73,7 @@ declare const configureAirStorage: <U extends FlatAirNode, ExtIndex extends Reco
         (): _liveblocks_core.User<LiveblocksPresence, _liveblocks_core.BaseUserMeta>;
         <T>(selector: (me: _liveblocks_core.User<LiveblocksPresence, _liveblocks_core.BaseUserMeta>) => T, isEqual?: ((prev: T, curr: T) => boolean) | undefined): T;
     };
-    useNodeUnion: <P extends (node: U) => node is U>(predicate: P) => Set<NodeKey$1<P extends (node: U) => node is infer SU extends U_1 ? SU["type"] : never>>;
+    useNodeUnion: <P extends U>(predicate: (node: U) => node is P) => Set<NodeKey$1<P extends (node: U) => node is infer SU extends U_1 ? SU["type"] : never>>;
     useCreateNode: <T_1 extends U["type"]>(nodeKey: NodeKey<T_1>) => <CT extends ExtractChildTypeUnion<U & {
         type: T_1;
     }>, R extends NodeKey<CT>>(childType: CT, callback?: ((liveIndexNode: LiveIndexNode<(U & {

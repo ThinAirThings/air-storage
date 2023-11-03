@@ -8,9 +8,9 @@ export const useNodeUnionFactory = <
 >(
     useStorage: LiveblocksHooks['useStorage']
 ) => <
-    P extends (node: U) => node is U
+    P extends U
 >(
-    predicate: P
+    predicate: (node: U) => node is P
 ) => useStorage(({liveIndex}) => {
     return new Set(([...liveIndex.values()] as U[]).filter(predicate)) as any
 }, (a, b) => isEqual(a, b)) as Set<
