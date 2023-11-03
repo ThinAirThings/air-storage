@@ -11,8 +11,8 @@ export const useNodeUnionFactory = <
     P extends (node: U) => node is U
 >(
     predicate: P
-): Set<
-    NodeKey<P extends (node: U)=>node is (infer SU extends U)?SU['type']:never>
-> => useStorage(({liveIndex}) => {
+) => useStorage(({liveIndex}) => {
     return new Set(([...liveIndex.values()] as U[]).filter(predicate)) as any
-}, (a, b) => isEqual(a, b))
+}, (a, b) => isEqual(a, b)) as Set<
+    NodeKey<P extends (node: U)=>node is (infer SU extends U)?SU['type']:never>
+>
