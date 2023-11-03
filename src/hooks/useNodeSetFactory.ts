@@ -2,7 +2,9 @@ import isEqual from "lodash.isequal";
 import { LiveblocksHooks } from "../LiveObjects/LiveIndexStorageModel.js";
 import { FlatAirNode } from "../types.js";
 import { NodeKey } from "../types/NodeKey.js";
-import { LiveIndexNode } from "../index.browser.js";
+import { ILiveIndexNode, LiveIndexNode } from "../index.browser.js";
+import { createRoomContext } from "@liveblocks/react";
+import { LiveMap } from "@liveblocks/client";
 
 
 export const useNodeSetFactory = <
