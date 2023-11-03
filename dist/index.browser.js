@@ -158,10 +158,12 @@ var treeToStructureIndex = (tree) => {
   return index;
 };
 
-// src/hooks/useNodeUnionFactory.ts
+// src/hooks/useNodeSetFactory.ts
 import isEqual3 from "lodash.isequal";
-var useNodeUnionFactory = (useStorage) => (predicate) => useStorage(({ liveIndex }) => {
-  return new Set([...liveIndex.values()].filter(predicate));
+var useNodeSetFactory = (useStorage) => (nodeSet, predicate) => useStorage(({ liveIndex }) => {
+  return new Set(
+    nodeSet === "universal" ? [...liveIndex.values()].filter(predicate) : [...nodeSet].filter(predicate)
+  );
 }, (a, b) => isEqual3(a, b));
 
 // src/configureAirStorage.tsx
@@ -180,7 +182,7 @@ var configureAirStorage = (createClientProps, rootAirNode, liveblocksPresence) =
     useUpdateMyPresence,
     useSelf,
     // Air Hooks
-    useNodeUnion: useNodeUnionFactory(useStorage),
+    useNodeSet: useNodeSetFactory(useStorage),
     useCreateNode: useCreateNodeFactory(useMutation, mappedAirNodeUnion, StructureIndex),
     useSelectNodeState: useSelectNodeStateFactory(useStorage, StructureIndex),
     useUpdateNodeState: useUpdateNodeStateFactory(useMutation, StructureIndex),
