@@ -92,3 +92,53 @@ const updateRootNode = useUpdateNodeState(rootNode)
 updateRootNode((state) => state.set('nodeName', 'stuff'))
 
 
+type NodeA = {
+  type: 'NodeA',
+  data: {
+    val: string
+  }
+}
+
+type NodeB = {
+  type: "NodeB",
+  data: {
+    other: number
+  }
+}
+
+type NodeC = {
+  type: "NodeC",
+  data: {
+    fish: number[]
+  }
+}
+type NodeUnion = NodeA | NodeB | NodeC
+type Arr = Array<NodeUnion>
+
+const arr: Arr = [
+  {type: "NodeA", data: {val: "fsad"}},
+  {type: "NodeB", data: {other: 5}}
+]
+
+const nodeAPred = (node: NodeUnion): node is NodeA => (node as NodeA).data.val !== undefined
+const nodeBPred = (node: NodeUnion): node is NodeB => (node as NodeB).data.other !== undefined
+const nodeCPred = (node: NodeUnion): node is NodeC => (node as NodeC).data.fish !== undefined
+const first = arr.filter(nodeAPred)
+const second = arr.filter(nodeBPred)
+
+const third = arr.filter((node) => (nodeAPred(node) || nodeBPred(node)))
+
+// This defines a function type that takes an array of NodeUnion and returns a boolean
+// while also asserting that the array is of type NodeUnion[] (type predicate).
+type PredicateFunction = (node: NodeUnion) => node is NodeUnion;
+
+const filterer = <
+    PredArray extends Array<(node: NodeUnion) => node is NodeUnion>
+>(filters: PredArray): {[Index in keyof PredArray]: PredArray[Index] extends (node: NodeUnion) => node is (infer U extends NodeUnion) ? U : never} => { return null as any}
+
+// Example usage of the filterer function
+const result = filterer([
+    nodeAPred,
+    nodeCPred
+    // ... more functions
+]);

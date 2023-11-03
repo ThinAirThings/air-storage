@@ -199,6 +199,12 @@ var treeToStructureIndex = (tree) => {
   return index;
 };
 
+// src/hooks/useNodeUnion.ts
+var import_lodash3 = __toESM(require("lodash.isequal"), 1);
+var useNodeUnionFactory = (useStorage) => (predicate) => useStorage(({ liveIndex }) => {
+  return [...liveIndex.values()].filter(predicate);
+}, (a, b) => (0, import_lodash3.default)(a, b));
+
 // src/configureAirStorage.tsx
 var configureAirStorage = (createClientProps, rootAirNode, liveblocksPresence) => {
   const mappedAirNodeUnion = treeToMappedUnion(rootAirNode);
@@ -215,6 +221,7 @@ var configureAirStorage = (createClientProps, rootAirNode, liveblocksPresence) =
     useUpdateMyPresence,
     useSelf,
     // Air Hooks
+    useNodeUnion: useNodeUnionFactory(useStorage),
     useCreateNode: useCreateNodeFactory(useMutation, mappedAirNodeUnion, StructureIndex),
     useSelectNodeState: useSelectNodeStateFactory(useStorage, StructureIndex),
     useUpdateNodeState: useUpdateNodeStateFactory(useMutation, StructureIndex),
