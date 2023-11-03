@@ -2,6 +2,7 @@ import isEqual from "lodash.isequal";
 import { LiveblocksHooks } from "../LiveObjects/LiveIndexStorageModel.js";
 import { FlatAirNode } from "../types.js";
 import { NodeKey } from "../types/NodeKey.js";
+import { LiveIndexNode } from "../index.browser.js";
 
 
 export const useNodeSetFactory = <
@@ -18,9 +19,9 @@ export const useNodeSetFactory = <
 >(
     nodeSet: S,
     predicate: (node: S extends 'universal' 
-        ? U 
-        : S extends Set<NodeKey<infer T>> ? (U&{type: T}) : never
-    ) => node is P
+        ? LiveIndexNode<U['state']> 
+        : S extends Set<NodeKey<infer T>> ? LiveIndexNode<(U&{type: T})['state']> : never
+    ) => P
 ) => useStorage(({liveIndex}) => {
     return new Set(
         nodeSet === 'universal' 

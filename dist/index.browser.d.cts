@@ -75,9 +75,9 @@ declare const configureAirStorage: <U extends FlatAirNode, ExtIndex extends Reco
     };
     useNodeSet: <S extends "universal" | Set<NodeKey<U["type"]>>, P extends S extends "universal" ? U : S extends Set<NodeKey<infer T_1 extends string>> ? U & {
         type: T_1;
-    } : never>(nodeSet: S, predicate: (node: S extends "universal" ? U : S extends Set<NodeKey<infer T_2 extends string>> ? U & {
+    } : never>(nodeSet: S, predicate: (node: S extends "universal" ? LiveIndexNode<U["state"]> : S extends Set<NodeKey<infer T_2 extends string>> ? LiveIndexNode<(U & {
         type: T_2;
-    } : never) => node is P) => Set<NodeKey<P["type"]>>;
+    })["state"]> : never) => P) => Set<NodeKey<P["type"]>>;
     useCreateNode: <T_3 extends U["type"]>(nodeKey: NodeKey<T_3>) => <CT extends ExtractChildTypeUnion<U & {
         type: T_3;
     }>, R extends NodeKey<CT>>(childType: CT, callback?: ((liveIndexNode: LiveIndexNode<(U & {
