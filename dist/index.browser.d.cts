@@ -53,12 +53,8 @@ type AirNodeIndexedUnion<U extends TreeAirNode> = {
 };
 type AirStorageMutationContext = MutationContext<any, ILiveIndexStorageModel, any>;
 
-declare class NodeKey<T extends string = string> {
-    nodeId: string;
-    type: T;
-    constructor(nodeId: string, type: T);
-}
-type INodeKey<T extends string = string> = {
+declare const createNodeKey: <T extends string = string>(nodeId: string, type: T) => NodeKey<T>;
+type NodeKey<T extends string = string> = {
     nodeId: string;
     type: T;
 };
@@ -149,4 +145,4 @@ type TreeToExtensionUnion<T extends TreeAirNode> = IsEmptyRecord<T['struct']> ex
 }[T['children'][number]['type']]);
 type TreeToExtensionIndex<T extends TreeAirNode> = UnionToIntersection<TreeToExtensionUnion<T>>;
 
-export { AirNodeIndexedUnion, AirStorageMutationContext, ExtractChildTypeUnion, FlatAirNode, ILiveIndexNode, INodeKey, LiveIndexNode, NodeKey, TreeAirNode, TreeToExtensionIndex, TreeToExtensionUnion, TreeToNodeUnion, UnionToIntersection, configureAirStorage, defineAirNode, defineRootAirNode, extendAirNodeDefinition, treeToStructureIndex };
+export { AirNodeIndexedUnion, AirStorageMutationContext, ExtractChildTypeUnion, FlatAirNode, ILiveIndexNode, LiveIndexNode, NodeKey, TreeAirNode, TreeToExtensionIndex, TreeToExtensionUnion, TreeToNodeUnion, UnionToIntersection, configureAirStorage, createNodeKey, defineAirNode, defineRootAirNode, extendAirNodeDefinition, treeToStructureIndex };

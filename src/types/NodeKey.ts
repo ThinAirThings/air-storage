@@ -1,11 +1,12 @@
 
 
 
-export class NodeKey<T extends string=string> {
-    constructor(public nodeId: string, public type: T){}
-}
+export const createNodeKey = <T extends string=string>(nodeId: string, type: T): NodeKey<T> => ({
+    nodeId,
+    type
+})
 
-export type INodeKey<T extends string=string> = {
+export type NodeKey<T extends string=string> = {
     nodeId: string,
     type: T
 }

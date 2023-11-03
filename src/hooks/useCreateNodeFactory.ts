@@ -4,7 +4,7 @@ import { LiveblocksHooks } from "../LiveObjects/LiveIndexStorageModel.js";
 import { ExtractChildTypeUnion, FlatAirNode } from "../types.js";
 import { v4 as uuidv4} from 'uuid'
 import { MappedUnion } from "../types/MappedUnion.js";
-import { NodeKey } from "../types/NodeKey.js";
+import { NodeKey, createNodeKey } from "../types/NodeKey.js";
 
 export const useCreateNodeFactory = <
     U extends FlatAirNode,
@@ -37,7 +37,7 @@ export const useCreateNodeFactory = <
     callback?.(newLiveIndexNode, extensionIndex[childType])
     storage.get('liveIndex').get(nodeKey.nodeId)!.get('childNodeSets').get(childType)!.set(nodeId, null)
     storage.get('liveIndex').set(nodeId, newLiveIndexNode)
-    return new NodeKey(nodeId, childType)
+    return createNodeKey(nodeId, childType)
 }, []) as <
     CT extends ExtractChildTypeUnion<(U&{type: T})>,
     R extends NodeKey<CT>

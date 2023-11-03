@@ -3,7 +3,7 @@ import { FlatAirNode, TreeAirNode, TreeToNodeUnion } from "./types.js";
 import { MappedUnion } from "./types/MappedUnion.js";
 import { ILiveIndexStorageModel } from "./LiveObjects/LiveIndexStorageModel.js";
 import { JsonObject, createClient } from "@liveblocks/client";
-import { NodeKey } from "./types/NodeKey.js";
+import { NodeKey, createNodeKey } from "./types/NodeKey.js";
 import { AirNodeProviderFactory } from "./components/AirNodeProviderFactory.js";
 import { useChildrenNodeKeysFactory } from "./hooks/useChildrenNodeKeysFactory.js";
 import { useCreateNodeFactory } from "./hooks/useCreateNodeFactory.js";
@@ -48,7 +48,7 @@ export const configureAirStorage = <
         useChildrenNodeKeys: useChildrenNodeKeysFactory<U>(useStorage),
         AirNodeProvider: AirNodeProviderFactory(rootAirNode, RoomProvider, liveblocksPresence??{}),
         // Only use 'useStorage' here because Liveblocks will throw an error if useStorage isn't called before using mutations.
-        useRootAirNode: () => useStorage(()=>new NodeKey('root', 'root')),
+        useRootAirNode: () => useStorage(()=>createNodeKey('root', 'root')),
         StructureIndex
     }
 }

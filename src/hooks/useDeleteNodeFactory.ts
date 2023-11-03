@@ -1,7 +1,7 @@
 import { LiveIndexNode } from "../LiveObjects/LiveIndexNode.js";
 import { LiveblocksHooks } from "../LiveObjects/LiveIndexStorageModel.js";
 import { FlatAirNode } from "../types.js";
-import { NodeKey } from "../types/NodeKey.js";
+import { NodeKey, createNodeKey } from "../types/NodeKey.js";
 
 
 export const useDeleteNodeFactory = <
@@ -42,5 +42,5 @@ export const useDeleteNodeFactory = <
     parentNode.get('childNodeSets').get(nodeKey.type)!.delete(nodeKey.nodeId)
     // Return Sibling NodeKey
     const sibblingNodeId = [...parentNode.get('childNodeSets').get(nodeKey.type)!.keys()][0]
-    return new NodeKey(sibblingNodeId, nodeKey.type)
+    return createNodeKey(sibblingNodeId, nodeKey.type)
 }, [])
