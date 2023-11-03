@@ -199,10 +199,10 @@ var treeToStructureIndex = (tree) => {
   return index;
 };
 
-// src/hooks/useNodeUnion.ts
+// src/hooks/useNodeUnionFactory.ts
 var import_lodash3 = __toESM(require("lodash.isequal"), 1);
 var useNodeUnionFactory = (useStorage) => (predicate) => useStorage(({ liveIndex }) => {
-  return [...liveIndex.values()].filter(predicate);
+  return new Set([...liveIndex.values()].filter(predicate));
 }, (a, b) => (0, import_lodash3.default)(a, b));
 
 // src/configureAirStorage.tsx

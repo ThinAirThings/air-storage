@@ -11,7 +11,7 @@ import { useDeleteNodeFactory } from "./hooks/useDeleteNodeFactory.js";
 import { useSelectNodeStateFactory } from "./hooks/useSelectNodeFactory.js";
 import { useUpdateNodeStateFactory } from "./hooks/useUpdateNodeStateFactory.js";
 import { treeToStructureIndex } from "./extendAirNodeDefinition.js";
-import { useNodeUnionFactory } from "./hooks/useNodeUnion.js";
+import { useNodeUnionFactory } from "./hooks/useNodeUnionFactory.js";
 
 export const configureAirStorage = <
     U extends FlatAirNode,

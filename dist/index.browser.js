@@ -158,10 +158,10 @@ var treeToStructureIndex = (tree) => {
   return index;
 };
 
-// src/hooks/useNodeUnion.ts
+// src/hooks/useNodeUnionFactory.ts
 import isEqual3 from "lodash.isequal";
 var useNodeUnionFactory = (useStorage) => (predicate) => useStorage(({ liveIndex }) => {
-  return [...liveIndex.values()].filter(predicate);
+  return new Set([...liveIndex.values()].filter(predicate));
 }, (a, b) => isEqual3(a, b));
 
 // src/configureAirStorage.tsx
