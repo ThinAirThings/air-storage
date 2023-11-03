@@ -51,10 +51,6 @@ type AirNodeIndexedUnion<U extends TreeAirNode> = {
         type: T;
     });
 };
-type NodeKey$1<T extends string = string> = {
-    nodeId: string;
-    type: T;
-};
 type AirStorageMutationContext = MutationContext<any, ILiveIndexStorageModel, any>;
 
 declare class NodeKey<T extends string = string> {
@@ -73,7 +69,7 @@ declare const configureAirStorage: <U extends FlatAirNode, ExtIndex extends Reco
         (): _liveblocks_core.User<LiveblocksPresence, _liveblocks_core.BaseUserMeta>;
         <T>(selector: (me: _liveblocks_core.User<LiveblocksPresence, _liveblocks_core.BaseUserMeta>) => T, isEqual?: ((prev: T, curr: T) => boolean) | undefined): T;
     };
-    useNodeUnion: <P extends U>(predicate: (node: U) => node is P) => Set<NodeKey$1<P["type"]>>;
+    useNodeUnion: <P extends U>(predicate: (node: U) => node is P) => Set<NodeKey<P["type"]>>;
     useCreateNode: <T_1 extends U["type"]>(nodeKey: NodeKey<T_1>) => <CT extends ExtractChildTypeUnion<U & {
         type: T_1;
     }>, R extends NodeKey<CT>>(childType: CT, callback?: ((liveIndexNode: LiveIndexNode<(U & {
@@ -121,4 +117,4 @@ type TreeToExtensionUnion<T extends TreeAirNode> = IsEmptyRecord<T['struct']> ex
 }[T['children'][number]['type']]);
 type TreeToExtensionIndex<T extends TreeAirNode> = UnionToIntersection<TreeToExtensionUnion<T>>;
 
-export { AirNodeIndexedUnion, AirStorageMutationContext, ExtractChildTypeUnion, FlatAirNode, ILiveIndexNode, LiveIndexNode, NodeKey$1 as NodeKey, TreeAirNode, TreeToExtensionIndex, TreeToExtensionUnion, TreeToNodeUnion, UnionToIntersection, configureAirStorage, defineAirNode, defineRootAirNode, extendAirNodeDefinition, treeToStructureIndex };
+export { AirNodeIndexedUnion, AirStorageMutationContext, ExtractChildTypeUnion, FlatAirNode, ILiveIndexNode, LiveIndexNode, TreeAirNode, TreeToExtensionIndex, TreeToExtensionUnion, TreeToNodeUnion, UnionToIntersection, configureAirStorage, defineAirNode, defineRootAirNode, extendAirNodeDefinition, treeToStructureIndex };

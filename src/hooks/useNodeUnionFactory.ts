@@ -1,6 +1,7 @@
 import isEqual from "lodash.isequal";
 import { LiveblocksHooks } from "../LiveObjects/LiveIndexStorageModel.js";
-import { FlatAirNode, NodeKey } from "../types.js";
+import { FlatAirNode } from "../types.js";
+import { NodeKey } from "../types/NodeKey.js";
 
 
 export const useNodeUnionFactory = <

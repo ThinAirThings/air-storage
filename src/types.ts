@@ -47,9 +47,4 @@ export type AirNodeIndexedUnion<
     [T in U['type']]: (U&{type: T})
 }
 
-export type NodeKey<T extends string=string> = {
-    nodeId: string
-    type: T
-}
-
 export type AirStorageMutationContext = MutationContext<any, ILiveIndexStorageModel, any>

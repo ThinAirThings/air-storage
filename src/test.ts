@@ -125,7 +125,6 @@ const nodeBPred = (node: NodeUnion): node is NodeB => (node as NodeB).data.other
 const nodeCPred = (node: NodeUnion): node is NodeC => (node as NodeC).data.fish !== undefined
 const first = arr.filter(nodeAPred)
 const second = arr.filter(nodeBPred)
-
 const third = arr.filter((node) => (nodeAPred(node) || nodeBPred(node)))
 
 // This defines a function type that takes an array of NodeUnion and returns a boolean
@@ -139,6 +138,7 @@ const filterer = <
 // Example usage of the filterer function
 const result = filterer([
     nodeAPred,
-    nodeCPred
+    nodeCPred,
+    nodeBPred
     // ... more functions
 ]);
