@@ -58,6 +58,10 @@ declare class NodeKey<T extends string = string> {
     type: T;
     constructor(nodeId: string, type: T);
 }
+type INodeKey<T extends string = string> = {
+    nodeId: string;
+    type: T;
+};
 
 type ImmutableLsonObject<T extends FlatAirNode> = ReturnType<LiveIndexNode<T['state']>['toImmutable']>['state'];
 
@@ -117,4 +121,4 @@ type TreeToExtensionUnion<T extends TreeAirNode> = IsEmptyRecord<T['struct']> ex
 }[T['children'][number]['type']]);
 type TreeToExtensionIndex<T extends TreeAirNode> = UnionToIntersection<TreeToExtensionUnion<T>>;
 
-export { AirNodeIndexedUnion, AirStorageMutationContext, ExtractChildTypeUnion, FlatAirNode, ILiveIndexNode, LiveIndexNode, NodeKey, TreeAirNode, TreeToExtensionIndex, TreeToExtensionUnion, TreeToNodeUnion, UnionToIntersection, configureAirStorage, defineAirNode, defineRootAirNode, extendAirNodeDefinition, treeToStructureIndex };
+export { AirNodeIndexedUnion, AirStorageMutationContext, ExtractChildTypeUnion, FlatAirNode, ILiveIndexNode, INodeKey, LiveIndexNode, NodeKey, TreeAirNode, TreeToExtensionIndex, TreeToExtensionUnion, TreeToNodeUnion, UnionToIntersection, configureAirStorage, defineAirNode, defineRootAirNode, extendAirNodeDefinition, treeToStructureIndex };
