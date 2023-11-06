@@ -11,7 +11,7 @@ export const createNodeKey = <
 })
 
 export type NodeKey<
-    U extends FlatAirNode,
+    U extends FlatAirNode=FlatAirNode,
     T extends U['type']=U['type']
 > = {
     nodeId: string,
