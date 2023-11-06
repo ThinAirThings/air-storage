@@ -12,6 +12,7 @@ import { useSelectNodeStateFactory } from "./hooks/useSelectNodeFactory.js";
 import { useUpdateNodeStateFactory } from "./hooks/useUpdateNodeStateFactory.js";
 import { treeToStructureIndex } from "./extendAirNodeDefinition.js";
 import { useNodeSetFactory } from "./hooks/useNodeSetFactory.js";
+import { useUniversalNodeSetFactory } from "./hooks/useUniversalNodeSetFactory.js";
 
 export const configureAirStorage = <
     U extends FlatAirNode,
@@ -32,7 +33,7 @@ export const configureAirStorage = <
         useSelf
     }} = createRoomContext<
         LiveblocksPresence, 
-        ILiveIndexStorageModel
+        ILiveIndexStorageModel<U>
     >(createClient(createClientProps))
 
     return {
@@ -41,6 +42,7 @@ export const configureAirStorage = <
         useSelf,
         // Air Hooks
         useNodeSet: useNodeSetFactory<U>(useStorage),
+        useUniversalNodeSet: useUniversalNodeSetFactory<U>(useStorage),
         useCreateNode: useCreateNodeFactory<U, ExtIndex>(useMutation, mappedAirNodeUnion, StructureIndex),
         useSelectNodeState: useSelectNodeStateFactory<U, ExtIndex>(useStorage, StructureIndex),
         useUpdateNodeState: useUpdateNodeStateFactory<U, ExtIndex>(useMutation, StructureIndex),

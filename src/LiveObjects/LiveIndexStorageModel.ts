@@ -1,11 +1,11 @@
 import { LiveMap, LiveObject } from "@liveblocks/client"
 import { ILiveIndexNode, LiveIndexNode } from "./LiveIndexNode.js"
-import { TreeAirNode } from "../types.js"
+import { FlatAirNode, TreeAirNode } from "../types.js"
 import { createRoomContext } from "@liveblocks/react"
 
 
-export type ILiveIndexStorageModel = {
-    liveIndex: LiveMap<string, ILiveIndexNode>
+export type ILiveIndexStorageModel<U extends FlatAirNode=FlatAirNode> = {
+    liveIndex: LiveMap<string, ILiveIndexNode<U['state']>>
 }
 export class LiveIndexStorageModel implements ILiveIndexStorageModel{
     liveIndex: LiveMap<string, ILiveIndexNode>
@@ -24,4 +24,4 @@ export class LiveIndexStorageModel implements ILiveIndexStorageModel{
     }
 }
 
-export type LiveblocksHooks = ReturnType<typeof createRoomContext<any, ILiveIndexStorageModel>>['suspense']
+export type LiveblocksHooks<U extends FlatAirNode=FlatAirNode> = ReturnType<typeof createRoomContext<any, ILiveIndexStorageModel<U>>>['suspense']

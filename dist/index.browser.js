@@ -164,6 +164,11 @@ var useNodeSetFactory = (useStorage) => (predicate) => useStorage(({ liveIndex }
   );
 }, (a, b) => isEqual3(a, b));
 
+// src/hooks/useUniversalNodeSetFactory.ts
+var useUniversalNodeSetFactory = (useStorage) => (morphism) => useStorage(({ liveIndex }) => {
+  return morphism(liveIndex);
+});
+
 // src/configureAirStorage.tsx
 var configureAirStorage = (createClientProps, rootAirNode, liveblocksPresence) => {
   const mappedAirNodeUnion = treeToMappedUnion(rootAirNode);
@@ -181,6 +186,7 @@ var configureAirStorage = (createClientProps, rootAirNode, liveblocksPresence) =
     useSelf,
     // Air Hooks
     useNodeSet: useNodeSetFactory(useStorage),
+    useUniversalNodeSet: useUniversalNodeSetFactory(useStorage),
     useCreateNode: useCreateNodeFactory(useMutation, mappedAirNodeUnion, StructureIndex),
     useSelectNodeState: useSelectNodeStateFactory(useStorage, StructureIndex),
     useUpdateNodeState: useUpdateNodeStateFactory(useMutation, StructureIndex),
