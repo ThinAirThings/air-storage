@@ -110,9 +110,9 @@ declare const configureAirStorage: <U extends FlatAirNode, ExtIndex extends Reco
     useUpdateNodeState: <T_7 extends U["type"]>(nodeKey: NodeKey<T_7>) => (callback: (liveIndexState: _liveblocks_core.LiveObject<(U & {
         type: T_7;
     })["state"]>, ext: ExtIndex[T_7]) => void) => void;
-    useDeleteNode: <T_8 extends U["type"]>(nodeKey: NodeKey<T_8>, callback?: ((liveIndexNode: LiveIndexNode<(U & {
+    useDeleteNode: <T_8 extends U["type"]>(nodeKey: NodeKey<U, T_8>, callback?: ((liveIndexNode: LiveIndexNode<U & {
         type: T_8;
-    })["state"]>, ext: ExtIndex[T_8]) => void) | undefined) => () => NodeKey<FlatAirNode, string>;
+    }>, ext: ExtIndex[T_8]) => void) | undefined) => () => NodeKey<FlatAirNode, T_8>;
     useChildNodeKeySet: <T_9 extends U["type"], CT_1 extends ExtractChildTypeUnion<U & {
         type: T_9;
     }>>(nodeKey: NodeKey<U, T_9>, childType: CT_1) => Set<NodeKey<U, CT_1>>;

@@ -13,15 +13,15 @@ export const useDeleteNodeFactory = <
 ) => <
     T extends U['type'],
 >(
-    nodeKey: NodeKey<T>,
+    nodeKey: NodeKey<U, T>,
     callback?: (
-        liveIndexNode: LiveIndexNode<(U&{type: T})['state']>,
+        liveIndexNode: LiveIndexNode<(U&{type: T})>,
         ext: ExtIndex[T]
     ) => void
 ) => useMutation(({storage}) => {
     // Run callback before deleting node
     callback?.(
-        storage.get('liveIndex').get(nodeKey.nodeId)! as LiveIndexNode<(U&{type: T})['state']>,
+        storage.get('liveIndex').get(nodeKey.nodeId)! as LiveIndexNode<(U&{type: T})>,
         extensionIndex[nodeKey.type]
     )
     // Index Cleanup
