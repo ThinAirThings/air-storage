@@ -10,7 +10,7 @@ export const useCreateNodeFactory = <
     U extends FlatAirNode,
     ExtIndex extends Record<string, any>
 >(
-    useMutation: LiveblocksHooks['useMutation'],
+    useMutation: LiveblocksHooks<U>['useMutation'],
     mappedAirNodeUnion: MappedUnion,
     extensionIndex: ExtIndex
 ) => <
@@ -36,7 +36,7 @@ export const useCreateNodeFactory = <
     })
     callback?.(newLiveIndexNode, extensionIndex[childType])
     storage.get('liveIndex').get(nodeKey.nodeId)!.get('childNodeSets').get(childType)!.set(nodeId, null)
-    storage.get('liveIndex').set(nodeId, newLiveIndexNode)
+    storage.get('liveIndex').set(nodeId, newLiveIndexNode as any)
     return createNodeKey(nodeId, childType)
 }, []) as <
     CT extends ExtractChildTypeUnion<(U&{type: T})>,

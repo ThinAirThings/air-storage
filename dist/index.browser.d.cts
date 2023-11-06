@@ -53,7 +53,7 @@ type AirNodeIndexedUnion<U extends TreeAirNode> = {
 };
 type AirStorageMutationContext = MutationContext<any, ILiveIndexStorageModel, any>;
 
-declare const createNodeKey: <T extends string = string>(nodeId: string, type: T) => NodeKey<T>;
+declare const createNodeKey: <U extends FlatAirNode, T extends U["type"]>(nodeId: string, type: T) => NodeKey<T>;
 type NodeKey<T extends string = string> = {
     nodeId: string;
     type: T;
