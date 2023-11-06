@@ -5,7 +5,6 @@ import { ILiveIndexStorageModel } from "./LiveObjects/LiveIndexStorageModel.js";
 import { JsonObject, createClient } from "@liveblocks/client";
 import { NodeKey, createNodeKey } from "./types/NodeKey.js";
 import { AirNodeProviderFactory } from "./components/AirNodeProviderFactory.js";
-import { useChildrenNodeKeysFactory } from "./hooks/useChildrenNodeKeysFactory.js";
 import { useCreateNodeFactory } from "./hooks/useCreateNodeFactory.js";
 import { useDeleteNodeFactory } from "./hooks/useDeleteNodeFactory.js";
 import { useSelectNodeStateFactory } from "./hooks/useSelectNodeFactory.js";
@@ -13,6 +12,7 @@ import { useUpdateNodeStateFactory } from "./hooks/useUpdateNodeStateFactory.js"
 import { treeToStructureIndex } from "./extendAirNodeDefinition.js";
 import { useNodeSetFactory } from "./hooks/useNodeSetFactory.js";
 import { useUniversalNodeSetFactory } from "./hooks/useUniversalNodeSetFactory.js";
+import { useChildNodeKeySetFactory } from "./hooks/useChildNodeKeySetFactory.js";
 
 export const configureAirStorage = <
     U extends FlatAirNode,
@@ -47,7 +47,7 @@ export const configureAirStorage = <
         useSelectNodeState: useSelectNodeStateFactory<U, ExtIndex>(useStorage, StructureIndex),
         useUpdateNodeState: useUpdateNodeStateFactory<U, ExtIndex>(useMutation, StructureIndex),
         useDeleteNode: useDeleteNodeFactory<U, ExtIndex>(useMutation, StructureIndex),
-        useChildrenNodeKeys: useChildrenNodeKeysFactory<U>(useStorage),
+        useChildrenNodeKeys: useChildNodeKeySetFactory<U>(useStorage),
         AirNodeProvider: AirNodeProviderFactory(rootAirNode, RoomProvider, liveblocksPresence??{}),
         // Only use 'useStorage' here because Liveblocks will throw an error if useStorage isn't called before using mutations.
         useRootAirNode: () => useStorage(()=>createNodeKey('root', 'root')),

@@ -70,12 +70,6 @@ var AirNodeProviderFactory = (rootAirNode, LiveblocksRoomProvider, initialLivebl
   );
 };
 
-// src/hooks/useChildrenNodeKeysFactory.ts
-import isEqual from "lodash.isequal";
-var useChildrenNodeKeysFactory = (useStorage) => (nodeKey, childType) => useStorage(({ liveIndex }) => new Set(
-  [...liveIndex.get(nodeKey.nodeId).childNodeSets.get(childType).keys()].map((nodeId) => createNodeKey(nodeId, childType))
-), (a, b) => isEqual(a, b));
-
 // src/hooks/useCreateNodeFactory.ts
 import { LiveMap as LiveMap3, LiveObject as LiveObject3 } from "@liveblocks/client";
 import { v4 as uuidv4 } from "uuid";
@@ -121,11 +115,11 @@ var useDeleteNodeFactory = (useMutation, extensionIndex) => (nodeKey, callback) 
 }, []);
 
 // src/hooks/useSelectNodeFactory.ts
-import isEqual2 from "lodash.isequal";
+import isEqual from "lodash.isequal";
 var useSelectNodeStateFactory = (useStorage, extensionIndex) => (nodeKey, selector) => useStorage(({ liveIndex }) => selector(
   liveIndex.get(nodeKey.nodeId).state,
   extensionIndex[nodeKey.type]
-), (a, b) => isEqual2(a, b));
+), (a, b) => isEqual(a, b));
 
 // src/hooks/useUpdateNodeStateFactory.ts
 var useUpdateNodeStateFactory = (useMutation, extensionIndex) => (nodeKey) => useMutation(({ storage }, callback) => {
@@ -157,17 +151,23 @@ var treeToStructureIndex = (tree) => {
 };
 
 // src/hooks/useNodeSetFactory.ts
-import isEqual3 from "lodash.isequal";
+import isEqual2 from "lodash.isequal";
 var useNodeSetFactory = (useStorage) => (predicate) => useStorage(({ liveIndex }) => {
   return new Set(
     [...liveIndex.values()].filter(predicate)
   );
-}, (a, b) => isEqual3(a, b));
+}, (a, b) => isEqual2(a, b));
 
 // src/hooks/useUniversalNodeSetFactory.ts
 var useUniversalNodeSetFactory = (useStorage) => (morphism) => useStorage(({ liveIndex }) => {
   return morphism(liveIndex);
 });
+
+// src/hooks/useChildNodeKeySetFactory.ts
+import isEqual3 from "lodash.isequal";
+var useChildNodeKeySetFactory = (useStorage) => (nodeKey, childType) => useStorage(({ liveIndex }) => new Set(
+  [...liveIndex.get(nodeKey.nodeId).childNodeSets.get(childType).keys()].map((nodeId) => createNodeKey(nodeId, childType))
+), (a, b) => isEqual3(a, b));
 
 // src/configureAirStorage.tsx
 var configureAirStorage = (createClientProps, rootAirNode, liveblocksPresence) => {
@@ -191,7 +191,7 @@ var configureAirStorage = (createClientProps, rootAirNode, liveblocksPresence) =
     useSelectNodeState: useSelectNodeStateFactory(useStorage, StructureIndex),
     useUpdateNodeState: useUpdateNodeStateFactory(useMutation, StructureIndex),
     useDeleteNode: useDeleteNodeFactory(useMutation, StructureIndex),
-    useChildrenNodeKeys: useChildrenNodeKeysFactory(useStorage),
+    useChildrenNodeKeys: useChildNodeKeySetFactory(useStorage),
     AirNodeProvider: AirNodeProviderFactory(rootAirNode, RoomProvider, liveblocksPresence ?? {}),
     // Only use 'useStorage' here because Liveblocks will throw an error if useStorage isn't called before using mutations.
     useRootAirNode: () => useStorage(() => createNodeKey("root", "root")),

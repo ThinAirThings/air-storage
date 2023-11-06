@@ -3,7 +3,7 @@ import { LiveblocksHooks } from "../LiveObjects/LiveIndexStorageModel.js";
 import { ExtractChildTypeUnion, FlatAirNode } from "../types.js";
 import { NodeKey, createNodeKey } from "../types/NodeKey.js";
 
-export const useChildrenNodeKeysFactory = <
+export const useChildNodeKeySetFactory = <
     U extends FlatAirNode
 >(
     useStorage: LiveblocksHooks['useStorage']
