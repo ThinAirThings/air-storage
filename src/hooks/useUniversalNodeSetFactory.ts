@@ -14,4 +14,4 @@ export const useUniversalNodeSetFactory = <
     morphism: (liveIndex: Parameters<Parameters<LiveblocksHooks<U>['useStorage']>[0]>[0]['liveIndex'] ) => R
 ) => useStorage(({liveIndex}) => {
     return morphism(liveIndex)
-})
+}) as R
