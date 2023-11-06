@@ -47,7 +47,7 @@ export const configureAirStorage = <
         useSelectNodeState: useSelectNodeStateFactory<U, ExtIndex>(useStorage, StructureIndex),
         useUpdateNodeState: useUpdateNodeStateFactory<U, ExtIndex>(useMutation, StructureIndex),
         useDeleteNode: useDeleteNodeFactory<U, ExtIndex>(useMutation, StructureIndex),
-        useChildrenNodeKeys: useChildNodeKeySetFactory<U>(useStorage),
+        useChildNodeKeySet: useChildNodeKeySetFactory<U>(useStorage),
         AirNodeProvider: AirNodeProviderFactory(rootAirNode, RoomProvider, liveblocksPresence??{}),
         // Only use 'useStorage' here because Liveblocks will throw an error if useStorage isn't called before using mutations.
         useRootAirNode: () => useStorage(()=>createNodeKey('root', 'root')),

@@ -113,7 +113,7 @@ declare const configureAirStorage: <U extends FlatAirNode, ExtIndex extends Reco
     useDeleteNode: <T_8 extends U["type"]>(nodeKey: NodeKey<T_8>, callback?: ((liveIndexNode: LiveIndexNode<(U & {
         type: T_8;
     })["state"]>, ext: ExtIndex[T_8]) => void) | undefined) => () => NodeKey<FlatAirNode, string>;
-    useChildrenNodeKeys: <T_9 extends U["type"], CT_1 extends ExtractChildTypeUnion<U & {
+    useChildNodeKeySet: <T_9 extends U["type"], CT_1 extends ExtractChildTypeUnion<U & {
         type: T_9;
     }>>(nodeKey: NodeKey<U, T_9>, childType: CT_1) => Set<NodeKey<U, CT_1>>;
     AirNodeProvider: ({ storageId, children }: {
