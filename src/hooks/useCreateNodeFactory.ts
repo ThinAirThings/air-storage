@@ -1,4 +1,4 @@
-import { LiveMap, LiveObject, LsonObject } from "@liveblocks/client";
+import { LiveMap, LiveObject } from "@liveblocks/client";
 import { LiveIndexNode } from "../LiveObjects/LiveIndexNode.js";
 import { LiveblocksHooks } from "../LiveObjects/LiveIndexStorageModel.js";
 import { ExtractChildTypeUnion, FlatAirNode } from "../types.js";
@@ -19,8 +19,8 @@ export const useCreateNodeFactory = <
     nodeKey: NodeKey<U, T>,
 ) => useMutation((
         {storage},
-        childType: string,
-        callback?: (liveIndexNode: LiveIndexNode<LsonObject>, extIndex: ExtIndex[string]) => void
+        childType: U['childTypeSet'] extends Set<infer CT extends string> ? CT : never,
+        callback?: (liveIndexNode: LiveIndexNode<FlatAirNode>, extIndex: ExtIndex[string]) => void
     ) => {
     const nodeId = uuidv4()
     const newLiveIndexNode = new LiveIndexNode({
@@ -43,7 +43,7 @@ export const useCreateNodeFactory = <
     R extends NodeKey<U, CT>
 >(
     childType: CT,
-    callback?: (liveIndexNode: LiveIndexNode<(U&{type: CT})['state']>, extensionIndex: ExtIndex[CT]) => void
+    callback?: (liveIndexNode: LiveIndexNode<(U&{type: CT})>, extensionIndex: ExtIndex[CT]) => void
 ) => R
 
 

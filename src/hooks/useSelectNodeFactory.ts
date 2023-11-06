@@ -5,7 +5,7 @@ import { FlatAirNode } from "../types.js";
 import { NodeKey } from "../types/NodeKey.js";
 
 
-export type ImmutableLsonObject<T extends FlatAirNode> = ReturnType<LiveIndexNode<T['state']>['toImmutable']>['state']
+export type ImmutableLsonObject<U extends FlatAirNode> = ReturnType<LiveIndexNode<U>['toImmutable']>['state']
 
 export const useSelectNodeStateFactory = <
     U extends FlatAirNode,

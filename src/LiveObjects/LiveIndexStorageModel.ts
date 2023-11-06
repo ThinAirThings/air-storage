@@ -5,7 +5,7 @@ import { createRoomContext } from "@liveblocks/react"
 
 
 export type ILiveIndexStorageModel<U extends FlatAirNode=FlatAirNode> = {
-    liveIndex: LiveMap<string, ILiveIndexNode<U['state']>>
+    liveIndex: LiveMap<string, ILiveIndexNode<U>>
 }
 export class LiveIndexStorageModel implements ILiveIndexStorageModel{
     liveIndex: LiveMap<string, ILiveIndexNode>

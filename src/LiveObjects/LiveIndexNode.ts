@@ -1,30 +1,37 @@
 import { LiveMap, LiveObject, LsonObject } from "@liveblocks/client";
+import { FlatAirNode } from "../types.js";
 
 
 
 export type ILiveIndexNode<
-    S extends LsonObject=LsonObject,
+    U extends FlatAirNode=FlatAirNode,
 > = LiveObject<{
     nodeId: string
-    type: string
+    type: U['type']
     parentNodeId: string | null
     parentType: string | null
-    state: LiveObject<S>
-    childNodeSets: LiveMap<string, LiveMap<string, null>>
+    state: LiveObject<U['state']>
+    childNodeSets: LiveMap<
+        U['childTypeSet'] extends Set<infer T extends string> ? T : never, 
+        LiveMap<string, null>
+    >
 }>
 
 export class LiveIndexNode<
-    S extends LsonObject=LsonObject,
+    U extends FlatAirNode=FlatAirNode,
 > extends LiveObject<
-    ILiveIndexNode<S> extends LiveObject<infer T>? T : never
+    ILiveIndexNode<U> extends LiveObject<infer U>? U : never
 > {
     constructor(data: {
         nodeId: string
-        type: string
+        type: U['type']
         parentNodeId: string | null
         parentType: string | null
-        childNodeSets: LiveMap<string, LiveMap<string, null>>
-        state: LiveObject<S>
+        childNodeSets: LiveMap<
+            U['childTypeSet'] extends Set<infer T extends string> ? T : never, 
+            LiveMap<string, null>
+        >
+        state: LiveObject<U['state']>
     }) {
         super(data)
     }

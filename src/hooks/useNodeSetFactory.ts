@@ -10,9 +10,9 @@ export const useNodeSetFactory = <
 >(
     useStorage: LiveblocksHooks['useStorage']
 ) => <
-    P extends ReturnType<LiveIndexNode<U['state']>['toImmutable']>
+    P extends ReturnType<LiveIndexNode<U>['toImmutable']>
 >(
-    predicate: (node: ReturnType<LiveIndexNode<U['state']>['toImmutable']>) => node is P
+    predicate: (node: ReturnType<LiveIndexNode<U>['toImmutable']>) => node is P
 ) => useStorage(({liveIndex}) => {
     return new Set(
         [...liveIndex.values()].filter(predicate as any) as any

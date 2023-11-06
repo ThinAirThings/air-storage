@@ -1,30 +1,30 @@
-import { LsonObject, LiveObject, LiveMap, JsonObject, createClient } from '@liveblocks/client';
+import { LiveObject, LiveMap, LsonObject, JsonObject, createClient } from '@liveblocks/client';
 import { MutationContext } from '@liveblocks/react';
 import * as react_jsx_runtime from 'react/jsx-runtime';
 import * as react from 'react';
 import * as _liveblocks_core from '@liveblocks/core';
 
-type ILiveIndexNode<S extends LsonObject = LsonObject> = LiveObject<{
+type ILiveIndexNode<U extends FlatAirNode = FlatAirNode> = LiveObject<{
     nodeId: string;
-    type: string;
+    type: U['type'];
     parentNodeId: string | null;
     parentType: string | null;
-    state: LiveObject<S>;
-    childNodeSets: LiveMap<string, LiveMap<string, null>>;
+    state: LiveObject<U['state']>;
+    childNodeSets: LiveMap<U['childTypeSet'] extends Set<infer T extends string> ? T : never, LiveMap<string, null>>;
 }>;
-declare class LiveIndexNode<S extends LsonObject = LsonObject> extends LiveObject<ILiveIndexNode<S> extends LiveObject<infer T> ? T : never> {
+declare class LiveIndexNode<U extends FlatAirNode = FlatAirNode> extends LiveObject<ILiveIndexNode<U> extends LiveObject<infer U> ? U : never> {
     constructor(data: {
         nodeId: string;
-        type: string;
+        type: U['type'];
         parentNodeId: string | null;
         parentType: string | null;
-        childNodeSets: LiveMap<string, LiveMap<string, null>>;
-        state: LiveObject<S>;
+        childNodeSets: LiveMap<U['childTypeSet'] extends Set<infer T extends string> ? T : never, LiveMap<string, null>>;
+        state: LiveObject<U['state']>;
     });
 }
 
 type ILiveIndexStorageModel<U extends FlatAirNode = FlatAirNode> = {
-    liveIndex: LiveMap<string, ILiveIndexNode<U['state']>>;
+    liveIndex: LiveMap<string, ILiveIndexNode<U>>;
 };
 
 type TreeAirNode<T extends string = string, Skt extends Record<string, any> = Record<string, any>, S extends LsonObject = LsonObject, C extends TreeAirNode[] | [] = TreeAirNode<string, Record<string, any>, LsonObject, any>[] | []> = {
@@ -59,7 +59,7 @@ type NodeKey<U extends FlatAirNode, T extends U['type'] = U['type']> = {
     type: T;
 };
 
-type ImmutableLsonObject<T extends FlatAirNode> = ReturnType<LiveIndexNode<T['state']>['toImmutable']>['state'];
+type ImmutableLsonObject<U extends FlatAirNode> = ReturnType<LiveIndexNode<U>['toImmutable']>['state'];
 
 declare const configureAirStorage: <U extends FlatAirNode, ExtIndex extends Record<string, any>, LiveblocksPresence extends JsonObject = {}>(createClientProps: Parameters<typeof createClient>[0], rootAirNode: TreeAirNode, liveblocksPresence?: LiveblocksPresence | undefined) => {
     useUpdateMyPresence: () => (patch: Partial<LiveblocksPresence>, options?: {
@@ -71,51 +71,51 @@ declare const configureAirStorage: <U extends FlatAirNode, ExtIndex extends Reco
     };
     useNodeSet: <P extends {
         nodeId: string;
-        type: string;
+        type: U["type"];
         parentNodeId: string | null;
         parentType: string | null;
         state: _liveblocks_core.LiveObject<U["state"]>;
-        childNodeSets: _liveblocks_core.LiveMap<string, _liveblocks_core.LiveMap<string, null>>;
-    } extends infer T_1 ? T_1 extends {
-        nodeId: string;
-        type: string;
-        parentNodeId: string | null;
-        parentType: string | null;
-        state: _liveblocks_core.LiveObject<U["state"]>;
-        childNodeSets: _liveblocks_core.LiveMap<string, _liveblocks_core.LiveMap<string, null>>;
-    } ? T_1 extends _liveblocks_core.LsonObject ? { readonly [K in keyof T_1]: _liveblocks_core.ToImmutable<Exclude<T_1[K], undefined>> | (undefined extends T_1[K] ? T_1[K] & undefined : never); } : T_1 extends _liveblocks_core.Json ? T_1 : never : never : never>(predicate: (node: {
-        nodeId: string;
-        type: string;
-        parentNodeId: string | null;
-        parentType: string | null;
-        state: _liveblocks_core.LiveObject<U["state"]>;
-        childNodeSets: _liveblocks_core.LiveMap<string, _liveblocks_core.LiveMap<string, null>>;
+        childNodeSets: _liveblocks_core.LiveMap<U["childTypeSet"] extends Set<infer T_1 extends string> ? T_1 : never, _liveblocks_core.LiveMap<string, null>>;
     } extends infer T_2 ? T_2 extends {
         nodeId: string;
-        type: string;
+        type: U["type"];
         parentNodeId: string | null;
         parentType: string | null;
         state: _liveblocks_core.LiveObject<U["state"]>;
-        childNodeSets: _liveblocks_core.LiveMap<string, _liveblocks_core.LiveMap<string, null>>;
-    } ? T_2 extends _liveblocks_core.LsonObject ? { readonly [K_1 in keyof T_2]: _liveblocks_core.ToImmutable<Exclude<T_2[K_1], undefined>> | (undefined extends T_2[K_1] ? T_2[K_1] & undefined : never); } : T_2 extends _liveblocks_core.Json ? T_2 : never : never : never) => node is P) => Set<NodeKey<U, P["type"]>>;
-    useUniversalNodeSet: <R>(morphism: (liveIndex: (ILiveIndexStorageModel<U> extends infer T_3 ? T_3 extends ILiveIndexStorageModel<U> ? T_3 extends _liveblocks_core.LsonObject ? { readonly [K_2 in keyof T_3]: _liveblocks_core.ToImmutable<Exclude<T_3[K_2], undefined>> | (undefined extends T_3[K_2] ? T_3[K_2] & undefined : never); } : T_3 extends _liveblocks_core.Json ? T_3 : never : never : never)["liveIndex"]) => R) => R;
-    useCreateNode: <T_4 extends U["type"]>(nodeKey: NodeKey<U, T_4>) => <CT extends ExtractChildTypeUnion<U & {
-        type: T_4;
-    }>, R_1 extends NodeKey<U, CT>>(childType: CT, callback?: ((liveIndexNode: LiveIndexNode<(U & {
-        type: CT;
-    })["state"]>, extensionIndex: ExtIndex[CT]) => void) | undefined) => R_1;
-    useSelectNodeState: <T_5 extends U["type"], R_2>(nodeKey: NodeKey<U, T_5>, selector: (immutableState: ImmutableLsonObject<U & {
+        childNodeSets: _liveblocks_core.LiveMap<U["childTypeSet"] extends Set<infer T_1 extends string> ? T_1 : never, _liveblocks_core.LiveMap<string, null>>;
+    } ? T_2 extends _liveblocks_core.LsonObject ? { readonly [K in keyof T_2]: _liveblocks_core.ToImmutable<Exclude<T_2[K], undefined>> | (undefined extends T_2[K] ? T_2[K] & undefined : never); } : T_2 extends _liveblocks_core.Json ? T_2 : never : never : never>(predicate: (node: {
+        nodeId: string;
+        type: U["type"];
+        parentNodeId: string | null;
+        parentType: string | null;
+        state: _liveblocks_core.LiveObject<U["state"]>;
+        childNodeSets: _liveblocks_core.LiveMap<U["childTypeSet"] extends Set<infer T_1 extends string> ? T_1 : never, _liveblocks_core.LiveMap<string, null>>;
+    } extends infer T_3 ? T_3 extends {
+        nodeId: string;
+        type: U["type"];
+        parentNodeId: string | null;
+        parentType: string | null;
+        state: _liveblocks_core.LiveObject<U["state"]>;
+        childNodeSets: _liveblocks_core.LiveMap<U["childTypeSet"] extends Set<infer T_1 extends string> ? T_1 : never, _liveblocks_core.LiveMap<string, null>>;
+    } ? T_3 extends _liveblocks_core.LsonObject ? { readonly [K_1 in keyof T_3]: _liveblocks_core.ToImmutable<Exclude<T_3[K_1], undefined>> | (undefined extends T_3[K_1] ? T_3[K_1] & undefined : never); } : T_3 extends _liveblocks_core.Json ? T_3 : never : never : never) => node is P) => Set<NodeKey<U, P["type"]>>;
+    useUniversalNodeSet: <R>(morphism: (liveIndex: (ILiveIndexStorageModel<U> extends infer T_4 ? T_4 extends ILiveIndexStorageModel<U> ? T_4 extends _liveblocks_core.LsonObject ? { readonly [K_2 in keyof T_4]: _liveblocks_core.ToImmutable<Exclude<T_4[K_2], undefined>> | (undefined extends T_4[K_2] ? T_4[K_2] & undefined : never); } : T_4 extends _liveblocks_core.Json ? T_4 : never : never : never)["liveIndex"]) => R) => R;
+    useCreateNode: <T_5 extends U["type"]>(nodeKey: NodeKey<U, T_5>) => <CT extends ExtractChildTypeUnion<U & {
         type: T_5;
-    }>, ext: ExtIndex[T_5]) => R_2) => R_2;
-    useUpdateNodeState: <T_6 extends U["type"]>(nodeKey: NodeKey<T_6>) => (callback: (liveIndexState: _liveblocks_core.LiveObject<(U & {
+    }>, R_1 extends NodeKey<U, CT>>(childType: CT, callback?: ((liveIndexNode: LiveIndexNode<U & {
+        type: CT;
+    }>, extensionIndex: ExtIndex[CT]) => void) | undefined) => R_1;
+    useSelectNodeState: <T_6 extends U["type"], R_2>(nodeKey: NodeKey<U, T_6>, selector: (immutableState: ImmutableLsonObject<U & {
         type: T_6;
-    })["state"]>, ext: ExtIndex[T_6]) => void) => void;
-    useDeleteNode: <T_7 extends U["type"]>(nodeKey: NodeKey<T_7>, callback?: ((liveIndexNode: LiveIndexNode<(U & {
+    }>, ext: ExtIndex[T_6]) => R_2) => R_2;
+    useUpdateNodeState: <T_7 extends U["type"]>(nodeKey: NodeKey<T_7>) => (callback: (liveIndexState: _liveblocks_core.LiveObject<(U & {
         type: T_7;
-    })["state"]>, ext: ExtIndex[T_7]) => void) | undefined) => () => NodeKey<FlatAirNode, string>;
-    useChildrenNodeKeys: <T_8 extends U["type"], CT_1 extends ExtractChildTypeUnion<U & {
+    })["state"]>, ext: ExtIndex[T_7]) => void) => void;
+    useDeleteNode: <T_8 extends U["type"]>(nodeKey: NodeKey<T_8>, callback?: ((liveIndexNode: LiveIndexNode<(U & {
         type: T_8;
-    }>>(nodeKey: NodeKey<U, T_8>, childType: CT_1) => Set<NodeKey<U, CT_1>>;
+    })["state"]>, ext: ExtIndex[T_8]) => void) | undefined) => () => NodeKey<FlatAirNode, string>;
+    useChildrenNodeKeys: <T_9 extends U["type"], CT_1 extends ExtractChildTypeUnion<U & {
+        type: T_9;
+    }>>(nodeKey: NodeKey<U, T_9>, childType: CT_1) => Set<NodeKey<U, CT_1>>;
     AirNodeProvider: ({ storageId, children }: {
         storageId: string;
         children: react.ReactNode;
