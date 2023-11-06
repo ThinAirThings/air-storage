@@ -13,7 +13,7 @@ export const useUpdateNodeStateFactory = <
 ) => <
     T extends U['type']
 >(
-    nodeKey: NodeKey<T>,
+    nodeKey: NodeKey<U, T>,
 ) => useMutation((
     {storage}: AirStorageMutationContext,
     callback: (

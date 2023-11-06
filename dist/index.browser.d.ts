@@ -107,7 +107,7 @@ declare const configureAirStorage: <U extends FlatAirNode, ExtIndex extends Reco
     useSelectNodeState: <T_6 extends U["type"], R_2>(nodeKey: NodeKey<U, T_6>, selector: (immutableState: ImmutableLsonObject<U & {
         type: T_6;
     }>, ext: ExtIndex[T_6]) => R_2) => R_2;
-    useUpdateNodeState: <T_7 extends U["type"]>(nodeKey: NodeKey<T_7>) => (callback: (liveIndexState: _liveblocks_core.LiveObject<(U & {
+    useUpdateNodeState: <T_7 extends U["type"]>(nodeKey: NodeKey<U, T_7>) => (callback: (liveIndexState: _liveblocks_core.LiveObject<(U & {
         type: T_7;
     })["state"]>, ext: ExtIndex[T_7]) => void) => void;
     useDeleteNode: <T_8 extends U["type"]>(nodeKey: NodeKey<U, T_8>, callback?: ((liveIndexNode: LiveIndexNode<U & {
