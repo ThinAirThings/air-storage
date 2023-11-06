@@ -53,8 +53,8 @@ type AirNodeIndexedUnion<U extends TreeAirNode> = {
 };
 type AirStorageMutationContext = MutationContext<any, ILiveIndexStorageModel, any>;
 
-declare const createNodeKey: <U extends FlatAirNode, T extends U["type"]>(nodeId: string, type: T) => NodeKey<T>;
-type NodeKey<T extends string = string> = {
+declare const createNodeKey: <U extends FlatAirNode, T extends U["type"]>(nodeId: string, type: T) => NodeKey<U, T>;
+type NodeKey<U extends FlatAirNode, T extends U['type'] = U['type']> = {
     nodeId: string;
     type: T;
 };
@@ -97,14 +97,14 @@ declare const configureAirStorage: <U extends FlatAirNode, ExtIndex extends Reco
         parentType: string | null;
         state: _liveblocks_core.LiveObject<U["state"]>;
         childNodeSets: _liveblocks_core.LiveMap<string, _liveblocks_core.LiveMap<string, null>>;
-    } ? T_2 extends _liveblocks_core.LsonObject ? { readonly [K_1 in keyof T_2]: _liveblocks_core.ToImmutable<Exclude<T_2[K_1], undefined>> | (undefined extends T_2[K_1] ? T_2[K_1] & undefined : never); } : T_2 extends _liveblocks_core.Json ? T_2 : never : never : never) => node is P) => Set<NodeKey<P["type"]>>;
+    } ? T_2 extends _liveblocks_core.LsonObject ? { readonly [K_1 in keyof T_2]: _liveblocks_core.ToImmutable<Exclude<T_2[K_1], undefined>> | (undefined extends T_2[K_1] ? T_2[K_1] & undefined : never); } : T_2 extends _liveblocks_core.Json ? T_2 : never : never : never) => node is P) => Set<NodeKey<U, P["type"]>>;
     useUniversalNodeSet: <R>(morphism: (liveIndex: (ILiveIndexStorageModel<U> extends infer T_3 ? T_3 extends ILiveIndexStorageModel<U> ? T_3 extends _liveblocks_core.LsonObject ? { readonly [K_2 in keyof T_3]: _liveblocks_core.ToImmutable<Exclude<T_3[K_2], undefined>> | (undefined extends T_3[K_2] ? T_3[K_2] & undefined : never); } : T_3 extends _liveblocks_core.Json ? T_3 : never : never : never)["liveIndex"]) => R) => R;
-    useCreateNode: <T_4 extends U["type"]>(nodeKey: NodeKey<T_4>) => <CT extends ExtractChildTypeUnion<U & {
+    useCreateNode: <T_4 extends U["type"]>(nodeKey: NodeKey<U, T_4>) => <CT extends ExtractChildTypeUnion<U & {
         type: T_4;
-    }>, R_1 extends NodeKey<CT>>(childType: CT, callback?: ((liveIndexNode: LiveIndexNode<(U & {
+    }>, R_1 extends NodeKey<U, CT>>(childType: CT, callback?: ((liveIndexNode: LiveIndexNode<(U & {
         type: CT;
     })["state"]>, extensionIndex: ExtIndex[CT]) => void) | undefined) => R_1;
-    useSelectNodeState: <T_5 extends U["type"], R_2>(nodeKey: NodeKey<T_5>, selector: (immutableState: ImmutableLsonObject<U & {
+    useSelectNodeState: <T_5 extends U["type"], R_2>(nodeKey: NodeKey<U, T_5>, selector: (immutableState: ImmutableLsonObject<U & {
         type: T_5;
     }>, ext: ExtIndex[T_5]) => R_2) => R_2;
     useUpdateNodeState: <T_6 extends U["type"]>(nodeKey: NodeKey<T_6>) => (callback: (liveIndexState: _liveblocks_core.LiveObject<(U & {
@@ -112,15 +112,15 @@ declare const configureAirStorage: <U extends FlatAirNode, ExtIndex extends Reco
     })["state"]>, ext: ExtIndex[T_6]) => void) => void;
     useDeleteNode: <T_7 extends U["type"]>(nodeKey: NodeKey<T_7>, callback?: ((liveIndexNode: LiveIndexNode<(U & {
         type: T_7;
-    })["state"]>, ext: ExtIndex[T_7]) => void) | undefined) => () => NodeKey<T_7>;
+    })["state"]>, ext: ExtIndex[T_7]) => void) | undefined) => () => NodeKey<FlatAirNode, string>;
     useChildrenNodeKeys: <T_8 extends U["type"], CT_1 extends ExtractChildTypeUnion<U & {
         type: T_8;
-    }>>(nodeKey: NodeKey<T_8>, childType: CT_1) => Set<NodeKey<CT_1>>;
+    }>>(nodeKey: NodeKey<U, T_8>, childType: CT_1) => Set<NodeKey<U, CT_1>>;
     AirNodeProvider: ({ storageId, children }: {
         storageId: string;
         children: react.ReactNode;
     }) => react_jsx_runtime.JSX.Element;
-    useRootAirNode: () => NodeKey<"root">;
+    useRootAirNode: () => NodeKey<FlatAirNode, "root">;
     StructureIndex: ExtIndex;
 };
 

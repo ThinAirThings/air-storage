@@ -18,7 +18,7 @@ export const useNodeSetFactory = <
         [...liveIndex.values()].filter(predicate as any) as any
     )
 }, (a, b) => isEqual(a, b)) as Set<
-    NodeKey<P['type']>
+    NodeKey<U, P['type']>
 >
 
 

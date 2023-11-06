@@ -17,7 +17,7 @@ export const useSelectNodeStateFactory = <
     T extends U['type'],
     R
 >(
-    nodeKey: NodeKey<T>,
+    nodeKey: NodeKey<U, T>,
     selector: (
         immutableState: ImmutableLsonObject<(U&{type: T})>,
         ext: ExtIndex[T]

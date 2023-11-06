@@ -16,7 +16,7 @@ export const useCreateNodeFactory = <
 ) => <
     T extends U['type']
 >(
-    nodeKey: NodeKey<T>,
+    nodeKey: NodeKey<U, T>,
 ) => useMutation((
         {storage},
         childType: string,
@@ -40,7 +40,7 @@ export const useCreateNodeFactory = <
     return createNodeKey(nodeId, childType)
 }, []) as <
     CT extends ExtractChildTypeUnion<(U&{type: T})>,
-    R extends NodeKey<CT>
+    R extends NodeKey<U, CT>
 >(
     childType: CT,
     callback?: (liveIndexNode: LiveIndexNode<(U&{type: CT})['state']>, extensionIndex: ExtIndex[CT]) => void

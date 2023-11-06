@@ -11,9 +11,9 @@ export const useChildNodeKeySetFactory = <
     T extends U['type'],
     CT extends ExtractChildTypeUnion<(U&{type: T})>
 >(
-    nodeKey: NodeKey<T>,
+    nodeKey: NodeKey<U, T>,
     childType: CT
-): Set<NodeKey<CT>> => useStorage(({liveIndex}) => new Set(
+): Set<NodeKey<U, CT>> => useStorage(({liveIndex}) => new Set(
     [...liveIndex.get(nodeKey.nodeId)!.childNodeSets.get(childType)!.keys()]
     .map(nodeId => createNodeKey(nodeId, childType))
 ), (a, b) => isEqual(a, b))
