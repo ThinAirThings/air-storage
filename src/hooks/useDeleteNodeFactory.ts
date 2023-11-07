@@ -10,18 +10,17 @@ export const useDeleteNodeFactory = <
 >(
     useMutation: LiveblocksHooks['useMutation'],
     extensionIndex: ExtIndex
-) => <
-    T extends U['type'],
->(
-    nodeKey: NodeKey<U, T>,
-    callback?: (
-        liveIndexNode: LiveIndexNode<(U&{type: T})>,
-        ext: ExtIndex[T]
-    ) => void
-) => useMutation(({storage}) => {
+) => () => useMutation((
+        {storage},
+        nodeKey: NodeKey<U, U['type']>,
+        callback?: (
+            liveIndexNode: LiveIndexNode<(U&{type: U['type']})>,
+            ext: ExtIndex[U['type']]
+        ) => void
+    ) => {
     // Run callback before deleting node
     callback?.(
-        storage.get('liveIndex').get(nodeKey.nodeId)! as LiveIndexNode<(U&{type: T})>,
+        storage.get('liveIndex').get(nodeKey.nodeId)! as LiveIndexNode<(U&{type: U['type']})>,
         extensionIndex[nodeKey.type]
     )
     // Index Cleanup
@@ -43,4 +42,12 @@ export const useDeleteNodeFactory = <
     // Return Sibling NodeKey
     const sibblingNodeId = [...parentNode.get('childNodeSets').get(nodeKey.type)!.keys()][0]
     return createNodeKey(sibblingNodeId, nodeKey.type)
-}, [])
+}, []) as <
+    T extends U['type']
+>(
+    nodeKey: NodeKey<U, T>,
+    callback?: (
+        liveIndexNode: LiveIndexNode<(U&{type: T})>,
+        ext: ExtIndex[T]
+    ) => void
+) => NodeKey<U, T>

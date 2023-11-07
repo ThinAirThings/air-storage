@@ -13,12 +13,9 @@ export const useCreateNodeFactory = <
     useMutation: LiveblocksHooks<U>['useMutation'],
     mappedAirNodeUnion: MappedUnion,
     extensionIndex: ExtIndex
-) => <
-    T extends U['type']
->(
-    nodeKey: NodeKey<U, T>,
-) => useMutation((
+) => () => useMutation((
         {storage},
+        nodeKey: NodeKey<U, U['type']>,
         childType: U['childTypeSet'] extends Set<infer CT extends string> ? CT : never,
         callback?: (liveIndexNode: LiveIndexNode<FlatAirNode>, extIndex: ExtIndex[string]) => void
     ) => {
@@ -39,9 +36,11 @@ export const useCreateNodeFactory = <
     storage.get('liveIndex').set(nodeId, newLiveIndexNode as any)
     return createNodeKey(nodeId, childType)
 }, []) as <
+    T extends U['type'],
     CT extends ExtractChildTypeUnion<(U&{type: T})>,
     R extends NodeKey<U, CT>
 >(
+    nodeKey: NodeKey<U, T>,
     childType: CT,
     callback?: (liveIndexNode: LiveIndexNode<(U&{type: CT})>, extensionIndex: ExtIndex[CT]) => void
 ) => R

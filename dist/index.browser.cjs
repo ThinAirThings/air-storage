@@ -115,7 +115,7 @@ var AirNodeProviderFactory = (rootAirNode, LiveblocksRoomProvider, initialLivebl
 // src/hooks/useCreateNodeFactory.ts
 var import_client3 = require("@liveblocks/client");
 var import_uuid = require("uuid");
-var useCreateNodeFactory = (useMutation, mappedAirNodeUnion, extensionIndex) => (nodeKey) => useMutation(({ storage }, childType, callback) => {
+var useCreateNodeFactory = (useMutation, mappedAirNodeUnion, extensionIndex) => () => useMutation(({ storage }, nodeKey, childType, callback) => {
   const nodeId = (0, import_uuid.v4)();
   const newLiveIndexNode = new LiveIndexNode({
     nodeId,
@@ -134,7 +134,7 @@ var useCreateNodeFactory = (useMutation, mappedAirNodeUnion, extensionIndex) => 
 }, []);
 
 // src/hooks/useDeleteNodeFactory.ts
-var useDeleteNodeFactory = (useMutation, extensionIndex) => (nodeKey, callback) => useMutation(({ storage }) => {
+var useDeleteNodeFactory = (useMutation, extensionIndex) => () => useMutation(({ storage }, nodeKey, callback) => {
   callback?.(
     storage.get("liveIndex").get(nodeKey.nodeId),
     extensionIndex[nodeKey.type]
