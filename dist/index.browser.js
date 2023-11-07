@@ -114,7 +114,7 @@ var useDeleteNodeFactory = (useMutation, extensionIndex) => () => useMutation(({
   return createNodeKey(sibblingNodeId, nodeKey.type);
 }, []);
 
-// src/hooks/useSelectNodeFactory.ts
+// src/hooks/useSelectNodeStateFactory.ts
 import isEqual from "lodash.isequal";
 var useSelectNodeStateFactory = (useStorage, extensionIndex) => (nodeKey, selector) => useStorage(({ liveIndex }) => selector(
   liveIndex.get(nodeKey.nodeId).state,

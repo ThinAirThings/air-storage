@@ -7,7 +7,7 @@ import { NodeKey, createNodeKey } from "./types/NodeKey.js";
 import { AirNodeProviderFactory } from "./components/AirNodeProviderFactory.js";
 import { useCreateNodeFactory } from "./hooks/useCreateNodeFactory.js";
 import { useDeleteNodeFactory } from "./hooks/useDeleteNodeFactory.js";
-import { useSelectNodeStateFactory } from "./hooks/useSelectNodeFactory.js";
+import { useSelectNodeStateFactory } from "./hooks/useSelectNodeStateFactory.js";
 import { useUpdateNodeStateFactory } from "./hooks/useUpdateNodeStateFactory.js";
 import { treeToStructureIndex } from "./extendAirNodeDefinition.js";
 import { useNodeSetFactory } from "./hooks/useNodeSetFactory.js";
