@@ -9,10 +9,8 @@ export type ImmutableLsonObject<U extends FlatAirNode> = ReturnType<LiveIndexNod
 
 export const useSelectNodeStateFactory = <
     U extends FlatAirNode,
-    ExtIndex extends Record<string, any>
 >(
     useStorage: LiveblocksHooks<U>['useStorage'],
-    extensionIndex: ExtIndex
 ) => <
     T extends U['type'],
     R
@@ -20,9 +18,7 @@ export const useSelectNodeStateFactory = <
     nodeKey: NodeKey<U, T>,
     selector: (
         immutableState: ImmutableLsonObject<(U&{type: T})>,
-        ext: ExtIndex[T]
     ) => R
 ): R => useStorage(({liveIndex}) => selector(
     (liveIndex.get(nodeKey.nodeId)!.state),
-    extensionIndex[nodeKey.type]
 ), (a,b) => isEqual(a,b))

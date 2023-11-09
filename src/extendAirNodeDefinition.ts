@@ -18,7 +18,7 @@ export const extendAirNodeDefinition = <
 
 export const treeToStructureIndex = <Tree extends TreeAirNode>(
     tree: Tree
-): TreeToExtensionIndex<Tree> => {
+): TreeToStaticIndex<Tree> => {
     const index = {} as Record<string, any>
     const visit = (node: TreeAirNode) => {
         if(Object.keys(node.struct).length > 0) {
@@ -27,7 +27,7 @@ export const treeToStructureIndex = <Tree extends TreeAirNode>(
         node.children.forEach(visit)
     }
     visit(tree)
-    return index as TreeToExtensionIndex<Tree>
+    return index as TreeToStaticIndex<Tree>
 }
 
 type IsEmptyRecord<T> = keyof T extends never ? true : false;
@@ -49,7 +49,7 @@ export type TreeToExtensionUnion<T extends TreeAirNode> =
             >
         }[T['children'][number]['type']])
 
-export type TreeToExtensionIndex<T extends TreeAirNode> =
+export type TreeToStaticIndex<T extends TreeAirNode> =
     UnionToIntersection<TreeToExtensionUnion<T>>
 
 

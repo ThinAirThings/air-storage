@@ -61,7 +61,7 @@ type NodeKey<U extends FlatAirNode = FlatAirNode, T extends U['type'] = U['type'
 
 type ImmutableLsonObject<U extends FlatAirNode> = ReturnType<LiveIndexNode<U>['toImmutable']>['state'];
 
-declare const configureAirStorage: <U extends FlatAirNode, ExtIndex extends Record<string, any>, LiveblocksPresence extends JsonObject = {}>(createClientProps: Parameters<typeof createClient>[0], rootAirNode: TreeAirNode, liveblocksPresence?: LiveblocksPresence | undefined) => {
+declare const configureAirStorage: <U extends FlatAirNode, StaticIndex extends Record<string, any>, LiveblocksPresence extends JsonObject = {}>(createClientProps: Parameters<typeof createClient>[0], rootAirNode: TreeAirNode, liveblocksPresence?: LiveblocksPresence | undefined) => {
     useUpdateMyPresence: () => (patch: Partial<LiveblocksPresence>, options?: {
         addToHistory: boolean;
     } | undefined) => void;
@@ -103,16 +103,16 @@ declare const configureAirStorage: <U extends FlatAirNode, ExtIndex extends Reco
         type: T_5;
     }>, R_1 extends NodeKey<U, CT>>(nodeKey: NodeKey<U, T_5>, childType: CT, callback?: ((liveIndexNode: LiveIndexNode<U & {
         type: CT;
-    }>, extensionIndex: ExtIndex[CT]) => void) | undefined) => R_1;
+    }>) => void) | undefined) => R_1;
     useSelectNodeState: <T_6 extends U["type"], R_2>(nodeKey: NodeKey<U, T_6>, selector: (immutableState: ImmutableLsonObject<U & {
         type: T_6;
-    }>, ext: ExtIndex[T_6]) => R_2) => R_2;
+    }>) => R_2) => R_2;
     useUpdateNodeState: <T_7 extends U["type"]>(nodeKey: NodeKey<U, T_7>) => (callback: (liveIndexState: _liveblocks_core.LiveObject<(U & {
         type: T_7;
-    })["state"]>, ext: ExtIndex[T_7]) => void) => void;
+    })["state"]>) => void) => void;
     useDeleteNode: () => <T_8 extends U["type"]>(nodeKey: NodeKey<U, T_8>, callback?: ((liveIndexNode: LiveIndexNode<U & {
         type: T_8;
-    }>, ext: ExtIndex[T_8]) => void) | undefined) => NodeKey<U, T_8>;
+    }>) => void) | undefined) => NodeKey<U, T_8>;
     useChildNodeKeySet: <T_9 extends U["type"], CT_1 extends ExtractChildTypeUnion<U & {
         type: T_9;
     }>>(nodeKey: NodeKey<U, T_9>, childType: CT_1) => Set<NodeKey<U, CT_1>>;
@@ -121,7 +121,7 @@ declare const configureAirStorage: <U extends FlatAirNode, ExtIndex extends Reco
         children: react.ReactNode;
     }) => react_jsx_runtime.JSX.Element;
     useRootAirNode: () => NodeKey<FlatAirNode, "root">;
-    StructureIndex: ExtIndex;
+    StaticIndex: StaticIndex;
 };
 
 declare const defineAirNode: <T extends string = string, Skt extends Record<string, any> = Record<string, any>, S extends LsonObject = LsonObject, C extends [] | TreeAirNode[] = []>(type: T, struct: Skt, defaultInitialState: S, children: C) => TreeAirNode<T, Skt, S, C>;
@@ -144,6 +144,6 @@ type TreeToExtensionUnion<T extends TreeAirNode> = IsEmptyRecord<T['struct']> ex
         type: ChildType;
     })>;
 }[T['children'][number]['type']]);
-type TreeToExtensionIndex<T extends TreeAirNode> = UnionToIntersection<TreeToExtensionUnion<T>>;
+type TreeToStaticIndex<T extends TreeAirNode> = UnionToIntersection<TreeToExtensionUnion<T>>;
 
-export { AirNodeIndexedUnion, AirStorageMutationContext, ExtractChildTypeUnion, FlatAirNode, ILiveIndexNode, LiveIndexNode, NodeKey, TreeAirNode, TreeToExtensionIndex, TreeToExtensionUnion, TreeToNodeUnion, UnionToIntersection, configureAirStorage, createNodeKey, defineAirNode, defineRootAirNode, extendAirNodeDefinition, treeToStructureIndex };
+export { AirNodeIndexedUnion, AirStorageMutationContext, ExtractChildTypeUnion, FlatAirNode, ILiveIndexNode, LiveIndexNode, NodeKey, TreeAirNode, TreeToExtensionUnion, TreeToNodeUnion, TreeToStaticIndex, UnionToIntersection, configureAirStorage, createNodeKey, defineAirNode, defineRootAirNode, extendAirNodeDefinition, treeToStructureIndex };

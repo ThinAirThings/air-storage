@@ -7,17 +7,15 @@ import { MappedUnion } from "../types/MappedUnion.js";
 import { NodeKey, createNodeKey } from "../types/NodeKey.js";
 
 export const useCreateNodeFactory = <
-    U extends FlatAirNode,
-    ExtIndex extends Record<string, any>
+    U extends FlatAirNode
 >(
     useMutation: LiveblocksHooks<U>['useMutation'],
-    mappedAirNodeUnion: MappedUnion,
-    extensionIndex: ExtIndex
+    mappedAirNodeUnion: MappedUnion
 ) => () => useMutation((
         {storage},
         nodeKey: NodeKey<U, U['type']>,
         childType: U['childTypeSet'] extends Set<infer CT extends string> ? CT : never,
-        callback?: (liveIndexNode: LiveIndexNode<FlatAirNode>, extIndex: ExtIndex[string]) => void
+        callback?: (liveIndexNode: LiveIndexNode<FlatAirNode>) => void
     ) => {
     const nodeId = uuidv4()
     const newLiveIndexNode = new LiveIndexNode({
@@ -31,7 +29,7 @@ export const useCreateNodeFactory = <
             .map(childType => [childType, new LiveMap()])
         )
     })
-    callback?.(newLiveIndexNode, extensionIndex[childType])
+    callback?.(newLiveIndexNode)
     storage.get('liveIndex').get(nodeKey.nodeId)!.get('childNodeSets').get(childType)!.set(nodeId, null)
     storage.get('liveIndex').set(nodeId, newLiveIndexNode as any)
     return createNodeKey(nodeId, childType)
@@ -42,7 +40,7 @@ export const useCreateNodeFactory = <
 >(
     nodeKey: NodeKey<U, T>,
     childType: CT,
-    callback?: (liveIndexNode: LiveIndexNode<(U&{type: CT})>, extensionIndex: ExtIndex[CT]) => void
+    callback?: (liveIndexNode: LiveIndexNode<(U&{type: CT})>) => void
 ) => R
 
 

@@ -5,23 +5,19 @@ import { NodeKey, createNodeKey } from "../types/NodeKey.js";
 
 
 export const useDeleteNodeFactory = <
-    U extends FlatAirNode,
-    ExtIndex extends Record<string, any>
+    U extends FlatAirNode
 >(
     useMutation: LiveblocksHooks['useMutation'],
-    extensionIndex: ExtIndex
 ) => () => useMutation((
         {storage},
         nodeKey: NodeKey<U, U['type']>,
         callback?: (
             liveIndexNode: LiveIndexNode<(U&{type: U['type']})>,
-            ext: ExtIndex[U['type']]
         ) => void
     ) => {
     // Run callback before deleting node
     callback?.(
         storage.get('liveIndex').get(nodeKey.nodeId)! as LiveIndexNode<(U&{type: U['type']})>,
-        extensionIndex[nodeKey.type]
     )
     // Index Cleanup
     const liveIndex = storage.get('liveIndex')
@@ -48,6 +44,5 @@ export const useDeleteNodeFactory = <
     nodeKey: NodeKey<U, T>,
     callback?: (
         liveIndexNode: LiveIndexNode<(U&{type: T})>,
-        ext: ExtIndex[T]
     ) => void
 ) => NodeKey<U, T>

@@ -1,7 +1,7 @@
 import { configureAirStorage } from "./configureAirStorage.js";
 import { NodeKey } from "./types/NodeKey.js";
 import { defineAirNode, defineRootAirNode } from "./defineAirNode.js";
-import { TreeToExtensionIndex, UnionToIntersection, extendAirNodeDefinition } from "./extendAirNodeDefinition.js";
+import { TreeToStaticIndex, UnionToIntersection, extendAirNodeDefinition } from "./extendAirNodeDefinition.js";
 import { TreeToNodeUnion } from "./types.js";
 
 
@@ -55,7 +55,7 @@ const airNodeTree = defineRootAirNode([
 ])
 
 type Union = TreeToNodeUnion<typeof airNodeTree>
-type ExtensionIndex = TreeToExtensionIndex<typeof airNodeTree>
+type ExtensionIndex = TreeToStaticIndex<typeof airNodeTree>
 type Thingy = ExtensionIndex['']
 type Entry = (Union&{type: 'Level1NodeA'})['childTypeSet']
 type Thing = (Union&{type: 'Level1NodeA'})
@@ -67,7 +67,7 @@ const {
     extensionIndex
 } = configureAirStorage<
     TreeToNodeUnion<typeof airNodeTree>,
-    TreeToExtensionIndex<typeof airNodeTree>
+    TreeToStaticIndex<typeof airNodeTree>
 >(
     null as any,
     airNodeTree

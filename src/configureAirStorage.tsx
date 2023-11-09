@@ -16,7 +16,7 @@ import { useChildNodeKeySetFactory } from "./hooks/useChildNodeKeySetFactory.js"
 
 export const configureAirStorage = <
     U extends FlatAirNode,
-    ExtIndex extends Record<string, any>,
+    StaticIndex extends Record<string, any>,
     LiveblocksPresence extends JsonObject={},
 >(
     createClientProps: Parameters<typeof createClient>[0],
@@ -24,7 +24,7 @@ export const configureAirStorage = <
     liveblocksPresence?: LiveblocksPresence
 ) => {
     const mappedAirNodeUnion = treeToMappedUnion(rootAirNode)
-    const StructureIndex = treeToStructureIndex(rootAirNode) as ExtIndex
+    const StaticIndex = treeToStructureIndex(rootAirNode) as StaticIndex
     const {suspense: {
         useStorage,
         useMutation,
@@ -43,15 +43,15 @@ export const configureAirStorage = <
         // Air Hooks
         useNodeSet: useNodeSetFactory<U>(useStorage),
         useUniversalNodeSet: useUniversalNodeSetFactory<U>(useStorage),
-        useCreateNode: useCreateNodeFactory<U, ExtIndex>(useMutation, mappedAirNodeUnion, StructureIndex),
-        useSelectNodeState: useSelectNodeStateFactory<U, ExtIndex>(useStorage, StructureIndex),
-        useUpdateNodeState: useUpdateNodeStateFactory<U, ExtIndex>(useMutation, StructureIndex),
-        useDeleteNode: useDeleteNodeFactory<U, ExtIndex>(useMutation, StructureIndex),
+        useCreateNode: useCreateNodeFactory<U>(useMutation, mappedAirNodeUnion),
+        useSelectNodeState: useSelectNodeStateFactory<U>(useStorage),
+        useUpdateNodeState: useUpdateNodeStateFactory<U>(useMutation),
+        useDeleteNode: useDeleteNodeFactory<U>(useMutation),
         useChildNodeKeySet: useChildNodeKeySetFactory<U>(useStorage),
         AirNodeProvider: AirNodeProviderFactory(rootAirNode, RoomProvider, liveblocksPresence??{}),
         // Only use 'useStorage' here because Liveblocks will throw an error if useStorage isn't called before using mutations.
         useRootAirNode: () => useStorage(()=>createNodeKey('root', 'root')),
-        StructureIndex
+        StaticIndex
     }
 }
 
