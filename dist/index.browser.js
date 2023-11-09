@@ -14,42 +14,14 @@ var MappedUnion = class extends Map {
 // src/configureAirStorage.tsx
 import { createClient } from "@liveblocks/client";
 
-// src/types/NodeKey.ts
-var createNodeKey = (nodeId, type) => ({
-  nodeId,
-  type
-});
-
 // src/components/AirNodeProviderFactory.tsx
 import { Suspense } from "react";
 
 // src/LiveObjects/LiveIndexStorageModel.ts
-import { LiveMap as LiveMap2, LiveObject as LiveObject2 } from "@liveblocks/client";
-
-// src/LiveObjects/LiveIndexNode.ts
-import { LiveObject } from "@liveblocks/client";
-var LiveIndexNode = class extends LiveObject {
-  constructor(data) {
-    super(data);
-  }
-};
-
-// src/LiveObjects/LiveIndexStorageModel.ts
+import { LiveMap } from "@liveblocks/client";
 var LiveIndexStorageModel = class {
-  constructor(treeRoot) {
-    this.liveIndex = new LiveMap2([[
-      "root",
-      new LiveIndexNode({
-        nodeId: "root",
-        type: "RootNode",
-        parentNodeId: null,
-        parentType: null,
-        childNodeSets: new LiveMap2(treeRoot.children.map(
-          (child) => [child.type, new LiveMap2()]
-        )),
-        state: new LiveObject2({})
-      })
-    ]]);
+  constructor() {
+    this.liveIndex = new LiveMap();
   }
 };
 
@@ -70,72 +42,77 @@ var AirNodeProviderFactory = (rootAirNode, LiveblocksRoomProvider, initialLivebl
   );
 };
 
-// src/hooks/useCreateNodeFactory.ts
+// src/hooks-storage/useCreateNodeFactory.ts
 import { LiveMap as LiveMap3, LiveObject as LiveObject3 } from "@liveblocks/client";
+
+// src/LiveObjects/LiveIndexNode.ts
+import { LiveObject as LiveObject2 } from "@liveblocks/client";
+var LiveIndexNode = class extends LiveObject2 {
+  constructor(data) {
+    super(data);
+  }
+};
+
+// src/hooks-storage/useCreateNodeFactory.ts
 import { v4 as uuidv4 } from "uuid";
-var useCreateNodeFactory = (useMutation, mappedAirNodeUnion) => () => useMutation(({ storage }, nodeKey, childType, callback) => {
+
+// src/types/NodeKey.ts
+var createNodeKey = ({ nodeId, type }) => ({
+  nodeId,
+  type
+});
+
+// src/hooks-storage/useCreateNodeFactory.ts
+var useCreateNodeFactory = (useMutation, mappedAirNodeUnion) => () => useMutation(({ storage }, parentNodeKey, childType, callback) => {
   const nodeId = uuidv4();
   const newLiveIndexNode = new LiveIndexNode({
     nodeId,
     type: childType,
-    parentNodeId: nodeKey.nodeId,
-    parentType: nodeKey.type,
+    parentNodeId: parentNodeKey?.nodeId ?? null,
+    parentType: parentNodeKey?.type ?? null,
     state: new LiveObject3(mappedAirNodeUnion.get(childType).state),
-    childNodeSets: new LiveMap3(
-      [...mappedAirNodeUnion.get(childType).childTypeSet].map((childType2) => [childType2, new LiveMap3()])
-    )
+    childNodeKeyMap: new LiveMap3()
   });
   callback?.(newLiveIndexNode);
-  storage.get("liveIndex").get(nodeKey.nodeId).get("childNodeSets").get(childType).set(nodeId, null);
+  storage.get("liveIndex").get(parentNodeKey?.nodeId ?? "")?.get("childNodeKeyMap").set(nodeId, createNodeKey(newLiveIndexNode.toImmutable()));
   storage.get("liveIndex").set(nodeId, newLiveIndexNode);
-  return createNodeKey(nodeId, childType);
+  return createNodeKey(newLiveIndexNode.toImmutable());
 }, []);
 
-// src/hooks/useDeleteNodeFactory.ts
-var useDeleteNodeFactory = (useMutation) => () => useMutation(({ storage }, nodeKey, callback) => {
-  callback?.(
-    storage.get("liveIndex").get(nodeKey.nodeId)
-  );
-  const liveIndex = storage.get("liveIndex");
-  const thisNode = liveIndex.get(nodeKey.nodeId);
-  const parentNode = liveIndex.get(thisNode.get("parentNodeId"));
-  const deleteChildren = (node) => {
-    liveIndex.delete(node.get("nodeId"));
-    node.get("childNodeSets").forEach((childNodeSet) => {
-      childNodeSet.forEach((_, childNodeId) => {
-        deleteChildren(liveIndex.get(childNodeId));
+// src/hooks-storage/useDeleteNodeFactory.ts
+var useDeleteNodeFactory = (useMutation, useRemoveFromNodeKeySelection) => () => {
+  const removeFromNodeKeySelection = useRemoveFromNodeKeySelection();
+  return useMutation(({ storage }, nodeKey, callback) => {
+    callback?.(
+      storage.get("liveIndex").get(nodeKey.nodeId)
+    );
+    const liveIndex = storage.get("liveIndex");
+    const thisNode = liveIndex.get(nodeKey.nodeId);
+    const parentNode = liveIndex.get(thisNode.get("parentNodeId"));
+    const deleteChildren = (node) => {
+      liveIndex.delete(node.get("nodeId"));
+      node.get("childNodeKeyMap").forEach(({ nodeId }) => {
+        deleteChildren(liveIndex.get(nodeId));
       });
-    });
-  };
-  deleteChildren(thisNode);
-  parentNode.get("childNodeSets").get(nodeKey.type).delete(nodeKey.nodeId);
-  const sibblingNodeId = [...parentNode.get("childNodeSets").get(nodeKey.type).keys()][0];
-  return createNodeKey(sibblingNodeId, nodeKey.type);
-}, []);
+    };
+    deleteChildren(thisNode);
+    parentNode.get("childNodeKeyMap").delete(nodeKey.nodeId);
+    removeFromNodeKeySelection(nodeKey);
+  }, []);
+};
 
-// src/hooks/useSelectNodeStateFactory.ts
+// src/hooks-storage/useSelectNodeStateFactory.ts
 import isEqual from "lodash.isequal";
 var useSelectNodeStateFactory = (useStorage) => (nodeKey, selector) => useStorage(({ liveIndex }) => selector(
   liveIndex.get(nodeKey.nodeId).state
 ), (a, b) => isEqual(a, b));
 
-// src/hooks/useUpdateNodeStateFactory.ts
-var useUpdateNodeStateFactory = (useMutation) => (nodeKey) => useMutation(({ storage }, callback) => {
+// src/hooks-storage/useUpdateNodeStateFactory.ts
+var useUpdateNodeStateFactory = (useMutation) => () => useMutation(({ storage }, nodeKey, callback) => {
   callback(storage.get("liveIndex").get(nodeKey.nodeId).get("state"));
-}, [nodeKey]);
-
-// src/defineAirNode.ts
-var defineAirNode = (type, struct, defaultInitialState, children) => ({
-  type,
-  struct,
-  state: defaultInitialState,
-  children: children ?? []
-  // destructor?:
-});
-var defineRootAirNode = (children) => defineAirNode("root", {}, { nodeName: "root" }, children);
+}, []);
 
 // src/extendAirNodeDefinition.ts
-var extendAirNodeDefinition = () => (type, ext, defaultInitialState, children) => defineAirNode(type, ext, defaultInitialState, children);
 var treeToStructureIndex = (tree) => {
   const index = {};
   const visit = (node) => {
@@ -148,24 +125,83 @@ var treeToStructureIndex = (tree) => {
   return index;
 };
 
-// src/hooks/useNodeSetFactory.ts
-import isEqual2 from "lodash.isequal";
-var useNodeSetFactory = (useStorage) => (predicate) => useStorage(({ liveIndex }) => {
-  return new Set(
-    [...liveIndex.values()].filter(predicate)
-  );
-}, (a, b) => isEqual2(a, b));
-
-// src/hooks/useUniversalNodeSetFactory.ts
-var useUniversalNodeSetFactory = (useStorage) => (morphism) => useStorage(({ liveIndex }) => {
+// src/hooks-storage/useNodeSetFactory.ts
+var useNodeSetFactory = (useStorage) => (morphism) => useStorage(({ liveIndex }) => {
   return morphism(liveIndex);
 });
 
-// src/hooks/useChildNodeKeySetFactory.ts
+// src/hooks-presence/useSelfNodeKeySelectionUpdateFactory.ts
+import isEqual2 from "lodash.isequal";
+var useSelfNodeKeySelectionUpdateFactory = (useUpdateMyPresence, useSelfNodeKeySelection) => () => {
+  const updateMyPresence = useUpdateMyPresence();
+  const nodeKeySelection = useSelfNodeKeySelection();
+  return (updater) => {
+    const newSelectedNodeKeySet = updater([...new Set(nodeKeySelection)]);
+    if (!isEqual2(nodeKeySelection, newSelectedNodeKeySet)) {
+      updateMyPresence({
+        nodeKeySelection: [...newSelectedNodeKeySet]
+      });
+    }
+  };
+};
+
+// src/hooks-presence/useSelfNodeKeySelectionFactory.ts
 import isEqual3 from "lodash.isequal";
-var useChildNodeKeySetFactory = (useStorage) => (nodeKey, childType) => useStorage(({ liveIndex }) => new Set(
-  [...liveIndex.get(nodeKey.nodeId).childNodeSets.get(childType).keys()].map((nodeId) => createNodeKey(nodeId, childType))
-), (a, b) => isEqual3(a, b));
+var useSelfNodeKeySelectionFactory = (useSelf) => () => useSelf(
+  ({ presence }) => presence.nodeKeySelection,
+  (a, b) => isEqual3(a, b)
+);
+
+// src/hooks-presence/useSelfNodeKeySelectionRemoveFactory.ts
+var useSelfNodeKeySelectionRemoveFactory = (useUpdateMyPresence, useSelfNodeKeySelection) => () => {
+  const updateMyPresence = useUpdateMyPresence();
+  const nodeKeySelection = useSelfNodeKeySelection();
+  return (nodeKey) => {
+    if (nodeKeySelection.some(({ nodeId }) => nodeId === nodeKey.nodeId)) {
+      updateMyPresence({
+        nodeKeySelection: nodeKeySelection.filter(({ nodeId }) => nodeId !== nodeKey.nodeId)
+      });
+      return true;
+    }
+    return false;
+  };
+};
+
+// src/hooks-presence/useSelfNodeKeySelectionAddFactory.ts
+var useSelfNodeKeySelectionAddFactory = (useUpdateMyPresence, useSelfNodeKeySelection) => () => {
+  const updateMyPresence = useUpdateMyPresence();
+  const nodeKeySelection = useSelfNodeKeySelection();
+  return (nodeKey) => {
+    if (!nodeKeySelection.some(({ nodeId }) => nodeId === nodeKey.nodeId)) {
+      updateMyPresence({
+        nodeKeySelection: [...nodeKeySelection, nodeKey]
+      });
+      return true;
+    }
+    return false;
+  };
+};
+
+// src/hooks-presence/useSelfFocusedNodeKeyFactory.ts
+import isEqual4 from "lodash.isequal";
+var useSelfFocusedNodeKeyFactory = (useSelf) => () => useSelf(
+  ({ presence }) => presence.focusedNodeKey,
+  (a, b) => isEqual4(a, b)
+);
+
+// src/hooks-presence/useSelfFocusedNodeKeyUpdateFactory.ts
+import isEqual5 from "lodash.isequal";
+var useSelfFocusedNodeKeyUpdateFactory = (useUpdateMyPresence, useSelfFocusedNodeKey) => () => {
+  const updateMyPresence = useUpdateMyPresence();
+  const focusedNodeKey = useSelfFocusedNodeKey();
+  return (nodeKey) => {
+    if (!isEqual5(focusedNodeKey, nodeKey)) {
+      updateMyPresence({
+        focusedNodeKey: nodeKey
+      });
+    }
+  };
+};
 
 // src/configureAirStorage.tsx
 var configureAirStorage = (createClientProps, rootAirNode, liveblocksPresence) => {
@@ -178,21 +214,46 @@ var configureAirStorage = (createClientProps, rootAirNode, liveblocksPresence) =
     useUpdateMyPresence,
     useSelf
   } } = createRoomContext(createClient(createClientProps));
+  const useSelfNodeKeySelection = useSelfNodeKeySelectionFactory(
+    useSelf
+  );
+  const useSelfNodeKeySelectionUpdate = useSelfNodeKeySelectionUpdateFactory(
+    useUpdateMyPresence,
+    useSelfNodeKeySelection
+  );
+  const useSelfNodeKeySelectionAdd = useSelfNodeKeySelectionAddFactory(
+    useUpdateMyPresence,
+    useSelfNodeKeySelection
+  );
+  const useSelfNodeKeySelectionRemove = useSelfNodeKeySelectionRemoveFactory(
+    useUpdateMyPresence,
+    useSelfNodeKeySelection
+  );
+  const useSelfFocusedNodeKey = useSelfFocusedNodeKeyFactory(
+    useSelf
+  );
   return {
     // Liveblocks Hooks
     useUpdateMyPresence,
     useSelf,
-    // Air Hooks
+    // Air Storage Hooks
     useNodeSet: useNodeSetFactory(useStorage),
-    useUniversalNodeSet: useUniversalNodeSetFactory(useStorage),
     useCreateNode: useCreateNodeFactory(useMutation, mappedAirNodeUnion),
     useSelectNodeState: useSelectNodeStateFactory(useStorage),
     useUpdateNodeState: useUpdateNodeStateFactory(useMutation),
-    useDeleteNode: useDeleteNodeFactory(useMutation),
-    useChildNodeKeySet: useChildNodeKeySetFactory(useStorage),
+    useDeleteNode: useDeleteNodeFactory(useMutation, useSelfNodeKeySelectionRemove),
     AirNodeProvider: AirNodeProviderFactory(rootAirNode, RoomProvider, liveblocksPresence ?? {}),
-    // Only use 'useStorage' here because Liveblocks will throw an error if useStorage isn't called before using mutations.
-    useRootAirNode: () => useStorage(() => createNodeKey("root", "root")),
+    // Air Presence NodeKeySelection Hooks
+    useSelfNodeKeySelection,
+    useSelfNodeKeySelectionUpdate,
+    useSelfNodeKeySelectionAdd,
+    useSelfNodeKeySelectionRemove,
+    // Air Presence NodeKeyFocus Hooks
+    useSelfFocusedNodeKey,
+    useSelfFocusedNodeKeyUpdate: useSelfFocusedNodeKeyUpdateFactory(
+      useUpdateMyPresence,
+      useSelfFocusedNodeKey
+    ),
     StaticIndex
   };
 };
@@ -200,20 +261,28 @@ var treeToMappedUnion = (tree) => {
   const treeToUnionMap = (map, tree2) => {
     map.set(tree2.type, {
       type: tree2.type,
-      state: tree2.state,
-      childTypeSet: new Set(tree2.children.map((child) => child.type))
+      state: tree2.state
     });
     tree2.children.forEach((child) => treeToUnionMap(map, child));
     return map;
   };
   return treeToUnionMap(new MappedUnion([]), tree);
 };
+
+// src/defineAirNode.ts
+var defineAirNode = (type, struct, defaultInitialState, children) => ({
+  type,
+  struct,
+  state: defaultInitialState,
+  children: children ?? []
+  // destructor?:
+});
+var defineAirNodeSchema = (children) => defineAirNode("root", {}, {}, children);
 export {
   LiveIndexNode,
   configureAirStorage,
   createNodeKey,
   defineAirNode,
-  defineRootAirNode,
-  extendAirNodeDefinition,
+  defineAirNodeSchema,
   treeToStructureIndex
 };

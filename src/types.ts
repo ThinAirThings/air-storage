@@ -1,6 +1,5 @@
 import { LsonObject } from "@liveblocks/client"
-import { MutationContext } from "@liveblocks/react"
-import { ILiveIndexStorageModel } from "./LiveObjects/LiveIndexStorageModel.js"
+import {NodeKey} from './types/NodeKey.js'
 
 export type TreeAirNode<
     T extends string=string,
@@ -26,7 +25,7 @@ export type FlatAirNode<
     type: T,
     struct: Skt,
     state: S,
-    childTypeSet: Set<CK>
+    childTypeSet: CK
 }
 
 type IsEmptyArray<T extends any[]> = T['length'] extends 0 ? true : false;
@@ -34,7 +33,7 @@ type IsEmptyArray<T extends any[]> = T['length'] extends 0 ? true : false;
 export type TreeToNodeUnion<T extends TreeAirNode> =
     IsEmptyArray<T['children']> extends true
         ? (FlatAirNode<T['type'], T['struct'], T['state'], never>)
-        : (FlatAirNode<T['type'], T['struct'], T['state'], T['children'][number]['type']>)
+        : (T['type'] extends 'root' ? never : (FlatAirNode<T['type'], T['struct'], T['state'], T['children'][number]['type']>))
         | ({
             [ChildType in T['children'][number]['type']]: TreeToNodeUnion<
                 (T['children'][number]&{type: ChildType})
@@ -47,4 +46,10 @@ export type AirNodeIndexedUnion<
     [T in U['type']]: (U&{type: T})
 }
 
-export type AirStorageMutationContext = MutationContext<any, ILiveIndexStorageModel, any>
+export type AirPresence<
+    U extends FlatAirNode
+> = {
+    nodeKeySelection: Array<NodeKey<U>>
+    focusedNodeKey: NodeKey<U>|null
+}
+

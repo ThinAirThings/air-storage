@@ -1,27 +1,31 @@
 import { createRoomContext } from "@liveblocks/react";
-import { FlatAirNode, TreeAirNode, TreeToNodeUnion } from "./types.js";
+import { AirPresence, FlatAirNode, TreeAirNode, TreeToNodeUnion } from "./types.js";
 import { MappedUnion } from "./types/MappedUnion.js";
 import { ILiveIndexStorageModel } from "./LiveObjects/LiveIndexStorageModel.js";
 import { JsonObject, createClient } from "@liveblocks/client";
-import { NodeKey, createNodeKey } from "./types/NodeKey.js";
 import { AirNodeProviderFactory } from "./components/AirNodeProviderFactory.js";
-import { useCreateNodeFactory } from "./hooks/useCreateNodeFactory.js";
-import { useDeleteNodeFactory } from "./hooks/useDeleteNodeFactory.js";
-import { useSelectNodeStateFactory } from "./hooks/useSelectNodeStateFactory.js";
-import { useUpdateNodeStateFactory } from "./hooks/useUpdateNodeStateFactory.js";
+import { useCreateNodeFactory } from "./hooks-storage/useCreateNodeFactory.js";
+import { useDeleteNodeFactory } from "./hooks-storage/useDeleteNodeFactory.js";
+import { useSelectNodeStateFactory } from "./hooks-storage/useSelectNodeStateFactory.js";
+import { useUpdateNodeStateFactory } from "./hooks-storage/useUpdateNodeStateFactory.js";
 import { treeToStructureIndex } from "./extendAirNodeDefinition.js";
-import { useNodeSetFactory } from "./hooks/useNodeSetFactory.js";
-import { useUniversalNodeSetFactory } from "./hooks/useUniversalNodeSetFactory.js";
-import { useChildNodeKeySetFactory } from "./hooks/useChildNodeKeySetFactory.js";
+import { useNodeSetFactory } from "./hooks-storage/useNodeSetFactory.js";
+import { useSelfNodeKeySelectionUpdateFactory } from "./hooks-presence/useSelfNodeKeySelectionUpdateFactory.js";
+import { useSelfNodeKeySelectionFactory } from "./hooks-presence/useSelfNodeKeySelectionFactory.js";
+import { useSelfNodeKeySelectionRemoveFactory } from "./hooks-presence/useSelfNodeKeySelectionRemoveFactory.js";
+import { useSelfNodeKeySelectionAddFactory } from "./hooks-presence/useSelfNodeKeySelectionAddFactory.js";
+import { useSelfFocusedNodeKeyFactory } from "./hooks-presence/useSelfFocusedNodeKeyFactory.js";
+import { useSelfFocusedNodeKeyUpdateFactory } from "./hooks-presence/useSelfFocusedNodeKeyUpdateFactory.js";
+
 
 export const configureAirStorage = <
     U extends FlatAirNode,
     StaticIndex extends Record<string, any>,
-    LiveblocksPresence extends JsonObject={},
+    P extends JsonObject={},
 >(
     createClientProps: Parameters<typeof createClient>[0],
     rootAirNode: TreeAirNode,
-    liveblocksPresence?: LiveblocksPresence
+    liveblocksPresence?: P
 ) => {
     const mappedAirNodeUnion = treeToMappedUnion(rootAirNode)
     const StaticIndex = treeToStructureIndex(rootAirNode) as StaticIndex
@@ -32,25 +36,59 @@ export const configureAirStorage = <
         useUpdateMyPresence,
         useSelf
     }} = createRoomContext<
-        LiveblocksPresence, 
+        AirPresence<U>, 
         ILiveIndexStorageModel<U>
     >(createClient(createClientProps))
 
+    // NodeKey Selection Hooks
+    const useSelfNodeKeySelection = useSelfNodeKeySelectionFactory<U>(
+        useSelf
+    )
+    const useSelfNodeKeySelectionUpdate = useSelfNodeKeySelectionUpdateFactory<U>(
+        useUpdateMyPresence,
+        useSelfNodeKeySelection
+    )
+    const useSelfNodeKeySelectionAdd = useSelfNodeKeySelectionAddFactory<U>(
+        useUpdateMyPresence,
+        useSelfNodeKeySelection
+    )
+    const useSelfNodeKeySelectionRemove = useSelfNodeKeySelectionRemoveFactory<U>(
+        useUpdateMyPresence,
+        useSelfNodeKeySelection
+    )
+    // NodeKey Focus Hooks
+    const useSelfFocusedNodeKey = useSelfFocusedNodeKeyFactory<U>(
+        useSelf
+    )
+    // This is just keeps the internal typings clean
+    type TypedLiveblocksHooks = ReturnType<
+        typeof createRoomContext<
+            AirPresence<U>&P, 
+            ILiveIndexStorageModel<U>
+        >
+    >['suspense']
     return {
         // Liveblocks Hooks
-        useUpdateMyPresence,
-        useSelf,
-        // Air Hooks
+        useUpdateMyPresence: useUpdateMyPresence as TypedLiveblocksHooks['useUpdateMyPresence'],
+        useSelf: useSelf as TypedLiveblocksHooks['useSelf'],
+        // Air Storage Hooks
         useNodeSet: useNodeSetFactory<U>(useStorage),
-        useUniversalNodeSet: useUniversalNodeSetFactory<U>(useStorage),
         useCreateNode: useCreateNodeFactory<U>(useMutation, mappedAirNodeUnion),
         useSelectNodeState: useSelectNodeStateFactory<U>(useStorage),
         useUpdateNodeState: useUpdateNodeStateFactory<U>(useMutation),
-        useDeleteNode: useDeleteNodeFactory<U>(useMutation),
-        useChildNodeKeySet: useChildNodeKeySetFactory<U>(useStorage),
+        useDeleteNode: useDeleteNodeFactory<U>(useMutation, useSelfNodeKeySelectionRemove),
         AirNodeProvider: AirNodeProviderFactory(rootAirNode, RoomProvider, liveblocksPresence??{}),
-        // Only use 'useStorage' here because Liveblocks will throw an error if useStorage isn't called before using mutations.
-        useRootAirNode: () => useStorage(()=>createNodeKey('root', 'root')),
+        // Air Presence NodeKeySelection Hooks
+        useSelfNodeKeySelection,
+        useSelfNodeKeySelectionUpdate,
+        useSelfNodeKeySelectionAdd,
+        useSelfNodeKeySelectionRemove,
+        // Air Presence NodeKeyFocus Hooks
+        useSelfFocusedNodeKey,
+        useSelfFocusedNodeKeyUpdate: useSelfFocusedNodeKeyUpdateFactory<U>(
+            useUpdateMyPresence,
+            useSelfFocusedNodeKey
+        ),
         StaticIndex
     }
 }
@@ -63,7 +101,6 @@ const treeToMappedUnion = (
         map.set(tree.type, {
             type: tree.type,
             state: tree.state,
-            childTypeSet: new Set(tree.children.map(child => child.type))
         })
         tree.children.forEach(child => treeToUnionMap(map, child))
         return map

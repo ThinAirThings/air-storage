@@ -13,7 +13,7 @@ export const useCreateNodeFactory = <
     mappedAirNodeUnion: MappedUnion
 ) => () => useMutation((
         {storage},
-        nodeKey: NodeKey<U, U['type']>,
+        parentNodeKey: NodeKey<U, U['type']> | null,
         childType: U['childTypeSet'] extends Set<infer CT extends string> ? CT : never,
         callback?: (liveIndexNode: LiveIndexNode<FlatAirNode>) => void
     ) => {
@@ -21,18 +21,15 @@ export const useCreateNodeFactory = <
     const newLiveIndexNode = new LiveIndexNode({
         nodeId,
         type: childType,
-        parentNodeId: nodeKey.nodeId,
-        parentType: nodeKey.type,
+        parentNodeId: parentNodeKey?.nodeId??null,
+        parentType: parentNodeKey?.type??null,
         state: new LiveObject(mappedAirNodeUnion.get(childType).state),
-        childNodeSets: new LiveMap(
-            [...mappedAirNodeUnion.get(childType).childTypeSet]
-            .map(childType => [childType, new LiveMap()])
-        )
+        childNodeKeyMap: new LiveMap<string, NodeKey<U&{type: U['childTypeSet']}>>()
     })
     callback?.(newLiveIndexNode)
-    storage.get('liveIndex').get(nodeKey.nodeId)!.get('childNodeSets').get(childType)!.set(nodeId, null)
-    storage.get('liveIndex').set(nodeId, newLiveIndexNode as any)
-    return createNodeKey(nodeId, childType)
+    storage.get('liveIndex').get(parentNodeKey?.nodeId??'')?.get('childNodeKeyMap').set(nodeId, createNodeKey(newLiveIndexNode.toImmutable()))
+    storage.get('liveIndex').set(nodeId, newLiveIndexNode)
+    return createNodeKey(newLiveIndexNode.toImmutable())
 }, []) as <
     T extends U['type'],
     CT extends ExtractChildTypeUnion<(U&{type: T})>,

@@ -20,9 +20,9 @@ export const defineAirNode = <
     // destructor?:
 }) as TreeAirNode<T, Skt, S, C>
 
-export const defineRootAirNode = <
+export const defineAirNodeSchema = <
     C extends TreeAirNode[]
 >(
     children: C
-) => defineAirNode('root', {}, {nodeName: 'root'}, children)
+) => defineAirNode('root', {}, {}, children)
 

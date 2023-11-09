@@ -1,6 +1,6 @@
 import { LiveMap, LiveObject, LsonObject } from "@liveblocks/client";
 import { FlatAirNode } from "../types.js";
-
+import { NodeKey } from '../types/NodeKey.js'
 
 
 export type ILiveIndexNode<
@@ -11,9 +11,9 @@ export type ILiveIndexNode<
     parentNodeId: string | null
     parentType: string | null
     state: LiveObject<U['state']>
-    childNodeSets: LiveMap<
-        U['childTypeSet'] extends Set<infer T extends string> ? T : never, 
-        LiveMap<string, null>
+    childNodeKeyMap: LiveMap<
+        string, 
+        NodeKey<U&{type: U['childTypeSet']}>
     >
 }>
 
@@ -27,9 +27,9 @@ export class LiveIndexNode<
         type: U['type']
         parentNodeId: string | null
         parentType: string | null
-        childNodeSets: LiveMap<
-            U['childTypeSet'] extends Set<infer T extends string> ? T : never, 
-            LiveMap<string, null>
+        childNodeKeyMap: LiveMap<
+            string, 
+            NodeKey<U&{type: U['childTypeSet']}>
         >
         state: LiveObject<U['state']>
     }) {

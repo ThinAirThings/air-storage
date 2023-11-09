@@ -1,10 +1,7 @@
 import { LiveblocksHooks } from "../LiveObjects/LiveIndexStorageModel.js"
-import { LiveIndexNode } from "../index.browser.js"
 import { FlatAirNode } from "../types.js"
 
-
-
-export const useUniversalNodeSetFactory = <
+export const useNodeSetFactory = <
     U extends FlatAirNode
 >(
     useStorage: LiveblocksHooks<U>['useStorage']
