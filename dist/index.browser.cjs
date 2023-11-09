@@ -104,21 +104,26 @@ var createNodeKey = ({ nodeId, type }) => ({
 });
 
 // src/hooks-storage/useCreateNodeFactory.ts
-var useCreateNodeFactory = (useMutation, mappedAirNodeUnion) => () => useMutation(({ storage }, parentNodeKey, childType, callback) => {
-  const nodeId = (0, import_uuid.v4)();
-  const newLiveIndexNode = new LiveIndexNode({
-    nodeId,
-    type: childType,
-    parentNodeId: parentNodeKey?.nodeId ?? null,
-    parentType: parentNodeKey?.type ?? null,
-    state: new import_client3.LiveObject(mappedAirNodeUnion.get(childType).state),
-    childNodeKeyMap: new import_client3.LiveMap()
-  });
-  callback?.(newLiveIndexNode);
-  storage.get("liveIndex").get(parentNodeKey?.nodeId ?? "")?.get("childNodeKeyMap").set(nodeId, createNodeKey(newLiveIndexNode.toImmutable()));
-  storage.get("liveIndex").set(nodeId, newLiveIndexNode);
-  return createNodeKey(newLiveIndexNode.toImmutable());
-}, []);
+var useCreateNodeFactory = (useMutation, useSelfFocusedNodeKeyUpdate, mappedAirNodeUnion) => () => {
+  const updateFocusedNodeKey = useSelfFocusedNodeKeyUpdate();
+  return useMutation(({ storage }, parentNodeKey, childType, callback) => {
+    const nodeId = (0, import_uuid.v4)();
+    const newLiveIndexNode = new LiveIndexNode({
+      nodeId,
+      type: childType,
+      parentNodeId: parentNodeKey?.nodeId ?? null,
+      parentType: parentNodeKey?.type ?? null,
+      state: new import_client3.LiveObject(mappedAirNodeUnion.get(childType).state),
+      childNodeKeyMap: new import_client3.LiveMap()
+    });
+    callback?.(newLiveIndexNode);
+    storage.get("liveIndex").get(parentNodeKey?.nodeId ?? "")?.get("childNodeKeyMap").set(nodeId, createNodeKey(newLiveIndexNode.toImmutable()));
+    storage.get("liveIndex").set(nodeId, newLiveIndexNode);
+    const newNodeKey = createNodeKey(newLiveIndexNode.toImmutable());
+    updateFocusedNodeKey(newNodeKey);
+    return newNodeKey;
+  }, []);
+};
 
 // src/hooks-storage/useDeleteNodeFactory.ts
 var useDeleteNodeFactory = (useMutation, useRemoveFromNodeKeySelection) => () => {
@@ -232,15 +237,20 @@ var useSelfFocusedNodeKeyFactory = (useSelf) => () => useSelf(
 
 // src/hooks-presence/useSelfFocusedNodeKeyUpdateFactory.ts
 var import_lodash5 = __toESM(require("lodash.isequal"), 1);
-var useSelfFocusedNodeKeyUpdateFactory = (useUpdateMyPresence, useSelfFocusedNodeKey) => () => {
+var useSelfFocusedNodeKeyUpdateFactory = (useUpdateMyPresence, useSelfFocusedNodeKey, useSelfNodeKeySelectionAdd, useSelfNodeKeySelectionRemove) => () => {
   const updateMyPresence = useUpdateMyPresence();
+  const addToNodeKeySelection = useSelfNodeKeySelectionAdd();
+  const removeFromNodeKeySelection = useSelfNodeKeySelectionRemove();
   const focusedNodeKey = useSelfFocusedNodeKey();
   return (nodeKey) => {
     if (!(0, import_lodash5.default)(focusedNodeKey, nodeKey)) {
       updateMyPresence({
         focusedNodeKey: nodeKey
       });
+      nodeKey ? addToNodeKeySelection(nodeKey) : focusedNodeKey ? removeFromNodeKeySelection(focusedNodeKey) : null;
+      return true;
     }
+    return false;
   };
 };
 
@@ -273,13 +283,23 @@ var configureAirStorage = (createClientProps, rootAirNode, liveblocksPresence) =
   const useSelfFocusedNodeKey = useSelfFocusedNodeKeyFactory(
     useSelf
   );
+  const useSelfFocusedNodeKeyUpdate = useSelfFocusedNodeKeyUpdateFactory(
+    useUpdateMyPresence,
+    useSelfFocusedNodeKey,
+    useSelfNodeKeySelectionAdd,
+    useSelfNodeKeySelectionRemove
+  );
   return {
     // Liveblocks Hooks
     useUpdateMyPresence,
     useSelf,
     // Air Storage Hooks
     useNodeSet: useNodeSetFactory(useStorage),
-    useCreateNode: useCreateNodeFactory(useMutation, mappedAirNodeUnion),
+    useCreateNode: useCreateNodeFactory(
+      useMutation,
+      useSelfFocusedNodeKeyUpdate,
+      mappedAirNodeUnion
+    ),
     useSelectNodeState: useSelectNodeStateFactory(useStorage),
     useUpdateNodeState: useUpdateNodeStateFactory(useMutation),
     useDeleteNode: useDeleteNodeFactory(useMutation, useSelfNodeKeySelectionRemove),
@@ -291,10 +311,7 @@ var configureAirStorage = (createClientProps, rootAirNode, liveblocksPresence) =
     useSelfNodeKeySelectionRemove,
     // Air Presence NodeKeyFocus Hooks
     useSelfFocusedNodeKey,
-    useSelfFocusedNodeKeyUpdate: useSelfFocusedNodeKeyUpdateFactory(
-      useUpdateMyPresence,
-      useSelfFocusedNodeKey
-    ),
+    useSelfFocusedNodeKeyUpdate,
     StaticIndex
   };
 };

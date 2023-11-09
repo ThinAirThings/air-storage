@@ -18,7 +18,6 @@ type TreeAirNode<T extends string = string, Skt extends Record<string, any> = Re
     state: S;
     children: C;
 };
-type ExtractChildTypeUnion<N extends FlatAirNode> = N['childTypeSet'] extends Set<infer CT extends string> ? CT : never;
 type FlatAirNode<T extends string = string, Skt extends Record<string, any> = Record<string, any>, S extends LsonObject = LsonObject, CK extends string = string> = {
     type: T;
     struct: Skt;
@@ -79,9 +78,11 @@ declare const configureAirStorage: <U extends FlatAirNode, StaticIndex extends R
         <T>(selector: (me: _liveblocks_core.User<AirPresence<U> & P, _liveblocks_core.BaseUserMeta>) => T, isEqual?: ((prev: T, curr: T) => boolean) | undefined): T;
     };
     useNodeSet: <R>(morphism: (liveIndex: (ILiveIndexStorageModel<U> extends infer T_1 ? T_1 extends ILiveIndexStorageModel<U> ? T_1 extends _liveblocks_core.LsonObject ? { readonly [K in keyof T_1]: _liveblocks_core.ToImmutable<Exclude<T_1[K], undefined>> | (undefined extends T_1[K] ? T_1[K] & undefined : never); } : T_1 extends _liveblocks_core.Json ? T_1 : never : never : never)["liveIndex"]) => R) => R;
-    useCreateNode: () => <T_2 extends U["type"], CT extends ExtractChildTypeUnion<U & {
+    useCreateNode: () => <T_2 extends U["type"], CT extends (U & {
         type: T_2;
-    }>, R_1 extends NodeKey<U, CT>>(nodeKey: NodeKey<U, T_2>, childType: CT, callback?: ((liveIndexNode: LiveIndexNode<U & {
+    })["childTypeSet"], R_1 extends NodeKey<U & {
+        type: CT;
+    }>>(nodeKey: NodeKey<U, T_2>, childType: CT, callback?: ((liveIndexNode: LiveIndexNode<U & {
         type: CT;
     }>) => void) | undefined) => R_1;
     useSelectNodeState: <T_3 extends U["type"], R_2>(nodeKey: NodeKey<U, T_3>, selector: (immutableState: ImmutableLsonObject<U & {
@@ -102,7 +103,7 @@ declare const configureAirStorage: <U extends FlatAirNode, StaticIndex extends R
     useSelfNodeKeySelectionAdd: () => (nodeKey: NodeKey<U>) => boolean;
     useSelfNodeKeySelectionRemove: () => (nodeKey: NodeKey<U>) => boolean;
     useSelfFocusedNodeKey: () => NodeKey<U> | null;
-    useSelfFocusedNodeKeyUpdate: () => (nodeKey: NodeKey<U> | null) => void;
+    useSelfFocusedNodeKeyUpdate: () => (nodeKey: NodeKey<U> | null) => boolean;
     StaticIndex: StaticIndex;
 };
 
@@ -125,4 +126,4 @@ type TreeToStaticUnion<T extends TreeAirNode> = IsEmptyRecord<T['struct']> exten
 }[T['children'][number]['type']]);
 type TreeToStaticIndex<T extends TreeAirNode> = UnionToIntersection<TreeToStaticUnion<T>>;
 
-export { AirNodeIndexedUnion, AirPresence, ExtractChildTypeUnion, FlatAirNode, ILiveIndexNode, LiveIndexNode, NodeKey, TreeAirNode, TreeToNodeUnion, TreeToStaticIndex, TreeToStaticUnion, UnionToIntersection, configureAirStorage, createNodeKey, defineAirNode, defineAirNodeSchema, treeToStructureIndex };
+export { AirNodeIndexedUnion, AirPresence, FlatAirNode, ILiveIndexNode, LiveIndexNode, NodeKey, TreeAirNode, TreeToNodeUnion, TreeToStaticIndex, TreeToStaticUnion, UnionToIntersection, configureAirStorage, createNodeKey, defineAirNode, defineAirNodeSchema, treeToStructureIndex };

@@ -1,24 +1,18 @@
 import { configureAirStorage } from "./configureAirStorage.js";
 import { defineAirNode, defineAirNodeSchema } from "./defineAirNode.js";
-import { TreeToStaticIndex, extendAirNodeDefinition } from "./extendAirNodeDefinition.js";
+import { TreeToStaticIndex } from "./extendAirNodeDefinition.js";
 import { TreeToNodeUnion } from "./types.js";
 
 
-const defineDirectoryAirNode = extendAirNodeDefinition<{
-    iconLabel: string
-}>()
-const defineOtherAirNode = extendAirNodeDefinition<{
-    pickles: number
-}>()
 const airNodeTree = defineAirNodeSchema([
-    defineDirectoryAirNode('Level1NodeA', {
+    defineAirNode('Level1NodeA', {
         iconLabel: 'stuff'
     }, {
         nodeName: 'Test Node',
         stuff: 'stuff',
         name: 5
     }, [
-        defineOtherAirNode('Level2NodeA', {pickles: 10}, {}, [
+        defineAirNode('Level2NodeA', {}, {}, [
             defineAirNode('Level3NodeA', {}, {}, []),
             defineAirNode('Level3NodeB', {}, {}, []),
             defineAirNode('Level3NodeC', {}, {}, []),

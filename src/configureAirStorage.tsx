@@ -60,6 +60,12 @@ export const configureAirStorage = <
     const useSelfFocusedNodeKey = useSelfFocusedNodeKeyFactory<U>(
         useSelf
     )
+    const useSelfFocusedNodeKeyUpdate = useSelfFocusedNodeKeyUpdateFactory<U>(
+        useUpdateMyPresence,
+        useSelfFocusedNodeKey,
+        useSelfNodeKeySelectionAdd,
+        useSelfNodeKeySelectionRemove
+    )
     // This is just keeps the internal typings clean
     type TypedLiveblocksHooks = ReturnType<
         typeof createRoomContext<
@@ -73,7 +79,11 @@ export const configureAirStorage = <
         useSelf: useSelf as TypedLiveblocksHooks['useSelf'],
         // Air Storage Hooks
         useNodeSet: useNodeSetFactory<U>(useStorage),
-        useCreateNode: useCreateNodeFactory<U>(useMutation, mappedAirNodeUnion),
+        useCreateNode: useCreateNodeFactory<U>(
+            useMutation, 
+            useSelfFocusedNodeKeyUpdate,
+            mappedAirNodeUnion
+        ),
         useSelectNodeState: useSelectNodeStateFactory<U>(useStorage),
         useUpdateNodeState: useUpdateNodeStateFactory<U>(useMutation),
         useDeleteNode: useDeleteNodeFactory<U>(useMutation, useSelfNodeKeySelectionRemove),
@@ -85,10 +95,7 @@ export const configureAirStorage = <
         useSelfNodeKeySelectionRemove,
         // Air Presence NodeKeyFocus Hooks
         useSelfFocusedNodeKey,
-        useSelfFocusedNodeKeyUpdate: useSelfFocusedNodeKeyUpdateFactory<U>(
-            useUpdateMyPresence,
-            useSelfFocusedNodeKey
-        ),
+        useSelfFocusedNodeKeyUpdate,
         StaticIndex
     }
 }

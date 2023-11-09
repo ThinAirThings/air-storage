@@ -13,8 +13,6 @@ export type TreeAirNode<
     children: C
 }
 
-export type ExtractChildTypeUnion<N extends FlatAirNode> = 
-    N['childTypeSet'] extends Set<infer CT extends string> ? CT : never
 
 export type FlatAirNode<
     T extends string=string,
