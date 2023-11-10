@@ -45,7 +45,6 @@ export type AirNodeIndexedUnion<
 export type AirPresence<
     U extends FlatAirNode
 > = {
-    absoluteSelectionBounds: ScreenState | null
     nodeKeySelection: Array<NodeKey<U>>
     focusedNodeKey: NodeKey<U>|null
 }

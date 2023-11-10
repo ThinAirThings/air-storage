@@ -1,5 +1,4 @@
 import { LsonObject, LiveObject, LiveMap, JsonObject, createClient } from '@liveblocks/client';
-import { ScreenState } from '@thinairthings/zoom-utils';
 import * as react_jsx_runtime from 'react/jsx-runtime';
 import * as react from 'react';
 import * as _liveblocks_core from '@liveblocks/core';
@@ -37,7 +36,6 @@ type AirNodeIndexedUnion<U extends TreeAirNode> = {
     });
 };
 type AirPresence<U extends FlatAirNode> = {
-    absoluteSelectionBounds: ScreenState | null;
     nodeKeySelection: Array<NodeKey<U>>;
     focusedNodeKey: NodeKey<U> | null;
 };
