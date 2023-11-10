@@ -69,7 +69,7 @@ type ILiveIndexStorageModel<U extends FlatAirNode = FlatAirNode> = {
 
 type ImmutableLsonObject<U extends FlatAirNode> = ReturnType<LiveIndexNode<U>['toImmutable']>['state'];
 
-declare const configureAirStorage: <U extends FlatAirNode, StaticIndex extends Record<string, any>, P extends JsonObject = {}>(createClientProps: Parameters<typeof createClient>[0], rootAirNode: TreeAirNode, liveblocksPresence?: P | undefined) => {
+declare const configureAirStorage: <U extends FlatAirNode, StaticIndex extends Record<string, any>, P extends JsonObject = {}>(createClientProps: Parameters<typeof createClient>[0], airNodeSchema: TreeAirNode, liveblocksPresence?: P | undefined) => {
     useUpdateMyPresence: () => (patch: Partial<AirPresence<U> & P>, options?: {
         addToHistory: boolean;
     } | undefined) => void;
@@ -94,7 +94,7 @@ declare const configureAirStorage: <U extends FlatAirNode, StaticIndex extends R
     useDeleteNode: () => <T_5 extends U["type"]>(nodeKey: NodeKey<U, T_5>, callback?: ((liveIndexNode: LiveIndexNode<U & {
         type: T_5;
     }>) => void) | undefined) => NodeKey<U, T_5>;
-    AirNodeProvider: ({ storageId, children }: {
+    AirStorageProvider: ({ storageId, children }: {
         storageId: string;
         children: react.ReactNode;
     }) => react_jsx_runtime.JSX.Element;

@@ -14,7 +14,7 @@ var MappedUnion = class extends Map {
 // src/configureAirStorage.tsx
 import { createClient } from "@liveblocks/client";
 
-// src/components/AirNodeProviderFactory.tsx
+// src/components/AirStorageProviderFactory.tsx
 import { Suspense } from "react";
 
 // src/LiveObjects/LiveIndexStorageModel.ts
@@ -25,9 +25,9 @@ var LiveIndexStorageModel = class {
   }
 };
 
-// src/components/AirNodeProviderFactory.tsx
+// src/components/AirStorageProviderFactory.tsx
 import { jsx } from "react/jsx-runtime";
-var AirNodeProviderFactory = (rootAirNode, LiveblocksRoomProvider, initialLiveblocksPresence) => ({
+var AirStorageProviderFactory = (LiveblocksRoomProvider, initialLiveblocksPresence) => ({
   storageId,
   children
 }) => {
@@ -35,8 +35,12 @@ var AirNodeProviderFactory = (rootAirNode, LiveblocksRoomProvider, initialLivebl
     LiveblocksRoomProvider,
     {
       id: storageId,
-      initialPresence: initialLiveblocksPresence,
-      initialStorage: new LiveIndexStorageModel(rootAirNode),
+      initialPresence: {
+        ...initialLiveblocksPresence,
+        nodeKeySelection: [],
+        focusedNodeKey: null
+      },
+      initialStorage: new LiveIndexStorageModel(),
       children: /* @__PURE__ */ jsx(Suspense, { fallback: /* @__PURE__ */ jsx("div", { children: "Loading..." }), children })
     }
   );
@@ -214,9 +218,9 @@ var useSelfFocusedNodeKeyUpdateFactory = (useUpdateMyPresence, useSelfFocusedNod
 };
 
 // src/configureAirStorage.tsx
-var configureAirStorage = (createClientProps, rootAirNode, liveblocksPresence) => {
-  const mappedAirNodeUnion = treeToMappedUnion(rootAirNode);
-  const StaticIndex = treeToStructureIndex(rootAirNode);
+var configureAirStorage = (createClientProps, airNodeSchema, liveblocksPresence) => {
+  const mappedAirNodeUnion = treeToMappedUnion(airNodeSchema);
+  const StaticIndex = treeToStructureIndex(airNodeSchema);
   const { suspense: {
     useStorage,
     useMutation,
@@ -262,7 +266,10 @@ var configureAirStorage = (createClientProps, rootAirNode, liveblocksPresence) =
     useSelectNodeState: useSelectNodeStateFactory(useStorage),
     useUpdateNodeState: useUpdateNodeStateFactory(useMutation),
     useDeleteNode: useDeleteNodeFactory(useMutation, useSelfNodeKeySelectionRemove),
-    AirNodeProvider: AirNodeProviderFactory(rootAirNode, RoomProvider, liveblocksPresence ?? {}),
+    AirStorageProvider: AirStorageProviderFactory(
+      RoomProvider,
+      liveblocksPresence ?? {}
+    ),
     // Air Presence NodeKeySelection Hooks
     useSelfNodeKeySelection,
     useSelfNodeKeySelectionUpdate,
