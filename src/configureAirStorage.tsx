@@ -34,7 +34,9 @@ export const configureAirStorage = <
         useMutation,
         RoomProvider,
         useUpdateMyPresence,
-        useSelf
+        useSelf,
+        useRoom,
+        RoomContext
     }} = createRoomContext<
         AirPresence<U>, 
         ILiveIndexStorageModel<U>
@@ -77,6 +79,8 @@ export const configureAirStorage = <
         // Liveblocks Hooks
         useUpdateMyPresence: useUpdateMyPresence as TypedLiveblocksHooks['useUpdateMyPresence'],
         useSelf: useSelf as TypedLiveblocksHooks['useSelf'],
+        useRoom,
+        RoomContext,
         // Air Storage Hooks
         useNodeSet: useNodeSetFactory<U>(useStorage),
         useCreateNode: useCreateNodeFactory<U>(

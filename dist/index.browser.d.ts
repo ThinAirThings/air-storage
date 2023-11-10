@@ -77,6 +77,8 @@ declare const configureAirStorage: <U extends FlatAirNode, StaticIndex extends R
         (): _liveblocks_core.User<AirPresence<U> & P, _liveblocks_core.BaseUserMeta>;
         <T>(selector: (me: _liveblocks_core.User<AirPresence<U> & P, _liveblocks_core.BaseUserMeta>) => T, isEqual?: ((prev: T, curr: T) => boolean) | undefined): T;
     };
+    useRoom: () => _liveblocks_core.Room<AirPresence<U>, ILiveIndexStorageModel<U>, _liveblocks_core.BaseUserMeta, never>;
+    RoomContext: react.Context<_liveblocks_core.Room<AirPresence<U>, ILiveIndexStorageModel<U>, _liveblocks_core.BaseUserMeta, never> | null>;
     useNodeSet: <R>(morphism: (liveIndex: (ILiveIndexStorageModel<U> extends infer T_1 ? T_1 extends ILiveIndexStorageModel<U> ? T_1 extends _liveblocks_core.LsonObject ? { readonly [K in keyof T_1]: _liveblocks_core.ToImmutable<Exclude<T_1[K], undefined>> | (undefined extends T_1[K] ? T_1[K] & undefined : never); } : T_1 extends _liveblocks_core.Json ? T_1 : never : never : never)["liveIndex"]) => R) => R;
     useCreateNode: () => <T_2 extends U["type"], CT extends (U & {
         type: T_2;

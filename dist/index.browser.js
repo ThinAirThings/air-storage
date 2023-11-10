@@ -219,7 +219,9 @@ var configureAirStorage = (createClientProps, airNodeSchema, liveblocksPresence)
     useMutation,
     RoomProvider,
     useUpdateMyPresence,
-    useSelf
+    useSelf,
+    useRoom,
+    RoomContext
   } } = createRoomContext(createClient(createClientProps));
   const useSelfNodeKeySelection = useSelfNodeKeySelectionFactory(
     useSelf
@@ -249,6 +251,8 @@ var configureAirStorage = (createClientProps, airNodeSchema, liveblocksPresence)
     // Liveblocks Hooks
     useUpdateMyPresence,
     useSelf,
+    useRoom,
+    RoomContext,
     // Air Storage Hooks
     useNodeSet: useNodeSetFactory(useStorage),
     useCreateNode: useCreateNodeFactory(
