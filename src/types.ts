@@ -1,5 +1,6 @@
 import { LsonObject } from "@liveblocks/client"
 import {NodeKey} from './types/NodeKey.js'
+import { ScreenState } from "@thinairthings/zoom-utils"
 
 export type TreeAirNode<
     T extends string=string,
@@ -44,6 +45,7 @@ export type AirNodeIndexedUnion<
 export type AirPresence<
     U extends FlatAirNode
 > = {
+    absoluteSelectionBounds: ScreenState | null
     nodeKeySelection: Array<NodeKey<U>>
     focusedNodeKey: NodeKey<U>|null
 }
