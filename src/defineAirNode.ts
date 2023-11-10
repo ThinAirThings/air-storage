@@ -1,7 +1,6 @@
 import { LsonObject } from "@liveblocks/client"
 import { TreeAirNode } from "./types.js"
 
-
 export const defineAirNode = <
     T extends string=string,
     Skt extends Record<string, any>=Record<string, any>,
