@@ -17,10 +17,8 @@ export const useSelfNodeKeySelectionUpdateFactory = <
         updater: (nodeKeySelection: Array<NodeKey<U>>) => Array<NodeKey<U>>
     ) => {
         const newSelectedNodeKeySet = updater([...new Set(nodeKeySelection)])
-        if(!isEqual(nodeKeySelection, newSelectedNodeKeySet)) {
-            updateMyPresence({
-                nodeKeySelection: [...newSelectedNodeKeySet]
-            })
-        }
+        updateMyPresence({
+            nodeKeySelection: [...newSelectedNodeKeySet]
+        })
     }
 }

@@ -181,25 +181,22 @@ var useNodeSetFactory = (useStorage) => (morphism) => useStorage(({ liveIndex })
 });
 
 // src/hooks-presence/useSelfNodeKeySelectionUpdateFactory.ts
-var import_lodash2 = __toESM(require("lodash.isequal"), 1);
 var useSelfNodeKeySelectionUpdateFactory = (useUpdateMyPresence, useSelfNodeKeySelection) => () => {
   const updateMyPresence = useUpdateMyPresence();
   const nodeKeySelection = useSelfNodeKeySelection();
   return (updater) => {
     const newSelectedNodeKeySet = updater([...new Set(nodeKeySelection)]);
-    if (!(0, import_lodash2.default)(nodeKeySelection, newSelectedNodeKeySet)) {
-      updateMyPresence({
-        nodeKeySelection: [...newSelectedNodeKeySet]
-      });
-    }
+    updateMyPresence({
+      nodeKeySelection: [...newSelectedNodeKeySet]
+    });
   };
 };
 
 // src/hooks-presence/useSelfNodeKeySelectionFactory.ts
-var import_lodash3 = __toESM(require("lodash.isequal"), 1);
+var import_lodash2 = __toESM(require("lodash.isequal"), 1);
 var useSelfNodeKeySelectionFactory = (useSelf) => () => useSelf(
   ({ presence }) => presence.nodeKeySelection,
-  (a, b) => (0, import_lodash3.default)(a, b)
+  (a, b) => (0, import_lodash2.default)(a, b)
 );
 
 // src/hooks-presence/useSelfNodeKeySelectionRemoveFactory.ts
@@ -233,21 +230,21 @@ var useSelfNodeKeySelectionAddFactory = (useUpdateMyPresence, useSelfNodeKeySele
 };
 
 // src/hooks-presence/useSelfFocusedNodeKeyFactory.ts
-var import_lodash4 = __toESM(require("lodash.isequal"), 1);
+var import_lodash3 = __toESM(require("lodash.isequal"), 1);
 var useSelfFocusedNodeKeyFactory = (useSelf) => () => useSelf(
   ({ presence }) => presence.focusedNodeKey,
-  (a, b) => (0, import_lodash4.default)(a, b)
+  (a, b) => (0, import_lodash3.default)(a, b)
 );
 
 // src/hooks-presence/useSelfFocusedNodeKeyUpdateFactory.ts
-var import_lodash5 = __toESM(require("lodash.isequal"), 1);
+var import_lodash4 = __toESM(require("lodash.isequal"), 1);
 var useSelfFocusedNodeKeyUpdateFactory = (useUpdateMyPresence, useSelfFocusedNodeKey, useSelfNodeKeySelectionAdd, useSelfNodeKeySelectionRemove) => () => {
   const updateMyPresence = useUpdateMyPresence();
   const addToNodeKeySelection = useSelfNodeKeySelectionAdd();
   const removeFromNodeKeySelection = useSelfNodeKeySelectionRemove();
   const focusedNodeKey = useSelfFocusedNodeKey();
   return (nodeKey) => {
-    if (!(0, import_lodash5.default)(focusedNodeKey, nodeKey)) {
+    if (!(0, import_lodash4.default)(focusedNodeKey, nodeKey)) {
       updateMyPresence({
         focusedNodeKey: nodeKey
       });
