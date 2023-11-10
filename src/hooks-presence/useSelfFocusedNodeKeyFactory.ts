@@ -10,6 +10,5 @@ export const useSelfFocusedNodeKeyFactory = <
     useSelf: LiveblocksHooks<U>['useSelf']
 ) => () => 
     useSelf(
-        ({presence}) => presence.focusedNodeKey, 
-        (a,b)=>isEqual(a,b)
+        ({presence}) => presence.focusedNodeKey
     )

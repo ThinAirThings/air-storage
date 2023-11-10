@@ -186,8 +186,6 @@ var useSelfNodeKeySelectionUpdateFactory = (useUpdateMyPresence, useSelfNodeKeyS
   const nodeKeySelection = useSelfNodeKeySelection();
   return (updater) => {
     const newSelectedNodeKeySet = updater([...new Set(nodeKeySelection)]);
-    console.log("Called Updater");
-    console.log("New Selected Node Key Set", newSelectedNodeKeySet);
     updateMyPresence({
       nodeKeySelection: [...newSelectedNodeKeySet]
     });
@@ -230,21 +228,19 @@ var useSelfNodeKeySelectionAddFactory = (useUpdateMyPresence, useSelfNodeKeySele
 };
 
 // src/hooks-presence/useSelfFocusedNodeKeyFactory.ts
-var import_lodash2 = __toESM(require("lodash.isequal"), 1);
 var useSelfFocusedNodeKeyFactory = (useSelf) => () => useSelf(
-  ({ presence }) => presence.focusedNodeKey,
-  (a, b) => (0, import_lodash2.default)(a, b)
+  ({ presence }) => presence.focusedNodeKey
 );
 
 // src/hooks-presence/useSelfFocusedNodeKeyUpdateFactory.ts
-var import_lodash3 = __toESM(require("lodash.isequal"), 1);
+var import_lodash2 = __toESM(require("lodash.isequal"), 1);
 var useSelfFocusedNodeKeyUpdateFactory = (useUpdateMyPresence, useSelfFocusedNodeKey, useSelfNodeKeySelectionAdd, useSelfNodeKeySelectionRemove) => () => {
   const updateMyPresence = useUpdateMyPresence();
   const addToNodeKeySelection = useSelfNodeKeySelectionAdd();
   const removeFromNodeKeySelection = useSelfNodeKeySelectionRemove();
   const focusedNodeKey = useSelfFocusedNodeKey();
   return (nodeKey) => {
-    if (!(0, import_lodash3.default)(focusedNodeKey, nodeKey)) {
+    if (!(0, import_lodash2.default)(focusedNodeKey, nodeKey)) {
       updateMyPresence({
         focusedNodeKey: nodeKey
       });
