@@ -154,10 +154,8 @@ var useSelfNodeKeySelectionUpdateFactory = (useUpdateMyPresence, useSelfNodeKeyS
 };
 
 // src/hooks-presence/useSelfNodeKeySelectionFactory.ts
-import isEqual2 from "lodash.isequal";
 var useSelfNodeKeySelectionFactory = (useSelf) => () => useSelf(
-  ({ presence }) => presence.nodeKeySelection,
-  (a, b) => isEqual2(a, b)
+  ({ presence }) => presence.nodeKeySelection
 );
 
 // src/hooks-presence/useSelfNodeKeySelectionRemoveFactory.ts
@@ -191,21 +189,21 @@ var useSelfNodeKeySelectionAddFactory = (useUpdateMyPresence, useSelfNodeKeySele
 };
 
 // src/hooks-presence/useSelfFocusedNodeKeyFactory.ts
-import isEqual3 from "lodash.isequal";
+import isEqual2 from "lodash.isequal";
 var useSelfFocusedNodeKeyFactory = (useSelf) => () => useSelf(
   ({ presence }) => presence.focusedNodeKey,
-  (a, b) => isEqual3(a, b)
+  (a, b) => isEqual2(a, b)
 );
 
 // src/hooks-presence/useSelfFocusedNodeKeyUpdateFactory.ts
-import isEqual4 from "lodash.isequal";
+import isEqual3 from "lodash.isequal";
 var useSelfFocusedNodeKeyUpdateFactory = (useUpdateMyPresence, useSelfFocusedNodeKey, useSelfNodeKeySelectionAdd, useSelfNodeKeySelectionRemove) => () => {
   const updateMyPresence = useUpdateMyPresence();
   const addToNodeKeySelection = useSelfNodeKeySelectionAdd();
   const removeFromNodeKeySelection = useSelfNodeKeySelectionRemove();
   const focusedNodeKey = useSelfFocusedNodeKey();
   return (nodeKey) => {
-    if (!isEqual4(focusedNodeKey, nodeKey)) {
+    if (!isEqual3(focusedNodeKey, nodeKey)) {
       updateMyPresence({
         focusedNodeKey: nodeKey
       });
