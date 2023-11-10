@@ -126,4 +126,4 @@ type TreeToStaticUnion<T extends TreeAirNode> = IsEmptyRecord<T['struct']> exten
 }[T['children'][number]['type']]);
 type TreeToStaticIndex<T extends TreeAirNode> = UnionToIntersection<TreeToStaticUnion<T>>;
 
-export { AirNodeIndexedUnion, AirPresence, FlatAirNode, ILiveIndexNode, LiveIndexNode, NodeKey, TreeAirNode, TreeToNodeUnion, TreeToStaticIndex, TreeToStaticUnion, UnionToIntersection, configureAirStorage, createNodeKey, defineAirNode, defineAirNodeSchema, treeToStructureIndex };
+export { AirNodeIndexedUnion, AirPresence, FlatAirNode, ILiveIndexNode, IsEmptyArray, LiveIndexNode, NodeKey, TreeAirNode, TreeToNodeUnion, TreeToStaticIndex, TreeToStaticUnion, UnionToIntersection, configureAirStorage, createNodeKey, defineAirNode, defineAirNodeSchema, treeToStructureIndex };
