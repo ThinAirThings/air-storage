@@ -293,6 +293,7 @@ var configureAirStorage = (createClientProps, airNodeSchema, liveblocksPresence)
     useUpdateMyPresence,
     useSelf,
     useRoom,
+    useStorage,
     RoomContext,
     // Air Storage Hooks
     useNodeSet: useNodeSetFactory(useStorage),

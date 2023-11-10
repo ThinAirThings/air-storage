@@ -78,26 +78,27 @@ declare const configureAirStorage: <U extends FlatAirNode, StaticIndex extends R
         <T>(selector: (me: _liveblocks_core.User<AirPresence<U> & P, _liveblocks_core.BaseUserMeta>) => T, isEqual?: ((prev: T, curr: T) => boolean) | undefined): T;
     };
     useRoom: () => _liveblocks_core.Room<AirPresence<U>, ILiveIndexStorageModel<U>, _liveblocks_core.BaseUserMeta, never>;
+    useStorage: <T_1>(selector: (root: ILiveIndexStorageModel<U> extends infer T_2 ? T_2 extends ILiveIndexStorageModel<U> ? T_2 extends _liveblocks_core.LsonObject ? { readonly [K in keyof T_2]: _liveblocks_core.ToImmutable<Exclude<T_2[K], undefined>> | (undefined extends T_2[K] ? T_2[K] & undefined : never); } : T_2 extends _liveblocks_core.Json ? T_2 : never : never : never) => T_1, isEqual?: ((prev: T_1, curr: T_1) => boolean) | undefined) => T_1;
     RoomContext: react.Context<_liveblocks_core.Room<AirPresence<U>, ILiveIndexStorageModel<U>, _liveblocks_core.BaseUserMeta, never> | null>;
-    useNodeSet: <R>(morphism: (liveIndex: (ILiveIndexStorageModel<U> extends infer T_1 ? T_1 extends ILiveIndexStorageModel<U> ? T_1 extends _liveblocks_core.LsonObject ? { readonly [K in keyof T_1]: _liveblocks_core.ToImmutable<Exclude<T_1[K], undefined>> | (undefined extends T_1[K] ? T_1[K] & undefined : never); } : T_1 extends _liveblocks_core.Json ? T_1 : never : never : never)["liveIndex"]) => R) => R;
-    useCreateNode: () => <T_2 extends U["type"], CT extends (U & {
-        type: T_2;
+    useNodeSet: <R>(morphism: (liveIndex: (ILiveIndexStorageModel<U> extends infer T_3 ? T_3 extends ILiveIndexStorageModel<U> ? T_3 extends _liveblocks_core.LsonObject ? { readonly [K_1 in keyof T_3]: _liveblocks_core.ToImmutable<Exclude<T_3[K_1], undefined>> | (undefined extends T_3[K_1] ? T_3[K_1] & undefined : never); } : T_3 extends _liveblocks_core.Json ? T_3 : never : never : never)["liveIndex"]) => R) => R;
+    useCreateNode: () => <T_4 extends U["type"], CT extends (U & {
+        type: T_4;
     })["childTypeSet"] extends never ? U["type"] : (U & {
-        type: T_2;
+        type: T_4;
     })["childTypeSet"], R_1 extends NodeKey<U & {
         type: CT;
-    }>>(parentNodeKey: NodeKey<U, T_2> | null, childType: CT, callback?: ((liveIndexNode: LiveIndexNode<U & {
+    }>>(parentNodeKey: NodeKey<U, T_4> | null, childType: CT, callback?: ((liveIndexNode: LiveIndexNode<U & {
         type: CT;
     }>) => void) | undefined) => R_1;
-    useSelectNodeState: <T_3 extends U["type"], R_2>(nodeKey: NodeKey<U, T_3>, selector: (immutableState: ImmutableLsonObject<U & {
-        type: T_3;
-    }>) => R_2) => R_2;
-    useUpdateNodeState: () => <T_4 extends U["type"]>(nodeKey: NodeKey<U, T_4>, callback: (liveIndexState: _liveblocks_core.LiveObject<(U & {
-        type: T_4;
-    })["state"]>) => void) => void;
-    useDeleteNode: () => <T_5 extends U["type"]>(nodeKey: NodeKey<U, T_5>, callback?: ((liveIndexNode: LiveIndexNode<U & {
+    useSelectNodeState: <T_5 extends U["type"], R_2>(nodeKey: NodeKey<U, T_5>, selector: (immutableState: ImmutableLsonObject<U & {
         type: T_5;
-    }>) => void) | undefined) => NodeKey<U, T_5>;
+    }>) => R_2) => R_2;
+    useUpdateNodeState: () => <T_6 extends U["type"]>(nodeKey: NodeKey<U, T_6>, callback: (liveIndexState: _liveblocks_core.LiveObject<(U & {
+        type: T_6;
+    })["state"]>) => void) => void;
+    useDeleteNode: () => <T_7 extends U["type"]>(nodeKey: NodeKey<U, T_7>, callback?: ((liveIndexNode: LiveIndexNode<U & {
+        type: T_7;
+    }>) => void) | undefined) => NodeKey<U, T_7>;
     AirStorageProvider: ({ storageId, children }: {
         storageId: string;
         children: react.ReactNode;
