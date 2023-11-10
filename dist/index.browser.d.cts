@@ -82,7 +82,7 @@ declare const configureAirStorage: <U extends FlatAirNode, StaticIndex extends R
         type: T_2;
     })["childTypeSet"], R_1 extends NodeKey<U & {
         type: CT;
-    }>>(nodeKey: NodeKey<U, T_2>, childType: CT, callback?: ((liveIndexNode: LiveIndexNode<U & {
+    }>>(nodeKey: NodeKey<U, T_2> | null, childType: CT, callback?: ((liveIndexNode: LiveIndexNode<U & {
         type: CT;
     }>) => void) | undefined) => R_1;
     useSelectNodeState: <T_3 extends U["type"], R_2>(nodeKey: NodeKey<U, T_3>, selector: (immutableState: ImmutableLsonObject<U & {

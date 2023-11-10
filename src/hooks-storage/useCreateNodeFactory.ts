@@ -43,7 +43,7 @@ export const useCreateNodeFactory = <
         CT extends (U&{type: T})['childTypeSet'],
         R extends NodeKey<U&{type: CT}>
     >(
-        nodeKey: NodeKey<U, T>,
+        nodeKey: NodeKey<U, T> | null,
         childType: CT,
         callback?: (liveIndexNode: LiveIndexNode<(U&{type: CT})>) => void
     ) => R

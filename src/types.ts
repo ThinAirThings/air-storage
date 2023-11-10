@@ -13,7 +13,6 @@ export type TreeAirNode<
     children: C
 }
 
-
 export type FlatAirNode<
     T extends string=string,
     Skt extends Record<string, any>=Record<string, any>,
