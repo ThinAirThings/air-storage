@@ -40,10 +40,10 @@ export const useCreateNodeFactory = <
         return newNodeKey
     }, []) as <
         T extends U['type'],
-        CT extends (U&{type: T})['childTypeSet'],
+        CT extends (U&{type: T})['childTypeSet'] extends never ? U['type'] : (U&{type: T})['childTypeSet'],
         R extends NodeKey<U&{type: CT}>
     >(
-        nodeKey: NodeKey<U, T> | null,
+        parentNodeKey: NodeKey<U, T> | null,
         childType: CT,
         callback?: (liveIndexNode: LiveIndexNode<(U&{type: CT})>) => void
     ) => R

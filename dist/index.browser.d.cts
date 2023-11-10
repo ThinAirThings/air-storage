@@ -80,9 +80,11 @@ declare const configureAirStorage: <U extends FlatAirNode, StaticIndex extends R
     useNodeSet: <R>(morphism: (liveIndex: (ILiveIndexStorageModel<U> extends infer T_1 ? T_1 extends ILiveIndexStorageModel<U> ? T_1 extends _liveblocks_core.LsonObject ? { readonly [K in keyof T_1]: _liveblocks_core.ToImmutable<Exclude<T_1[K], undefined>> | (undefined extends T_1[K] ? T_1[K] & undefined : never); } : T_1 extends _liveblocks_core.Json ? T_1 : never : never : never)["liveIndex"]) => R) => R;
     useCreateNode: () => <T_2 extends U["type"], CT extends (U & {
         type: T_2;
+    })["childTypeSet"] extends never ? U["type"] : (U & {
+        type: T_2;
     })["childTypeSet"], R_1 extends NodeKey<U & {
         type: CT;
-    }>>(nodeKey: NodeKey<U, T_2> | null, childType: CT, callback?: ((liveIndexNode: LiveIndexNode<U & {
+    }>>(parentNodeKey: NodeKey<U, T_2> | null, childType: CT, callback?: ((liveIndexNode: LiveIndexNode<U & {
         type: CT;
     }>) => void) | undefined) => R_1;
     useSelectNodeState: <T_3 extends U["type"], R_2>(nodeKey: NodeKey<U, T_3>, selector: (immutableState: ImmutableLsonObject<U & {
