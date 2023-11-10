@@ -27,7 +27,6 @@ export type FlatAirNode<
 }
 
 export type IsEmptyArray<T extends any[]> = T['length'] extends 0 ? true : false;
-
 export type TreeToNodeUnion<T extends TreeAirNode> =
     IsEmptyArray<T['children']> extends true
         ? (FlatAirNode<T['type'], T['struct'], T['state'], never>)
