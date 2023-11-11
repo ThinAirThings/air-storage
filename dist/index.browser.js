@@ -121,19 +121,6 @@ var useUpdateNodeStateFactory = (useMutation) => () => useMutation(({ storage },
   callback(storage.get("liveIndex").get(nodeKey.nodeId).get("state"));
 }, []);
 
-// src/extendAirNodeDefinition.ts
-var treeToStructureIndex = (tree) => {
-  const index = {};
-  const visit = (node) => {
-    if (Object.keys(node.struct).length > 0) {
-      index[node.type] = node.struct;
-    }
-    node.children.forEach(visit);
-  };
-  visit(tree);
-  return index;
-};
-
 // src/hooks-storage/useNodeSetFactory.ts
 var useNodeSetFactory = (useStorage) => (morphism) => useStorage(({ liveIndex }) => {
   return morphism(liveIndex);
@@ -213,7 +200,6 @@ var useSelfFocusedNodeKeyUpdateFactory = (useUpdateMyPresence, useSelfFocusedNod
 // src/configureAirStorage.tsx
 var configureAirStorage = (createClientProps, airNodeSchema, liveblocksPresence) => {
   const mappedAirNodeUnion = treeToMappedUnion(airNodeSchema);
-  const StaticIndex = treeToStructureIndex(airNodeSchema);
   const { suspense: {
     useStorage,
     useMutation,
@@ -275,8 +261,7 @@ var configureAirStorage = (createClientProps, airNodeSchema, liveblocksPresence)
     useSelfNodeKeySelectionRemove,
     // Air Presence NodeKeyFocus Hooks
     useSelfFocusedNodeKey,
-    useSelfFocusedNodeKeyUpdate,
-    StaticIndex
+    useSelfFocusedNodeKeyUpdate
   };
 };
 var treeToMappedUnion = (tree) => {
@@ -292,19 +277,17 @@ var treeToMappedUnion = (tree) => {
 };
 
 // src/defineAirNode.ts
-var defineAirNode = (type, struct, defaultInitialState, children) => ({
+var defineAirNode = (type, defaultInitialState, children) => ({
   type,
-  struct,
   state: defaultInitialState,
   children: children ?? []
   // destructor?:
 });
-var defineAirNodeSchema = (children) => defineAirNode("root", {}, {}, children);
+var defineAirNodeSchema = (children) => defineAirNode("root", {}, children);
 export {
   LiveIndexNode,
   configureAirStorage,
   createNodeKey,
   defineAirNode,
-  defineAirNodeSchema,
-  treeToStructureIndex
+  defineAirNodeSchema
 };

@@ -8,7 +8,6 @@ import { useCreateNodeFactory } from "./hooks-storage/useCreateNodeFactory.js";
 import { useDeleteNodeFactory } from "./hooks-storage/useDeleteNodeFactory.js";
 import { useSelectNodeStateFactory } from "./hooks-storage/useSelectNodeStateFactory.js";
 import { useUpdateNodeStateFactory } from "./hooks-storage/useUpdateNodeStateFactory.js";
-import { treeToStructureIndex } from "./extendAirNodeDefinition.js";
 import { useNodeSetFactory } from "./hooks-storage/useNodeSetFactory.js";
 import { useSelfNodeKeySelectionUpdateFactory } from "./hooks-presence/useSelfNodeKeySelectionUpdateFactory.js";
 import { useSelfNodeKeySelectionFactory } from "./hooks-presence/useSelfNodeKeySelectionFactory.js";
@@ -20,7 +19,6 @@ import { useSelfFocusedNodeKeyUpdateFactory } from "./hooks-presence/useSelfFocu
 
 export const configureAirStorage = <
     U extends FlatAirNode,
-    StaticIndex extends Record<string, any>,
     P extends JsonObject={},
 >(
     createClientProps: Parameters<typeof createClient>[0],
@@ -28,7 +26,6 @@ export const configureAirStorage = <
     liveblocksPresence?: P
 ) => {
     const mappedAirNodeUnion = treeToMappedUnion(airNodeSchema)
-    const StaticIndex = treeToStructureIndex(airNodeSchema) as StaticIndex
     const {suspense: {
         useStorage,
         useMutation,
@@ -103,8 +100,7 @@ export const configureAirStorage = <
         useSelfNodeKeySelectionRemove,
         // Air Presence NodeKeyFocus Hooks
         useSelfFocusedNodeKey,
-        useSelfFocusedNodeKeyUpdate,
-        StaticIndex
+        useSelfFocusedNodeKeyUpdate
     }
 }
 

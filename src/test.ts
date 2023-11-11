@@ -6,43 +6,41 @@ import { TreeToNodeUnion } from "./types.js";
 
 const airNodeTree = defineAirNodeSchema([
     defineAirNode('Level1NodeA', {
-        iconLabel: 'stuff'
-    }, {
         nodeName: 'Test Node',
         stuff: 'stuff',
         name: 5
     }, [
-        defineAirNode('Level2NodeA', {}, {}, [
-            defineAirNode('Level3NodeA', {}, {}, []),
-            defineAirNode('Level3NodeB', {}, {}, []),
-            defineAirNode('Level3NodeC', {}, {}, []),
+        defineAirNode('Level2NodeA', {}, [
+            defineAirNode('Level3NodeA', {}, []),
+            defineAirNode('Level3NodeB', {}, []),
+            defineAirNode('Level3NodeC', {}, []),
         ]),
-        defineAirNode('Level2NodeB', {}, {}, [
-            defineAirNode('Level3NodeD', {}, {}, []),
-            defineAirNode('Level3NodeE', {}, {}, []),
-            defineAirNode('Level3NodeF', {}, {}, []),
+        defineAirNode('Level2NodeB', {}, [
+            defineAirNode('Level3NodeD', {}, []),
+            defineAirNode('Level3NodeE', {}, []),
+            defineAirNode('Level3NodeF', {}, []),
         ]),
-        defineAirNode('Level2NodeC', {}, {}, [
-            defineAirNode('Level3NodeG', {}, {}, []),
-            defineAirNode('Level3NodeH', {}, {}, []),
-            defineAirNode('Level3NodeI', {}, {}, []),
+        defineAirNode('Level2NodeC', {}, [
+            defineAirNode('Level3NodeG', {}, []),
+            defineAirNode('Level3NodeH', {}, []),
+            defineAirNode('Level3NodeI', {}, []),
         ]),
     ]),
-    defineAirNode('Level1NodeB', {}, {}, [
-        defineAirNode('Level2NodeD', {}, {}, [
-            defineAirNode('Level3NodeJ', {}, {}, []),
-            defineAirNode('Level3NodeK', {}, {}, []),
-            defineAirNode('Level3NodeL', {}, {}, []),
+    defineAirNode('Level1NodeB', {}, [
+        defineAirNode('Level2NodeD', {}, [
+            defineAirNode('Level3NodeJ', {}, []),
+            defineAirNode('Level3NodeK', {}, []),
+            defineAirNode('Level3NodeL', {}, []),
         ]),
-        defineAirNode('Level2NodeE', {}, {}, [
-            defineAirNode('Level3NodeM', {}, {}, []),
-            defineAirNode('Level3NodeN', {}, {}, []),
-            defineAirNode('Level3NodeO', {}, {}, []),
+        defineAirNode('Level2NodeE', {}, [
+            defineAirNode('Level3NodeM', {}, []),
+            defineAirNode('Level3NodeN', {}, []),
+            defineAirNode('Level3NodeO', {}, []),
         ]),
-        defineAirNode('Level2NodeF', {}, {}, [
-            defineAirNode('Level3NodeP', {}, {}, []),
-            defineAirNode('Level3NodeQ', {}, {}, []),
-            defineAirNode('Level3NodeR', {}, {}, []),
+        defineAirNode('Level2NodeF', {}, [
+            defineAirNode('Level3NodeP', {}, []),
+            defineAirNode('Level3NodeQ', {}, []),
+            defineAirNode('Level3NodeR', {}, []),
         ]),
     ]),
 ])

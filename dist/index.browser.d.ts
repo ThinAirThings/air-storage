@@ -12,20 +12,18 @@ type NodeKey<U extends FlatAirNode = FlatAirNode, T extends U['type'] = U['type'
     type: T;
 };
 
-type TreeAirNode<T extends string = string, Skt extends Record<string, any> = Record<string, any>, S extends LsonObject = LsonObject, C extends TreeAirNode[] | [] = TreeAirNode<string, Record<string, any>, LsonObject, any>[] | []> = {
+type TreeAirNode<T extends string = string, S extends LsonObject = LsonObject, C extends TreeAirNode[] | [] = TreeAirNode<string, LsonObject, any>[] | []> = {
     type: T;
-    struct: Skt;
     state: S;
     children: C;
 };
-type FlatAirNode<T extends string = string, Skt extends Record<string, any> = Record<string, any>, S extends LsonObject = LsonObject, CK extends string = string> = {
+type FlatAirNode<T extends string = string, S extends LsonObject = LsonObject, CK extends string = string> = {
     type: T;
-    struct: Skt;
     state: S;
     childTypeSet: CK;
 };
 type IsEmptyArray<T extends any[]> = T['length'] extends 0 ? true : false;
-type TreeToNodeUnion<T extends TreeAirNode> = IsEmptyArray<T['children']> extends true ? (FlatAirNode<T['type'], T['struct'], T['state'], never>) : (T['type'] extends 'root' ? never : (FlatAirNode<T['type'], T['struct'], T['state'], T['children'][number]['type']>)) | ({
+type TreeToNodeUnion<T extends TreeAirNode> = IsEmptyArray<T['children']> extends true ? (FlatAirNode<T['type'], T['state'], never>) : (T['type'] extends 'root' ? never : (FlatAirNode<T['type'], T['state'], T['children'][number]['type']>)) | ({
     [ChildType in T['children'][number]['type']]: TreeToNodeUnion<(T['children'][number] & {
         type: ChildType;
     })>;
@@ -69,7 +67,7 @@ type ILiveIndexStorageModel<U extends FlatAirNode = FlatAirNode> = {
 
 type ImmutableLsonObject<U extends FlatAirNode> = ReturnType<LiveIndexNode<U>['toImmutable']>['state'];
 
-declare const configureAirStorage: <U extends FlatAirNode, StaticIndex extends Record<string, any>, P extends JsonObject = {}>(createClientProps: Parameters<typeof createClient>[0], airNodeSchema: TreeAirNode, liveblocksPresence?: P | undefined) => {
+declare const configureAirStorage: <U extends FlatAirNode, P extends JsonObject = {}>(createClientProps: Parameters<typeof createClient>[0], airNodeSchema: TreeAirNode, liveblocksPresence?: P | undefined) => {
     useUpdateMyPresence: () => (patch: Partial<AirPresence<U> & P>, options?: {
         addToHistory: boolean;
     } | undefined) => void;
@@ -109,26 +107,9 @@ declare const configureAirStorage: <U extends FlatAirNode, StaticIndex extends R
     useSelfNodeKeySelectionRemove: () => (nodeKey: NodeKey<U>) => boolean;
     useSelfFocusedNodeKey: () => NodeKey<U> | null;
     useSelfFocusedNodeKeyUpdate: () => (nodeKey: NodeKey<U> | null) => boolean;
-    StaticIndex: StaticIndex;
 };
 
-declare const defineAirNode: <T extends string = string, Skt extends Record<string, any> = Record<string, any>, S extends LsonObject = LsonObject, C extends [] | TreeAirNode[] = []>(type: T, struct: Skt, defaultInitialState: S, children: C) => TreeAirNode<T, Skt, S, C>;
-declare const defineAirNodeSchema: <C extends TreeAirNode[]>(children: C) => TreeAirNode<"root", {}, {}, C>;
+declare const defineAirNode: <T extends string = string, S extends LsonObject = LsonObject, C extends [] | TreeAirNode[] = []>(type: T, defaultInitialState: S, children: C) => TreeAirNode<T, S, C>;
+declare const defineAirNodeSchema: <C extends TreeAirNode[]>(children: C) => TreeAirNode<"root", {}, C>;
 
-declare const treeToStructureIndex: <Tree extends TreeAirNode>(tree: Tree) => UnionToIntersection<TreeToStaticUnion<Tree>>;
-type IsEmptyRecord<T> = keyof T extends never ? true : false;
-type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends ((k: infer I) => void) ? I : never;
-type TreeToStaticUnion<T extends TreeAirNode> = IsEmptyRecord<T['struct']> extends true ? never | ({
-    [ChildType in T['children'][number]['type']]: TreeToStaticUnion<(T['children'][number] & {
-        type: ChildType;
-    })>;
-}[T['children'][number]['type']]) : {
-    [type in T['type']]: T['struct'];
-} | ({
-    [ChildType in T['children'][number]['type']]: TreeToStaticUnion<(T['children'][number] & {
-        type: ChildType;
-    })>;
-}[T['children'][number]['type']]);
-type TreeToStaticIndex<T extends TreeAirNode> = UnionToIntersection<TreeToStaticUnion<T>>;
-
-export { AirNodeIndexedUnion, AirPresence, FlatAirNode, ILiveIndexNode, IsEmptyArray, LiveIndexNode, NodeKey, TreeAirNode, TreeToNodeUnion, TreeToStaticIndex, TreeToStaticUnion, UnionToIntersection, configureAirStorage, createNodeKey, defineAirNode, defineAirNodeSchema, treeToStructureIndex };
+export { AirNodeIndexedUnion, AirPresence, FlatAirNode, ILiveIndexNode, IsEmptyArray, LiveIndexNode, NodeKey, TreeAirNode, TreeToNodeUnion, configureAirStorage, createNodeKey, defineAirNode, defineAirNodeSchema };
