@@ -112,4 +112,6 @@ declare const configureAirStorage: <U extends FlatAirNode, P extends JsonObject 
 declare const defineAirNode: <T extends string = string, S extends LsonObject = LsonObject, C extends [] | TreeAirNode[] = []>(type: T, defaultInitialState: S, children: C) => TreeAirNode<T, S, C>;
 declare const defineAirNodeSchema: <C extends TreeAirNode[]>(children: C) => TreeAirNode<"root", {}, C>;
 
-export { AirNodeIndexedUnion, AirPresence, FlatAirNode, ILiveIndexNode, IsEmptyArray, LiveIndexNode, NodeKey, TreeAirNode, TreeToNodeUnion, configureAirStorage, createNodeKey, defineAirNode, defineAirNodeSchema };
+declare const defineStaticIndex: <U extends FlatAirNode, T extends Record<string, any>>(index: Record<U["type"], T>) => Record<U["type"], T>;
+
+export { AirNodeIndexedUnion, AirPresence, FlatAirNode, ILiveIndexNode, IsEmptyArray, LiveIndexNode, NodeKey, TreeAirNode, TreeToNodeUnion, configureAirStorage, createNodeKey, defineAirNode, defineAirNodeSchema, defineStaticIndex };

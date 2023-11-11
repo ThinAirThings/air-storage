@@ -34,7 +34,8 @@ __export(index_browser_exports, {
   configureAirStorage: () => configureAirStorage,
   createNodeKey: () => createNodeKey,
   defineAirNode: () => defineAirNode,
-  defineAirNodeSchema: () => defineAirNodeSchema
+  defineAirNodeSchema: () => defineAirNodeSchema,
+  defineStaticIndex: () => defineStaticIndex
 });
 module.exports = __toCommonJS(index_browser_exports);
 
@@ -324,11 +325,15 @@ var defineAirNode = (type, defaultInitialState, children) => ({
   // destructor?:
 });
 var defineAirNodeSchema = (children) => defineAirNode("root", {}, children);
+
+// src/defineStaticIndex.ts
+var defineStaticIndex = (index) => index;
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   LiveIndexNode,
   configureAirStorage,
   createNodeKey,
   defineAirNode,
-  defineAirNodeSchema
+  defineAirNodeSchema,
+  defineStaticIndex
 });

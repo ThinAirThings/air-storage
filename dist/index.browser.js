@@ -284,10 +284,14 @@ var defineAirNode = (type, defaultInitialState, children) => ({
   // destructor?:
 });
 var defineAirNodeSchema = (children) => defineAirNode("root", {}, children);
+
+// src/defineStaticIndex.ts
+var defineStaticIndex = (index) => index;
 export {
   LiveIndexNode,
   configureAirStorage,
   createNodeKey,
   defineAirNode,
-  defineAirNodeSchema
+  defineAirNodeSchema,
+  defineStaticIndex
 };
