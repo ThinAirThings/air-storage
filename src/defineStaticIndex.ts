@@ -11,6 +11,6 @@ export const defineStaticIndex = <
     index: {
         [T in U['type']]: {
             Component: (nodeKey: NodeKey<(U&{type: T}), T>) => ReactNode
-        }
+        } & K
     }
 ) => index
