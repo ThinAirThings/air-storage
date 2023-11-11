@@ -115,8 +115,8 @@ declare const defineAirNodeSchema: <C extends TreeAirNode[]>(children: C) => Tre
 
 declare const defineStaticIndex: <U extends FlatAirNode, T extends Record<string, any>>(index: { [K in U["type"]]: {
     Component: (nodeKey: NodeKey<U, K>) => ReactNode;
-} & T; }) => { [K in U["type"]]: {
+}; }) => { [K in U["type"]]: {
     Component: (nodeKey: NodeKey<U, K>) => ReactNode;
-} & T; };
+}; };
 
 export { AirNodeIndexedUnion, AirPresence, FlatAirNode, ILiveIndexNode, IsEmptyArray, LiveIndexNode, NodeKey, TreeAirNode, TreeToNodeUnion, configureAirStorage, createNodeKey, defineAirNode, defineAirNodeSchema, defineStaticIndex };
