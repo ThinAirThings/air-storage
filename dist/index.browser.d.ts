@@ -1,6 +1,7 @@
 import { LsonObject, LiveObject, LiveMap, JsonObject, createClient } from '@liveblocks/client';
 import * as react_jsx_runtime from 'react/jsx-runtime';
 import * as react from 'react';
+import { ReactNode } from 'react';
 import * as _liveblocks_core from '@liveblocks/core';
 
 declare const createNodeKey: <U extends FlatAirNode, T extends U["type"]>({ nodeId, type }: {
@@ -112,6 +113,10 @@ declare const configureAirStorage: <U extends FlatAirNode, P extends JsonObject 
 declare const defineAirNode: <T extends string = string, S extends LsonObject = LsonObject, C extends [] | TreeAirNode[] = []>(type: T, defaultInitialState: S, children: C) => TreeAirNode<T, S, C>;
 declare const defineAirNodeSchema: <C extends TreeAirNode[]>(children: C) => TreeAirNode<"root", {}, C>;
 
-declare const defineStaticIndex: <U extends FlatAirNode, T extends Record<string, any>>(index: Record<U["type"], T>) => Record<U["type"], T>;
+declare const defineStaticIndex: <U extends FlatAirNode, T extends Record<string, any>>(index: { [K in U["type"]]: {
+    Component: (nodeKey: NodeKey<U, K>) => ReactNode;
+} & T; }) => { [K in U["type"]]: {
+    Component: (nodeKey: NodeKey<U, K>) => ReactNode;
+} & T; };
 
 export { AirNodeIndexedUnion, AirPresence, FlatAirNode, ILiveIndexNode, IsEmptyArray, LiveIndexNode, NodeKey, TreeAirNode, TreeToNodeUnion, configureAirStorage, createNodeKey, defineAirNode, defineAirNodeSchema, defineStaticIndex };
