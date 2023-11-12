@@ -107,13 +107,13 @@ declare const configureAirStorage: <U extends FlatAirNode, P extends JsonObject 
         Component: ({ nodeKey }: {
             nodeKey: NodeKey<U & {
                 type: T_8;
-            }, T_8>;
+            }>;
         }) => react.ReactNode;
     } & K_2; }) => { [T_8 in U["type"]]: {
         Component: ({ nodeKey }: {
             nodeKey: NodeKey<U & {
                 type: T_8;
-            }, T_8>;
+            }>;
         }) => react.ReactNode;
     } & K_2; };
     createNodeKey: <T_9 extends U["type"]>({ nodeId, type }: {
