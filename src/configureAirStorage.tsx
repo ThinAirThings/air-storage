@@ -15,6 +15,8 @@ import { useSelfNodeKeySelectionRemoveFactory } from "./hooks-presence/useSelfNo
 import { useSelfNodeKeySelectionAddFactory } from "./hooks-presence/useSelfNodeKeySelectionAddFactory.js";
 import { useSelfFocusedNodeKeyFactory } from "./hooks-presence/useSelfFocusedNodeKeyFactory.js";
 import { useSelfFocusedNodeKeyUpdateFactory } from "./hooks-presence/useSelfFocusedNodeKeyUpdateFactory.js";
+import { defineStaticIndexFactory } from "./structures/defineStaticIndexFactory.js";
+import { createNodeKeyFactory } from "./structures/createNodeKeyFactory.js";
 
 
 export const configureAirStorage = <
@@ -72,6 +74,8 @@ export const configureAirStorage = <
             ILiveIndexStorageModel<U>
         >
     >['suspense']
+    // Typed Structure Builders
+    const createNodeKey = createNodeKeyFactory<U>()
     return {
         // Liveblocks Hooks
         useUpdateMyPresence: useUpdateMyPresence as TypedLiveblocksHooks['useUpdateMyPresence'],
@@ -84,6 +88,7 @@ export const configureAirStorage = <
         useCreateNode: useCreateNodeFactory<U>(
             useMutation, 
             useSelfFocusedNodeKeyUpdate,
+            createNodeKey,
             mappedAirNodeUnion
         ),
         useSelectNodeState: useSelectNodeStateFactory<U>(useStorage),
@@ -100,7 +105,10 @@ export const configureAirStorage = <
         useSelfNodeKeySelectionRemove,
         // Air Presence NodeKeyFocus Hooks
         useSelfFocusedNodeKey,
-        useSelfFocusedNodeKeyUpdate
+        useSelfFocusedNodeKeyUpdate,
+        // Structure Builder Functions
+        defineStaticIndex: defineStaticIndexFactory<U>(),
+        createNodeKey
     }
 }
 

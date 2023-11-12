@@ -1,6 +1,4 @@
 export * from './types.js'
 export * from './configureAirStorage.js'
 export * from './defineAirNode.js'
-export * from './defineStaticIndex.js'
 export * from './LiveObjects/LiveIndexNode.js'
-export * from './types/NodeKey.js'

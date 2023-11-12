@@ -1,7 +1,7 @@
 
 import { LiveblocksHooks } from "../LiveObjects/LiveIndexStorageModel.js";
+import { NodeKey } from "../structures/createNodeKeyFactory.js";
 import { FlatAirNode } from "../types.js";
-import { NodeKey } from "../types/NodeKey.js"
 import { useSelfNodeKeySelectionFactory } from "./useSelfNodeKeySelectionFactory.js";
 
 export const useSelfNodeKeySelectionUpdateFactory = <

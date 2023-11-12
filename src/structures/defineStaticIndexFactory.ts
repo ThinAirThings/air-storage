@@ -1,11 +1,12 @@
-import { FC, ReactNode } from "react";
-import { NodeKey } from "./index.browser.js";
-import { FlatAirNode } from "./types.js";
+import { ReactNode } from "react";
+import { FlatAirNode } from "../types.js";
+import { NodeKey } from "./createNodeKeyFactory.js";
 
 
 
-export const defineStaticIndex = <
+export const defineStaticIndexFactory = <
     U extends FlatAirNode,
+>() => <
     K extends Record<string, any>
 >(index: {
     [T in U['type']]: {

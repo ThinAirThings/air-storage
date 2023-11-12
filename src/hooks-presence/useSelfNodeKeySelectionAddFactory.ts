@@ -1,5 +1,5 @@
 import { LiveblocksHooks } from "../LiveObjects/LiveIndexStorageModel.js";
-import { NodeKey } from "../index.browser.js";
+import { NodeKey } from "../structures/createNodeKeyFactory.js";
 import { FlatAirNode } from "../types.js";
 import { useSelfNodeKeySelectionFactory } from "./useSelfNodeKeySelectionFactory.js";
 

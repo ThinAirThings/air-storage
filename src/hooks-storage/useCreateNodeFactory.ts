@@ -4,14 +4,15 @@ import { LiveblocksHooks } from "../LiveObjects/LiveIndexStorageModel.js";
 import { FlatAirNode } from "../types.js";
 import { v4 as uuidv4} from 'uuid'
 import { MappedUnion } from "../types/MappedUnion.js";
-import { NodeKey, createNodeKey } from "../types/NodeKey.js";
 import { useSelfFocusedNodeKeyUpdateFactory } from "../hooks-presence/useSelfFocusedNodeKeyUpdateFactory.js";
+import { NodeKey, createNodeKeyFactory } from "../structures/createNodeKeyFactory.js";
 
 export const useCreateNodeFactory = <
     U extends FlatAirNode
 >(
     useMutation: LiveblocksHooks<U>['useMutation'],
     useSelfFocusedNodeKeyUpdate: ReturnType<typeof useSelfFocusedNodeKeyUpdateFactory<U>>,
+    createNodeKey: ReturnType<typeof createNodeKeyFactory<U>>,
     mappedAirNodeUnion: MappedUnion
 ) => () => {
     const updateFocusedNodeKey = useSelfFocusedNodeKeyUpdate()

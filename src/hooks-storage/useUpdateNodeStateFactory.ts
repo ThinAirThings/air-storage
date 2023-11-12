@@ -1,7 +1,7 @@
 import { LiveObject } from "@liveblocks/client";
 import { LiveblocksHooks } from "../LiveObjects/LiveIndexStorageModel.js";
 import {  FlatAirNode } from "../types.js";
-import { NodeKey } from "../types/NodeKey.js";
+import { NodeKey } from "../structures/createNodeKeyFactory.js";
 
 
 export const useUpdateNodeStateFactory = <

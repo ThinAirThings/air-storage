@@ -2,7 +2,7 @@ import isEqual from "lodash.isequal";
 import { LiveIndexNode } from "../LiveObjects/LiveIndexNode.js";
 import { LiveblocksHooks } from "../LiveObjects/LiveIndexStorageModel.js";
 import { FlatAirNode } from "../types.js";
-import { NodeKey } from "../types/NodeKey.js";
+import { NodeKey } from "../structures/createNodeKeyFactory.js";
 
 
 export type ImmutableLsonObject<U extends FlatAirNode> = ReturnType<LiveIndexNode<U>['toImmutable']>['state']

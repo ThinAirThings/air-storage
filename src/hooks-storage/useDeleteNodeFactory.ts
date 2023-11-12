@@ -1,8 +1,8 @@
 import { LiveIndexNode } from "../LiveObjects/LiveIndexNode.js";
 import { LiveblocksHooks } from "../LiveObjects/LiveIndexStorageModel.js";
 import { useSelfNodeKeySelectionRemoveFactory } from "../hooks-presence/useSelfNodeKeySelectionRemoveFactory.js";
+import { NodeKey } from "../structures/createNodeKeyFactory.js";
 import { FlatAirNode } from "../types.js";
-import { NodeKey } from "../types/NodeKey.js";
 
 
 export const useDeleteNodeFactory = <

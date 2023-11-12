@@ -1,13 +1,8 @@
 import { LsonObject, LiveObject, LiveMap, JsonObject, createClient } from '@liveblocks/client';
 import * as react_jsx_runtime from 'react/jsx-runtime';
 import * as react from 'react';
-import { ReactNode } from 'react';
 import * as _liveblocks_core from '@liveblocks/core';
 
-declare const createNodeKey: <U extends FlatAirNode, T extends U["type"]>({ nodeId, type }: {
-    nodeId: string;
-    type: T;
-}) => NodeKey<U, T>;
 type NodeKey<U extends FlatAirNode = FlatAirNode, T extends U['type'] = U['type']> = {
     nodeId: string;
     type: T;
@@ -108,23 +103,26 @@ declare const configureAirStorage: <U extends FlatAirNode, P extends JsonObject 
     useSelfNodeKeySelectionRemove: () => (nodeKey: NodeKey<U>) => boolean;
     useSelfFocusedNodeKey: () => NodeKey<U> | null;
     useSelfFocusedNodeKeyUpdate: () => (nodeKey: NodeKey<U> | null) => boolean;
+    defineStaticIndex: <K_2 extends Record<string, any>>(index: { [T_8 in U["type"]]: {
+        Component: ({ nodeKey }: {
+            nodeKey: NodeKey<U & {
+                type: T_8;
+            }, T_8>;
+        }) => react.ReactNode;
+    } & K_2; }) => { [T_8 in U["type"]]: {
+        Component: ({ nodeKey }: {
+            nodeKey: NodeKey<U & {
+                type: T_8;
+            }, T_8>;
+        }) => react.ReactNode;
+    } & K_2; };
+    createNodeKey: <T_9 extends U["type"]>({ nodeId, type }: {
+        nodeId: string;
+        type: T_9;
+    }) => NodeKey<U, T_9>;
 };
 
 declare const defineAirNode: <T extends string = string, S extends LsonObject = LsonObject, C extends [] | TreeAirNode[] = []>(type: T, defaultInitialState: S, children: C) => TreeAirNode<T, S, C>;
 declare const defineAirNodeSchema: <C extends TreeAirNode[]>(children: C) => TreeAirNode<"root", {}, C>;
 
-declare const defineStaticIndex: <U extends FlatAirNode, K extends Record<string, any>>(index: { [T in U["type"]]: {
-    Component: ({ nodeKey }: {
-        nodeKey: NodeKey<U & {
-            type: T;
-        }, T>;
-    }) => ReactNode;
-} & K; }) => { [T in U["type"]]: {
-    Component: ({ nodeKey }: {
-        nodeKey: NodeKey<U & {
-            type: T;
-        }, T>;
-    }) => ReactNode;
-} & K; };
-
-export { AirNodeIndexedUnion, AirPresence, FlatAirNode, ILiveIndexNode, IsEmptyArray, LiveIndexNode, NodeKey, TreeAirNode, TreeToNodeUnion, configureAirStorage, createNodeKey, defineAirNode, defineAirNodeSchema, defineStaticIndex };
+export { AirNodeIndexedUnion, AirPresence, FlatAirNode, ILiveIndexNode, IsEmptyArray, LiveIndexNode, TreeAirNode, TreeToNodeUnion, configureAirStorage, defineAirNode, defineAirNodeSchema };

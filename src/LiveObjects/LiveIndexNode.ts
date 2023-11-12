@@ -1,6 +1,6 @@
 import { LiveMap, LiveObject, LsonObject } from "@liveblocks/client";
 import { FlatAirNode } from "../types.js";
-import { NodeKey } from '../types/NodeKey.js'
+import { NodeKey } from "../structures/createNodeKeyFactory.js";
 
 
 export type ILiveIndexNode<

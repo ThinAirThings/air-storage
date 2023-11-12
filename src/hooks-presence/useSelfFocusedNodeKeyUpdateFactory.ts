@@ -2,9 +2,9 @@ import isEqual from "lodash.isequal";
 import { LiveblocksHooks } from "../LiveObjects/LiveIndexStorageModel.js";
 import { FlatAirNode } from "../types.js";
 import { useSelfFocusedNodeKeyFactory } from "./useSelfFocusedNodeKeyFactory.js";
-import {NodeKey} from "../types/NodeKey.js"
 import { useSelfNodeKeySelectionAddFactory } from "./useSelfNodeKeySelectionAddFactory.js";
 import { useSelfNodeKeySelectionRemoveFactory } from "./useSelfNodeKeySelectionRemoveFactory.js";
+import { NodeKey } from "../structures/createNodeKeyFactory.js";
 
 export const useSelfFocusedNodeKeyUpdateFactory = <
     U extends FlatAirNode

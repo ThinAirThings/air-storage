@@ -32,10 +32,8 @@ var index_browser_exports = {};
 __export(index_browser_exports, {
   LiveIndexNode: () => LiveIndexNode,
   configureAirStorage: () => configureAirStorage,
-  createNodeKey: () => createNodeKey,
   defineAirNode: () => defineAirNode,
-  defineAirNodeSchema: () => defineAirNodeSchema,
-  defineStaticIndex: () => defineStaticIndex
+  defineAirNodeSchema: () => defineAirNodeSchema
 });
 module.exports = __toCommonJS(index_browser_exports);
 
@@ -100,15 +98,7 @@ var LiveIndexNode = class extends import_client2.LiveObject {
 
 // src/hooks-storage/useCreateNodeFactory.ts
 var import_uuid = require("uuid");
-
-// src/types/NodeKey.ts
-var createNodeKey = ({ nodeId, type }) => ({
-  nodeId,
-  type
-});
-
-// src/hooks-storage/useCreateNodeFactory.ts
-var useCreateNodeFactory = (useMutation, useSelfFocusedNodeKeyUpdate, mappedAirNodeUnion) => () => {
+var useCreateNodeFactory = (useMutation, useSelfFocusedNodeKeyUpdate, createNodeKey, mappedAirNodeUnion) => () => {
   const updateFocusedNodeKey = useSelfFocusedNodeKeyUpdate();
   return useMutation(({ storage }, parentNodeKey, childType, callback) => {
     const nodeId = (0, import_uuid.v4)();
@@ -238,6 +228,15 @@ var useSelfFocusedNodeKeyUpdateFactory = (useUpdateMyPresence, useSelfFocusedNod
   };
 };
 
+// src/structures/defineStaticIndexFactory.ts
+var defineStaticIndexFactory = () => (index) => index;
+
+// src/structures/createNodeKeyFactory.ts
+var createNodeKeyFactory = () => ({ nodeId, type }) => ({
+  nodeId,
+  type
+});
+
 // src/configureAirStorage.tsx
 var configureAirStorage = (createClientProps, airNodeSchema, liveblocksPresence) => {
   const mappedAirNodeUnion = treeToMappedUnion(airNodeSchema);
@@ -274,6 +273,7 @@ var configureAirStorage = (createClientProps, airNodeSchema, liveblocksPresence)
     useSelfNodeKeySelectionAdd,
     useSelfNodeKeySelectionRemove
   );
+  const createNodeKey = createNodeKeyFactory();
   return {
     // Liveblocks Hooks
     useUpdateMyPresence,
@@ -286,6 +286,7 @@ var configureAirStorage = (createClientProps, airNodeSchema, liveblocksPresence)
     useCreateNode: useCreateNodeFactory(
       useMutation,
       useSelfFocusedNodeKeyUpdate,
+      createNodeKey,
       mappedAirNodeUnion
     ),
     useSelectNodeState: useSelectNodeStateFactory(useStorage),
@@ -302,7 +303,10 @@ var configureAirStorage = (createClientProps, airNodeSchema, liveblocksPresence)
     useSelfNodeKeySelectionRemove,
     // Air Presence NodeKeyFocus Hooks
     useSelfFocusedNodeKey,
-    useSelfFocusedNodeKeyUpdate
+    useSelfFocusedNodeKeyUpdate,
+    // Structure Builder Functions
+    defineStaticIndex: defineStaticIndexFactory(),
+    createNodeKey
   };
 };
 var treeToMappedUnion = (tree) => {
@@ -325,15 +329,10 @@ var defineAirNode = (type, defaultInitialState, children) => ({
   // destructor?:
 });
 var defineAirNodeSchema = (children) => defineAirNode("root", {}, children);
-
-// src/defineStaticIndex.ts
-var defineStaticIndex = (index) => index;
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   LiveIndexNode,
   configureAirStorage,
-  createNodeKey,
   defineAirNode,
-  defineAirNodeSchema,
-  defineStaticIndex
+  defineAirNodeSchema
 });
