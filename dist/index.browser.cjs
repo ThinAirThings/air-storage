@@ -37,6 +37,12 @@ __export(index_browser_exports, {
 });
 module.exports = __toCommonJS(index_browser_exports);
 
+// src/structures/createNodeKeyFactory.ts
+var createNodeKeyFactory = () => ({ nodeId, type }) => ({
+  nodeId,
+  type
+});
+
 // src/configureAirStorage.tsx
 var import_react2 = require("@liveblocks/react");
 
@@ -230,12 +236,6 @@ var useSelfFocusedNodeKeyUpdateFactory = (useUpdateMyPresence, useSelfFocusedNod
 
 // src/structures/defineStaticIndexFactory.ts
 var defineStaticIndexFactory = () => (index) => index;
-
-// src/structures/createNodeKeyFactory.ts
-var createNodeKeyFactory = () => ({ nodeId, type }) => ({
-  nodeId,
-  type
-});
 
 // src/configureAirStorage.tsx
 var configureAirStorage = (createClientProps, airNodeSchema, liveblocksPresence) => {

@@ -1,3 +1,9 @@
+// src/structures/createNodeKeyFactory.ts
+var createNodeKeyFactory = () => ({ nodeId, type }) => ({
+  nodeId,
+  type
+});
+
 // src/configureAirStorage.tsx
 import { createRoomContext } from "@liveblocks/react";
 
@@ -191,12 +197,6 @@ var useSelfFocusedNodeKeyUpdateFactory = (useUpdateMyPresence, useSelfFocusedNod
 
 // src/structures/defineStaticIndexFactory.ts
 var defineStaticIndexFactory = () => (index) => index;
-
-// src/structures/createNodeKeyFactory.ts
-var createNodeKeyFactory = () => ({ nodeId, type }) => ({
-  nodeId,
-  type
-});
 
 // src/configureAirStorage.tsx
 var configureAirStorage = (createClientProps, airNodeSchema, liveblocksPresence) => {

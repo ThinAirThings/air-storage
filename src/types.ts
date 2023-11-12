@@ -44,3 +44,4 @@ export type AirPresence<
     focusedNodeKey: NodeKey<U>|null
 }
 
+export {NodeKey}
