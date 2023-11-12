@@ -114,13 +114,17 @@ declare const defineAirNode: <T extends string = string, S extends LsonObject = 
 declare const defineAirNodeSchema: <C extends TreeAirNode[]>(children: C) => TreeAirNode<"root", {}, C>;
 
 declare const defineStaticIndex: <U extends FlatAirNode, K extends Record<string, any>>(index: { [T in U["type"]]: {
-    Component: (nodeKey: NodeKey<U & {
-        type: T;
-    }, T>) => ReactNode;
+    Component: ({ nodeKey }: {
+        nodeKey: NodeKey<U & {
+            type: T;
+        }, T>;
+    }) => ReactNode;
 } & K; }) => { [T in U["type"]]: {
-    Component: (nodeKey: NodeKey<U & {
-        type: T;
-    }, T>) => ReactNode;
+    Component: ({ nodeKey }: {
+        nodeKey: NodeKey<U & {
+            type: T;
+        }, T>;
+    }) => ReactNode;
 } & K; };
 
 export { AirNodeIndexedUnion, AirPresence, FlatAirNode, ILiveIndexNode, IsEmptyArray, LiveIndexNode, NodeKey, TreeAirNode, TreeToNodeUnion, configureAirStorage, createNodeKey, defineAirNode, defineAirNodeSchema, defineStaticIndex };

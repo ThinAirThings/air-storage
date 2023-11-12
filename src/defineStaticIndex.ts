@@ -7,10 +7,8 @@ import { FlatAirNode } from "./types.js";
 export const defineStaticIndex = <
     U extends FlatAirNode,
     K extends Record<string, any>
->(
-    index: {
-        [T in U['type']]: {
-            Component: (nodeKey: NodeKey<(U&{type: T}), T>) => ReactNode
-        } & K
-    }
-) => index
+>(index: {
+    [T in U['type']]: {
+        Component: ({nodeKey}:{nodeKey: NodeKey<(U&{type: T}), T>}) => ReactNode
+    } & K
+}) => index
