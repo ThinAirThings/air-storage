@@ -10,6 +10,6 @@ export const defineStaticIndexFactory = <
     K extends Record<string, any>
 >(index: {
     [T in U['type']]: {
-        Component: ({nodeKey}:{nodeKey: NodeKey<(U), T>}) => ReactNode
+        Component: ({nodeKey}:{nodeKey: NodeKey<(U&{type: T}), T>}) => ReactNode
     } & K
 }) => index
