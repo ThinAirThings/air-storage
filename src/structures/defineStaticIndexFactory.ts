@@ -21,9 +21,9 @@ export const defineStaticIndexFactory = <
 class StaticIndex<
     K extends string,
     D extends Record<string, any>
-> extends Map<K, D> {
+> extends Map<K, D[K]> {
     constructor(index: Record<K, D>){
-        super(Object.entries(index) as [K, D][])
+        super(Object.entries(index) as [K, D[K]][])
     }
     get<T extends K>(type: T): D[T]{
         return super.get(type) as D[T]

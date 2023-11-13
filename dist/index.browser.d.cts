@@ -125,13 +125,13 @@ declare const configureAirStorage: <U extends FlatAirNode, P extends JsonObject 
                     type: T_10;
                 }>;
             }) => react.ReactNode;
-        } & D; }, key: U["type"], map: Map<U["type"], { [T_10 in U["type"]]: {
+        } & D; }[U["type"]], key: U["type"], map: Map<U["type"], { [T_10 in U["type"]]: {
             Component: ({ nodeKey }: {
                 nodeKey: NodeKey<U & {
                     type: T_10;
                 }>;
             }) => react.ReactNode;
-        } & D; }>) => void, thisArg?: any): void;
+        } & D; }[U["type"]]>) => void, thisArg?: any): void;
         has(key: U["type"]): boolean;
         set(key: U["type"], value: { [T_10 in U["type"]]: {
             Component: ({ nodeKey }: {
@@ -139,7 +139,7 @@ declare const configureAirStorage: <U extends FlatAirNode, P extends JsonObject 
                     type: T_10;
                 }>;
             }) => react.ReactNode;
-        } & D; }): any;
+        } & D; }[U["type"]]): any;
         readonly size: number;
         entries(): IterableIterator<[U["type"], { [T_10 in U["type"]]: {
             Component: ({ nodeKey }: {
@@ -147,7 +147,7 @@ declare const configureAirStorage: <U extends FlatAirNode, P extends JsonObject 
                     type: T_10;
                 }>;
             }) => react.ReactNode;
-        } & D; }]>;
+        } & D; }[U["type"]]]>;
         keys(): IterableIterator<U["type"]>;
         values(): IterableIterator<{ [T_10 in U["type"]]: {
             Component: ({ nodeKey }: {
@@ -155,14 +155,14 @@ declare const configureAirStorage: <U extends FlatAirNode, P extends JsonObject 
                     type: T_10;
                 }>;
             }) => react.ReactNode;
-        } & D; }>;
+        } & D; }[U["type"]]>;
         [Symbol.iterator](): IterableIterator<[U["type"], { [T_10 in U["type"]]: {
             Component: ({ nodeKey }: {
                 nodeKey: NodeKey<U & {
                     type: T_10;
                 }>;
             }) => react.ReactNode;
-        } & D; }]>;
+        } & D; }[U["type"]]]>;
         readonly [Symbol.toStringTag]: string;
     };
     createNodeKey: <T_11 extends U["type"]>({ nodeId, type }: {
