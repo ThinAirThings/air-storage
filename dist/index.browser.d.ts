@@ -116,7 +116,7 @@ declare const configureAirStorage: <U extends FlatAirNode, P extends JsonObject 
                     type: T_10;
                 }>;
             }) => react.ReactNode;
-        } & D; };
+        } & D; }[T_9];
         clear(): void;
         delete(key: U["type"]): boolean;
         forEach(callbackfn: (value: { [T_10 in U["type"]]: {
