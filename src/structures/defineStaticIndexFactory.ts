@@ -25,7 +25,7 @@ class StaticIndex<
     constructor(index: Record<K, D>){
         super(Object.entries(index) as [K, D][])
     }
-    get<T extends K>(type: T): D[K]{
-        return super.get(type) as D[K]
+    get<T extends K>(type: T): D{
+        return super.get(type) as D
     }
 }
