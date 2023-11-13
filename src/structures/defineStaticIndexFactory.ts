@@ -12,7 +12,11 @@ export const defineStaticIndexFactory = <
     [T in U['type']]: {
         Component: ({nodeKey}:{nodeKey: NodeKey<(U&{type: T})>}) => ReactNode
     } & D
-}) => new StaticIndex<U['type'], D>(index)
+}) => new StaticIndex<U['type'], {
+    [T in U['type']]: {
+        Component: ({nodeKey}:{nodeKey: NodeKey<(U&{type: T})>}) => ReactNode
+    } & D
+}>(index)
 
 class StaticIndex<
     K extends string,

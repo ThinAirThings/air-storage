@@ -110,23 +110,65 @@ declare const configureAirStorage: <U extends FlatAirNode, P extends JsonObject 
             }>;
         }) => react.ReactNode;
     } & D; }) => {
-        get<T_9 extends U["type"]>(type: T_9): D[U["type"]];
+        get<T_9 extends U["type"]>(type: T_9): { [T_10 in U["type"]]: {
+            Component: ({ nodeKey }: {
+                nodeKey: NodeKey<U & {
+                    type: T_10;
+                }>;
+            }) => react.ReactNode;
+        } & D; }[U["type"]];
         clear(): void;
         delete(key: U["type"]): boolean;
-        forEach(callbackfn: (value: D, key: U["type"], map: Map<U["type"], D>) => void, thisArg?: any): void;
+        forEach(callbackfn: (value: { [T_10 in U["type"]]: {
+            Component: ({ nodeKey }: {
+                nodeKey: NodeKey<U & {
+                    type: T_10;
+                }>;
+            }) => react.ReactNode;
+        } & D; }, key: U["type"], map: Map<U["type"], { [T_10 in U["type"]]: {
+            Component: ({ nodeKey }: {
+                nodeKey: NodeKey<U & {
+                    type: T_10;
+                }>;
+            }) => react.ReactNode;
+        } & D; }>) => void, thisArg?: any): void;
         has(key: U["type"]): boolean;
-        set(key: U["type"], value: D): any;
+        set(key: U["type"], value: { [T_10 in U["type"]]: {
+            Component: ({ nodeKey }: {
+                nodeKey: NodeKey<U & {
+                    type: T_10;
+                }>;
+            }) => react.ReactNode;
+        } & D; }): any;
         readonly size: number;
-        entries(): IterableIterator<[U["type"], D]>;
+        entries(): IterableIterator<[U["type"], { [T_10 in U["type"]]: {
+            Component: ({ nodeKey }: {
+                nodeKey: NodeKey<U & {
+                    type: T_10;
+                }>;
+            }) => react.ReactNode;
+        } & D; }]>;
         keys(): IterableIterator<U["type"]>;
-        values(): IterableIterator<D>;
-        [Symbol.iterator](): IterableIterator<[U["type"], D]>;
+        values(): IterableIterator<{ [T_10 in U["type"]]: {
+            Component: ({ nodeKey }: {
+                nodeKey: NodeKey<U & {
+                    type: T_10;
+                }>;
+            }) => react.ReactNode;
+        } & D; }>;
+        [Symbol.iterator](): IterableIterator<[U["type"], { [T_10 in U["type"]]: {
+            Component: ({ nodeKey }: {
+                nodeKey: NodeKey<U & {
+                    type: T_10;
+                }>;
+            }) => react.ReactNode;
+        } & D; }]>;
         readonly [Symbol.toStringTag]: string;
     };
-    createNodeKey: <T_10 extends U["type"]>({ nodeId, type }: {
+    createNodeKey: <T_11 extends U["type"]>({ nodeId, type }: {
         nodeId: string;
-        type: T_10;
-    }) => NodeKey<U, T_10>;
+        type: T_11;
+    }) => NodeKey<U, T_11>;
 };
 
 declare const defineAirNode: <T extends string = string, S extends LsonObject = LsonObject, C extends [] | TreeAirNode[] = []>(type: T, defaultInitialState: S, children: C) => TreeAirNode<T, S, C>;
