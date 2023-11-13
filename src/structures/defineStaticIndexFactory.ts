@@ -7,9 +7,21 @@ import { NodeKey } from "./createNodeKeyFactory.js";
 export const defineStaticIndexFactory = <
     U extends FlatAirNode,
 >() => <
-    K extends Record<string, any>
+    D extends Record<string, any>
 >(index: {
     [T in U['type']]: {
         Component: ({nodeKey}:{nodeKey: NodeKey<(U&{type: T})>}) => ReactNode
-    } & K
-}) => index
+    } & D
+}) => new StaticIndex<U['type'], D>(index)
+
+class StaticIndex<
+    K extends string,
+    D extends Record<string, any>
+> extends Map<K, D> {
+    constructor(index: Record<K, D>){
+        super(Object.entries(index) as [K, D][])
+    }
+    get<T extends K>(type: T): D[K]{
+        return super.get(type) as D[K]
+    }
+}

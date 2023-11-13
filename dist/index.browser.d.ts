@@ -103,23 +103,30 @@ declare const configureAirStorage: <U extends FlatAirNode, P extends JsonObject 
     useSelfNodeKeySelectionRemove: () => (nodeKey: NodeKey<U>) => boolean;
     useSelfFocusedNodeKey: () => NodeKey<U> | null;
     useSelfFocusedNodeKeyUpdate: () => (nodeKey: NodeKey<U> | null) => boolean;
-    defineStaticIndex: <K_2 extends Record<string, any>>(index: { [T_8 in U["type"]]: {
+    defineStaticIndex: <D extends Record<string, any>>(index: { [T_8 in U["type"]]: {
         Component: ({ nodeKey }: {
             nodeKey: NodeKey<U & {
                 type: T_8;
             }>;
         }) => react.ReactNode;
-    } & K_2; }) => { [T_8 in U["type"]]: {
-        Component: ({ nodeKey }: {
-            nodeKey: NodeKey<U & {
-                type: T_8;
-            }>;
-        }) => react.ReactNode;
-    } & K_2; };
-    createNodeKey: <T_9 extends U["type"]>({ nodeId, type }: {
+    } & D; }) => {
+        get<T_9 extends U["type"]>(type: T_9): D[U["type"]];
+        clear(): void;
+        delete(key: U["type"]): boolean;
+        forEach(callbackfn: (value: D, key: U["type"], map: Map<U["type"], D>) => void, thisArg?: any): void;
+        has(key: U["type"]): boolean;
+        set(key: U["type"], value: D): any;
+        readonly size: number;
+        entries(): IterableIterator<[U["type"], D]>;
+        keys(): IterableIterator<U["type"]>;
+        values(): IterableIterator<D>;
+        [Symbol.iterator](): IterableIterator<[U["type"], D]>;
+        readonly [Symbol.toStringTag]: string;
+    };
+    createNodeKey: <T_10 extends U["type"]>({ nodeId, type }: {
         nodeId: string;
-        type: T_9;
-    }) => NodeKey<U, T_9>;
+        type: T_10;
+    }) => NodeKey<U, T_10>;
 };
 
 declare const defineAirNode: <T extends string = string, S extends LsonObject = LsonObject, C extends [] | TreeAirNode[] = []>(type: T, defaultInitialState: S, children: C) => TreeAirNode<T, S, C>;

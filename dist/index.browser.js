@@ -196,7 +196,15 @@ var useSelfFocusedNodeKeyUpdateFactory = (useUpdateMyPresence, useSelfFocusedNod
 };
 
 // src/structures/defineStaticIndexFactory.ts
-var defineStaticIndexFactory = () => (index) => index;
+var defineStaticIndexFactory = () => (index) => new StaticIndex(index);
+var StaticIndex = class extends Map {
+  constructor(index) {
+    super(Object.entries(index));
+  }
+  get(type) {
+    return super.get(type);
+  }
+};
 
 // src/configureAirStorage.tsx
 var configureAirStorage = (createClientProps, airNodeSchema, liveblocksPresence) => {
