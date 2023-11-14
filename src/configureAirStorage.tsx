@@ -3,7 +3,7 @@ import { AirPresence, FlatAirNode, TreeAirNode, TreeToNodeUnion } from "./types.
 import { MappedUnion } from "./types/MappedUnion.js";
 import { ILiveIndexStorageModel } from "./LiveObjects/LiveIndexStorageModel.js";
 import { JsonObject, createClient } from "@liveblocks/client";
-import { AirStorageProviderFactory } from "./components/AirStorageProviderFactory.js";
+import { AirStorageProviderFactory } from "./components/AirStorageProvider/AirStorageProviderFactory.js";
 import { useCreateNodeFactory } from "./hooks-storage/useCreateNodeFactory.js";
 import { useDeleteNodeFactory } from "./hooks-storage/useDeleteNodeFactory.js";
 import { useSelectNodeStateFactory } from "./hooks-storage/useSelectNodeStateFactory.js";

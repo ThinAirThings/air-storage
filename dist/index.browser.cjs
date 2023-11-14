@@ -31,6 +31,7 @@ var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: tru
 var index_browser_exports = {};
 __export(index_browser_exports, {
   LiveIndexNode: () => LiveIndexNode,
+  configureAirAuthentication: () => configureAirAuthentication,
   configureAirStorage: () => configureAirStorage,
   defineAirNode: () => defineAirNode,
   defineAirNodeSchema: () => defineAirNodeSchema
@@ -59,7 +60,7 @@ var MappedUnion = class extends Map {
 // src/configureAirStorage.tsx
 var import_client4 = require("@liveblocks/client");
 
-// src/components/AirStorageProviderFactory.tsx
+// src/components/AirStorageProvider/AirStorageProviderFactory.tsx
 var import_react = require("react");
 
 // src/LiveObjects/LiveIndexStorageModel.ts
@@ -70,7 +71,7 @@ var LiveIndexStorageModel = class {
   }
 };
 
-// src/components/AirStorageProviderFactory.tsx
+// src/components/AirStorageProvider/AirStorageProviderFactory.tsx
 var import_jsx_runtime = require("react/jsx-runtime");
 var AirStorageProviderFactory = (LiveblocksRoomProvider, initialLiveblocksPresence) => ({
   storageId,
@@ -337,9 +338,132 @@ var defineAirNode = (type, defaultInitialState, children) => ({
   // destructor?:
 });
 var defineAirNodeSchema = (children) => defineAirNode("root", {}, children);
+
+// src/components/AirAuthenticationProvider/AirAuthenticationProvider.tsx
+var import_react5 = require("react");
+var import_react_router_dom2 = require("react-router-dom");
+
+// src/components/AirAuthenticationProvider/hooks/useRefreshToken.ts
+var import_react3 = require("react");
+var useRefreshToken = (authenticationApiOrigin, authenticationState, setAuthenticationState) => {
+  (0, import_react3.useEffect)(() => {
+    if (authenticationState.status === "refresh") {
+      (async () => {
+        try {
+          setAuthenticationState({ status: "pending" });
+          const authResponse = await fetch(`https://${authenticationApiOrigin}/refresh`, {
+            method: "GET",
+            credentials: "include",
+            mode: "cors"
+          });
+          if (!authResponse.ok)
+            throw new Error("Refresh token failed");
+          const { accessToken } = await authResponse.json();
+          setAuthenticationState({
+            status: "authenticated",
+            accessToken
+          });
+        } catch (error) {
+          setAuthenticationState({ status: "unauthenticated" });
+        }
+      })();
+    }
+  }, [authenticationState.status]);
+};
+
+// src/components/AirAuthenticationProvider/hooks/useGrantToken.ts
+var import_react4 = require("react");
+var import_react_router_dom = require("react-router-dom");
+var useGrantToken = (authenticationApiOrigin, setAuthenticationState, cognitoConfig) => {
+  const location = (0, import_react_router_dom.useLocation)();
+  (0, import_react4.useEffect)(() => {
+    if (location.pathname === "/authentication/token") {
+      (async () => {
+        const grantTokenResponse = await fetch(`https://${cognitoConfig.authDomain}/oauth2/token`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: new URLSearchParams({
+            "grant_type": "authorization_code",
+            "client_id": `${cognitoConfig.clientId}`,
+            "code": new URLSearchParams(window.location.search).get("code"),
+            "redirect_uri": `${cognitoConfig.grantTokenRedirectBasename}/authentication/token`
+          })
+        });
+        const { refresh_token } = await grantTokenResponse.json();
+        await fetch(`https://${authenticationApiOrigin}/create-refresh-cookie`, {
+          method: "POST",
+          credentials: "include",
+          body: JSON.stringify({
+            refreshToken: refresh_token
+          }),
+          mode: "cors"
+        });
+        setAuthenticationState({ status: "refresh" });
+      })();
+    }
+  }, [location.pathname]);
+};
+
+// src/components/AirAuthenticationProvider/AirAuthenticationProvider.tsx
+var import_jsx_runtime2 = require("react/jsx-runtime");
+var AuthenticationContext = (0, import_react5.createContext)(null);
+var AirAuthenticationProviderFactory = (authenticationApiOrigin, cognitoConfig, unauthenticatedRedirectPath, Loading) => ({
+  children
+}) => {
+  const [authenticationState, setAuthenticationState] = (0, import_react5.useState)({
+    status: "refresh"
+  });
+  useRefreshToken(authenticationApiOrigin, authenticationState, setAuthenticationState);
+  useGrantToken(authenticationApiOrigin, setAuthenticationState, cognitoConfig);
+  const protectedFetch = (0, import_react5.useCallback)(async (input, init) => {
+    if (authenticationState.status !== "authenticated") {
+      throw new Error("Cannot call protected fetch while not authenticated");
+    }
+    const response = await fetch(input, {
+      ...init,
+      headers: {
+        ...init?.headers,
+        "Authorization": `Bearer ${authenticationState.accessToken}`
+      }
+    });
+    if (response.status === 401) {
+      setAuthenticationState({
+        status: "unauthenticated"
+      });
+    }
+    return response;
+  }, [authenticationState]);
+  if (authenticationState.status === "pending") {
+    return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Loading, {});
+  }
+  if (authenticationState.status === "unauthenticated") {
+    return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_react_router_dom2.Navigate, { replace: true, to: unauthenticatedRedirectPath });
+  }
+  if (authenticationState.status === "authenticated") {
+    return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(AuthenticationContext.Provider, { value: {
+      accessToken: authenticationState.accessToken,
+      protectedFetch
+    }, children });
+  }
+};
+
+// src/configureAuthentication.tsx
+var configureAirAuthentication = (authenticationApiOrigin, cognitoConfig, unauthenticatedRedirectPath, Loading) => {
+  return {
+    AirAuthenticationProvider: AirAuthenticationProviderFactory(
+      authenticationApiOrigin,
+      cognitoConfig,
+      unauthenticatedRedirectPath,
+      Loading
+    )
+  };
+};
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   LiveIndexNode,
+  configureAirAuthentication,
   configureAirStorage,
   defineAirNode,
   defineAirNodeSchema

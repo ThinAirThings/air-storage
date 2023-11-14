@@ -1,6 +1,6 @@
 import { ReactNode, Suspense } from "react"
-import { LiveIndexStorageModel, LiveblocksHooks } from "../LiveObjects/LiveIndexStorageModel.js"
-import { FlatAirNode } from "../types.js"
+import { LiveIndexStorageModel, LiveblocksHooks } from "../../LiveObjects/LiveIndexStorageModel.js"
+import { FlatAirNode } from "../../types.js"
 import { JsonObject } from "@liveblocks/client"
 
 export const AirStorageProviderFactory = <
