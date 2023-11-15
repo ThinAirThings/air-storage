@@ -29,7 +29,6 @@ const AuthenticationContext = createContext<{
 export const AirAuthenticationProviderFactory = (config: {
     authenticationApiBaseUrl: string,
     cognitoConfig: CognitoConfig,
-    unauthenticatedRedirectPath: string,
     Loading: FC
 }) => ({
     children
@@ -67,7 +66,7 @@ export const AirAuthenticationProviderFactory = (config: {
         return <config.Loading/>
     }
     if (authenticationState.status === 'unauthenticated') {
-        return <Navigate replace to={config.unauthenticatedRedirectPath}/>
+        return <Navigate replace to={'/authenticate'}/>
     }
     if (authenticationState.status === 'authenticated') {
         return <AuthenticationContext.Provider value={{

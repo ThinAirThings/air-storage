@@ -399,7 +399,7 @@ var AirAuthenticationProviderFactory = (config) => ({
     return /* @__PURE__ */ jsx2(config.Loading, {});
   }
   if (authenticationState.status === "unauthenticated") {
-    return /* @__PURE__ */ jsx2(Navigate, { replace: true, to: config.unauthenticatedRedirectPath });
+    return /* @__PURE__ */ jsx2(Navigate, { replace: true, to: "/authenticate" });
   }
   if (authenticationState.status === "authenticated") {
     return /* @__PURE__ */ jsx2(AuthenticationContext.Provider, { value: {
