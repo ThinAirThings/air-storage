@@ -1,4 +1,4 @@
-import { FC, ReactNode, createContext, useCallback, useState } from "react";
+import { FC, ReactNode, createContext, useCallback, useContext, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useRefreshToken } from "./hooks/useRefreshToken.js";
 import { useGrantToken } from "./hooks/useGrantToken.js";
@@ -10,27 +10,34 @@ export type AuthenticationState = {
     accessToken: string
 } | {
     status: 'unauthenticated'
+    accessToken: null
 } | {
     status: 'refresh'
+    accessToken: null
 } | {
     status: 'pending'
+    accessToken: null
 }
 
 
 
 const AuthenticationContext = createContext<{
-    accessToken: string,
+    accessToken: string | null,
     protectedFetch: typeof fetch
-}>(null as any)
-
-export const AirAuthenticationProviderFactory = (config: AuthenticationConfig) => ({
+}>({
+    accessToken: null,
+    protectedFetch: () => console.error('Protected Fetch not initialized. Check AuthenticationProvider code') as any
+})
+export const useAuthentication = () => useContext(AuthenticationContext)
+export const AuthenticationProviderFactory = (config: AuthenticationConfig) => ({
     children
 }: {
     children: ReactNode
 }) => {
     // State
     const [authenticationState, setAuthenticationState] = useState<AuthenticationState>({
-        status: 'refresh'
+        status: 'refresh',
+        accessToken: null
     })
     // Effects
     useRefreshToken(authenticationState, setAuthenticationState, config)
@@ -49,7 +56,8 @@ export const AirAuthenticationProviderFactory = (config: AuthenticationConfig) =
         })
         if (response.status === 401) {
             setAuthenticationState({
-                status: 'unauthenticated'
+                status: 'unauthenticated',
+                accessToken: null
             })
         }
         return response
@@ -58,15 +66,10 @@ export const AirAuthenticationProviderFactory = (config: AuthenticationConfig) =
     if (authenticationState.status === 'pending') {
         return <config.Loading/>
     }
-    if (authenticationState.status === 'unauthenticated') {
-        return <Navigate replace to={'/authenticate'}/>
-    }
-    if (authenticationState.status === 'authenticated') {
-        return <AuthenticationContext.Provider value={{
-            accessToken: authenticationState.accessToken,
-            protectedFetch
-        }}>
-            {children}
-        </AuthenticationContext.Provider>
-    }
+    return <AuthenticationContext.Provider value={{
+        accessToken: authenticationState.accessToken,
+        protectedFetch
+    }}>
+        {children}
+    </AuthenticationContext.Provider>
 }

@@ -299,18 +299,17 @@ var defineAirNode = (type, defaultInitialState, children) => ({
 });
 var defineAirNodeSchema = (children) => defineAirNode("root", {}, children);
 
-// src/components/AirAuthenticationProvider/AirAuthenticationProvider.tsx
-import { createContext, useCallback, useState } from "react";
-import { Navigate } from "react-router-dom";
+// src/components/AuthenticationProvider/AuthenticationProvider.tsx
+import { createContext, useCallback, useContext, useState } from "react";
 
-// src/components/AirAuthenticationProvider/hooks/useRefreshToken.ts
+// src/components/AuthenticationProvider/hooks/useRefreshToken.ts
 import { useEffect } from "react";
 var useRefreshToken = (authenticationState, setAuthenticationState, config) => {
   useEffect(() => {
     if (authenticationState.status === "refresh") {
       (async () => {
         try {
-          setAuthenticationState({ status: "pending" });
+          setAuthenticationState({ status: "pending", accessToken: null });
           const authResponse = await fetch(`https://${config.authenticationApiBaseUrl}/refresh`, {
             method: "GET",
             credentials: "include",
@@ -324,14 +323,14 @@ var useRefreshToken = (authenticationState, setAuthenticationState, config) => {
             accessToken
           });
         } catch (error) {
-          setAuthenticationState({ status: "unauthenticated" });
+          setAuthenticationState({ status: "unauthenticated", accessToken: null });
         }
       })();
     }
   }, [authenticationState.status]);
 };
 
-// src/components/AirAuthenticationProvider/hooks/useGrantToken.ts
+// src/components/AuthenticationProvider/hooks/useGrantToken.ts
 import { useEffect as useEffect2 } from "react";
 import { useLocation } from "react-router-dom";
 var useGrantToken = (setAuthenticationState, config) => {
@@ -371,14 +370,18 @@ var useGrantToken = (setAuthenticationState, config) => {
   }, [location.pathname]);
 };
 
-// src/components/AirAuthenticationProvider/AirAuthenticationProvider.tsx
+// src/components/AuthenticationProvider/AuthenticationProvider.tsx
 import { jsx as jsx2 } from "react/jsx-runtime";
-var AuthenticationContext = createContext(null);
-var AirAuthenticationProviderFactory = (config) => ({
+var AuthenticationContext = createContext({
+  accessToken: null,
+  protectedFetch: () => console.error("Protected Fetch not initialized. Check AuthenticationProvider code")
+});
+var AuthenticationProviderFactory = (config) => ({
   children
 }) => {
   const [authenticationState, setAuthenticationState] = useState({
-    status: "refresh"
+    status: "refresh",
+    accessToken: null
   });
   useRefreshToken(authenticationState, setAuthenticationState, config);
   useGrantToken(setAuthenticationState, config);
@@ -395,7 +398,8 @@ var AirAuthenticationProviderFactory = (config) => ({
     });
     if (response.status === 401) {
       setAuthenticationState({
-        status: "unauthenticated"
+        status: "unauthenticated",
+        accessToken: null
       });
     }
     return response;
@@ -403,21 +407,16 @@ var AirAuthenticationProviderFactory = (config) => ({
   if (authenticationState.status === "pending") {
     return /* @__PURE__ */ jsx2(config.Loading, {});
   }
-  if (authenticationState.status === "unauthenticated") {
-    return /* @__PURE__ */ jsx2(Navigate, { replace: true, to: "/authenticate" });
-  }
-  if (authenticationState.status === "authenticated") {
-    return /* @__PURE__ */ jsx2(AuthenticationContext.Provider, { value: {
-      accessToken: authenticationState.accessToken,
-      protectedFetch
-    }, children });
-  }
+  return /* @__PURE__ */ jsx2(AuthenticationContext.Provider, { value: {
+    accessToken: authenticationState.accessToken,
+    protectedFetch
+  }, children });
 };
 
 // src/configureAuthentication.tsx
 var configureAuthentication = (config) => {
   return {
-    AirAuthenticationProvider: AirAuthenticationProviderFactory(
+    AuthenticationProvider: AuthenticationProviderFactory(
       config
     )
   };

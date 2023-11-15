@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { AuthenticationState } from "../AirAuthenticationProvider.js"
+import { AuthenticationState } from "../AuthenticationProvider.js"
 import { AuthenticationConfig } from "../../../configureAuthentication.js"
 
 
@@ -13,7 +13,7 @@ export const useRefreshToken = (
         if (authenticationState.status === 'refresh') {
             (async () => {
                 try {
-                    setAuthenticationState({status: 'pending'})
+                    setAuthenticationState({status: 'pending', accessToken: null})
                     const authResponse = await fetch(`https://${config.authenticationApiBaseUrl}/refresh`, {
                         method: 'GET',
                         credentials: 'include',
@@ -26,7 +26,7 @@ export const useRefreshToken = (
                         accessToken
                     })
                 } catch (error) {
-                    setAuthenticationState({status: 'unauthenticated'})
+                    setAuthenticationState({status: 'unauthenticated', accessToken: null})
                 }
             })()
         }        

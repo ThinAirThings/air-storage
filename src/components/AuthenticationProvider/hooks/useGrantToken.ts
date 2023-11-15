@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { AuthenticationState} from "../AirAuthenticationProvider.js"
+import { AuthenticationState} from "../AuthenticationProvider.js"
 import { useLocation } from "react-router-dom"
 import { AuthenticationConfig } from "../../../configureAuthentication.js"
 

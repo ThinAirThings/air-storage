@@ -339,18 +339,17 @@ var defineAirNode = (type, defaultInitialState, children) => ({
 });
 var defineAirNodeSchema = (children) => defineAirNode("root", {}, children);
 
-// src/components/AirAuthenticationProvider/AirAuthenticationProvider.tsx
+// src/components/AuthenticationProvider/AuthenticationProvider.tsx
 var import_react5 = require("react");
-var import_react_router_dom2 = require("react-router-dom");
 
-// src/components/AirAuthenticationProvider/hooks/useRefreshToken.ts
+// src/components/AuthenticationProvider/hooks/useRefreshToken.ts
 var import_react3 = require("react");
 var useRefreshToken = (authenticationState, setAuthenticationState, config) => {
   (0, import_react3.useEffect)(() => {
     if (authenticationState.status === "refresh") {
       (async () => {
         try {
-          setAuthenticationState({ status: "pending" });
+          setAuthenticationState({ status: "pending", accessToken: null });
           const authResponse = await fetch(`https://${config.authenticationApiBaseUrl}/refresh`, {
             method: "GET",
             credentials: "include",
@@ -364,14 +363,14 @@ var useRefreshToken = (authenticationState, setAuthenticationState, config) => {
             accessToken
           });
         } catch (error) {
-          setAuthenticationState({ status: "unauthenticated" });
+          setAuthenticationState({ status: "unauthenticated", accessToken: null });
         }
       })();
     }
   }, [authenticationState.status]);
 };
 
-// src/components/AirAuthenticationProvider/hooks/useGrantToken.ts
+// src/components/AuthenticationProvider/hooks/useGrantToken.ts
 var import_react4 = require("react");
 var import_react_router_dom = require("react-router-dom");
 var useGrantToken = (setAuthenticationState, config) => {
@@ -411,14 +410,18 @@ var useGrantToken = (setAuthenticationState, config) => {
   }, [location.pathname]);
 };
 
-// src/components/AirAuthenticationProvider/AirAuthenticationProvider.tsx
+// src/components/AuthenticationProvider/AuthenticationProvider.tsx
 var import_jsx_runtime2 = require("react/jsx-runtime");
-var AuthenticationContext = (0, import_react5.createContext)(null);
-var AirAuthenticationProviderFactory = (config) => ({
+var AuthenticationContext = (0, import_react5.createContext)({
+  accessToken: null,
+  protectedFetch: () => console.error("Protected Fetch not initialized. Check AuthenticationProvider code")
+});
+var AuthenticationProviderFactory = (config) => ({
   children
 }) => {
   const [authenticationState, setAuthenticationState] = (0, import_react5.useState)({
-    status: "refresh"
+    status: "refresh",
+    accessToken: null
   });
   useRefreshToken(authenticationState, setAuthenticationState, config);
   useGrantToken(setAuthenticationState, config);
@@ -435,7 +438,8 @@ var AirAuthenticationProviderFactory = (config) => ({
     });
     if (response.status === 401) {
       setAuthenticationState({
-        status: "unauthenticated"
+        status: "unauthenticated",
+        accessToken: null
       });
     }
     return response;
@@ -443,21 +447,16 @@ var AirAuthenticationProviderFactory = (config) => ({
   if (authenticationState.status === "pending") {
     return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(config.Loading, {});
   }
-  if (authenticationState.status === "unauthenticated") {
-    return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_react_router_dom2.Navigate, { replace: true, to: "/authenticate" });
-  }
-  if (authenticationState.status === "authenticated") {
-    return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(AuthenticationContext.Provider, { value: {
-      accessToken: authenticationState.accessToken,
-      protectedFetch
-    }, children });
-  }
+  return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(AuthenticationContext.Provider, { value: {
+    accessToken: authenticationState.accessToken,
+    protectedFetch
+  }, children });
 };
 
 // src/configureAuthentication.tsx
 var configureAuthentication = (config) => {
   return {
-    AirAuthenticationProvider: AirAuthenticationProviderFactory(
+    AuthenticationProvider: AuthenticationProviderFactory(
       config
     )
   };

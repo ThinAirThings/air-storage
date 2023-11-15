@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { AirAuthenticationProviderFactory } from "./components/AirAuthenticationProvider/AirAuthenticationProvider.js";
+import { AuthenticationProviderFactory } from "./components/AuthenticationProvider/AuthenticationProvider.js";
 
 
 export type AuthenticationConfig = {
@@ -12,7 +12,7 @@ export type AuthenticationConfig = {
 
 export const configureAuthentication = (config: AuthenticationConfig) => {
     return {
-        AirAuthenticationProvider: AirAuthenticationProviderFactory(
+        AuthenticationProvider: AuthenticationProviderFactory(
             config
         )
     }
