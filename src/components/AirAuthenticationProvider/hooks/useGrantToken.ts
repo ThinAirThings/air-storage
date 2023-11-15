@@ -22,7 +22,7 @@ export const useGrantToken = (
                         'grant_type': 'authorization_code',
                         'client_id': `${config.clientId}`,
                         'code': new URLSearchParams(window.location.search).get('code')!,
-                        'redirect_uri': `${config.grantTokenRedirectBasename}/authentication/token`
+                        'redirect_uri': `${config.grantTokenRedirectUrl}`
                     })
                 })
                     const {refresh_token} = await grantTokenResponse.json()

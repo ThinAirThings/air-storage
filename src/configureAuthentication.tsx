@@ -6,7 +6,7 @@ export type AuthenticationConfig = {
     authenticationApiBaseUrl: string,
     oauthEndpoint: string,
     clientId: string,
-    grantTokenRedirectBasename: string
+    grantTokenRedirectUrl: string
     Loading: FC
 }
 
