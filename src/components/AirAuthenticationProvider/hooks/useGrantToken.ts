@@ -1,13 +1,7 @@
 import { useEffect } from "react"
-import { AuthenticationState } from "../AirAuthenticationProvider.js"
+import { AuthenticationState, CognitoConfig } from "../AirAuthenticationProvider.js"
 import { useLocation } from "react-router-dom"
 
-
-export type CognitoConfig = {
-    authDomain: string,
-    clientId: string,
-    grantTokenRedirectBasename: string
-}
 
 export const useGrantToken = (
     authenticationApiOrigin: string,
@@ -18,7 +12,7 @@ export const useGrantToken = (
     useEffect(() => {
         if (location.pathname === '/authentication/token') {
             (async () => {
-                const grantTokenResponse = await fetch(`https://${cognitoConfig.authDomain}/oauth2/token`, {
+                const grantTokenResponse = await fetch(`https://${cognitoConfig.oauthEndpoint}/oauth2/token`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',

@@ -1,21 +1,17 @@
 import { FC } from "react";
-import { CognitoConfig } from "./components/AirAuthenticationProvider/hooks/useGrantToken.js";
-import { AirAuthenticationProviderFactory } from "./components/AirAuthenticationProvider/AirAuthenticationProvider.js";
+import { AirAuthenticationProviderFactory, CognitoConfig } from "./components/AirAuthenticationProvider/AirAuthenticationProvider.js";
 
 
 
-export const configureAuthentication = (
-    authenticationApiOrigin: string,
+export const configureAuthentication = (config: {
+    authenticationApiBaseUrl: string,
     cognitoConfig: CognitoConfig,
     unauthenticatedRedirectPath: string,
     Loading: FC
-) => {
+}) => {
     return {
         AirAuthenticationProvider: AirAuthenticationProviderFactory(
-            authenticationApiOrigin,
-            cognitoConfig,
-            unauthenticatedRedirectPath,
-            Loading
+            config
         )
     }
 }

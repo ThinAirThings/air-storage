@@ -1,7 +1,7 @@
 import { FC, ReactNode, createContext, useCallback, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useRefreshToken } from "./hooks/useRefreshToken.js";
-import { CognitoConfig, useGrantToken } from "./hooks/useGrantToken.js";
+import { useGrantToken } from "./hooks/useGrantToken.js";
 
 
 export type AuthenticationState = {
@@ -15,17 +15,23 @@ export type AuthenticationState = {
     status: 'pending'
 }
 
+export type CognitoConfig = {
+    oauthEndpoint: string,
+    clientId: string,
+    grantTokenRedirectBasename: string
+}
+
 const AuthenticationContext = createContext<{
     accessToken: string,
     protectedFetch: typeof fetch
 }>(null as any)
 
-export const AirAuthenticationProviderFactory = (
-    authenticationApiOrigin: string,
+export const AirAuthenticationProviderFactory = (config: {
+    authenticationApiBaseUrl: string,
     cognitoConfig: CognitoConfig,
     unauthenticatedRedirectPath: string,
     Loading: FC
-) => ({
+}) => ({
     children
 }: {
     children: ReactNode
@@ -35,8 +41,8 @@ export const AirAuthenticationProviderFactory = (
         status: 'refresh'
     })
     // Effects
-    useRefreshToken(authenticationApiOrigin, authenticationState, setAuthenticationState)
-    useGrantToken(authenticationApiOrigin, setAuthenticationState, cognitoConfig)
+    useRefreshToken(config.authenticationApiBaseUrl, authenticationState, setAuthenticationState)
+    useGrantToken(config.authenticationApiBaseUrl, setAuthenticationState, config.cognitoConfig)
     // Callbacks
     const protectedFetch = useCallback<typeof fetch>(async (input, init?) => {
         if (authenticationState.status !== 'authenticated') {
@@ -58,10 +64,10 @@ export const AirAuthenticationProviderFactory = (
     }, [authenticationState])
     // Render
     if (authenticationState.status === 'pending') {
-        return <Loading/>
+        return <config.Loading/>
     }
     if (authenticationState.status === 'unauthenticated') {
-        return <Navigate replace to={unauthenticatedRedirectPath}/>
+        return <Navigate replace to={config.unauthenticatedRedirectPath}/>
     }
     if (authenticationState.status === 'authenticated') {
         return <AuthenticationContext.Provider value={{

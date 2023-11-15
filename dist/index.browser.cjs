@@ -379,7 +379,7 @@ var useGrantToken = (authenticationApiOrigin, setAuthenticationState, cognitoCon
   (0, import_react4.useEffect)(() => {
     if (location.pathname === "/authentication/token") {
       (async () => {
-        const grantTokenResponse = await fetch(`https://${cognitoConfig.authDomain}/oauth2/token`, {
+        const grantTokenResponse = await fetch(`https://${cognitoConfig.oauthEndpoint}/oauth2/token`, {
           method: "POST",
           headers: {
             "Content-Type": "application/x-www-form-urlencoded"
@@ -409,14 +409,14 @@ var useGrantToken = (authenticationApiOrigin, setAuthenticationState, cognitoCon
 // src/components/AirAuthenticationProvider/AirAuthenticationProvider.tsx
 var import_jsx_runtime2 = require("react/jsx-runtime");
 var AuthenticationContext = (0, import_react5.createContext)(null);
-var AirAuthenticationProviderFactory = (authenticationApiOrigin, cognitoConfig, unauthenticatedRedirectPath, Loading) => ({
+var AirAuthenticationProviderFactory = (config) => ({
   children
 }) => {
   const [authenticationState, setAuthenticationState] = (0, import_react5.useState)({
     status: "refresh"
   });
-  useRefreshToken(authenticationApiOrigin, authenticationState, setAuthenticationState);
-  useGrantToken(authenticationApiOrigin, setAuthenticationState, cognitoConfig);
+  useRefreshToken(config.authenticationApiBaseUrl, authenticationState, setAuthenticationState);
+  useGrantToken(config.authenticationApiBaseUrl, setAuthenticationState, config.cognitoConfig);
   const protectedFetch = (0, import_react5.useCallback)(async (input, init) => {
     if (authenticationState.status !== "authenticated") {
       throw new Error("Cannot call protected fetch while not authenticated");
@@ -436,10 +436,10 @@ var AirAuthenticationProviderFactory = (authenticationApiOrigin, cognitoConfig, 
     return response;
   }, [authenticationState]);
   if (authenticationState.status === "pending") {
-    return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(Loading, {});
+    return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(config.Loading, {});
   }
   if (authenticationState.status === "unauthenticated") {
-    return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_react_router_dom2.Navigate, { replace: true, to: unauthenticatedRedirectPath });
+    return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_react_router_dom2.Navigate, { replace: true, to: config.unauthenticatedRedirectPath });
   }
   if (authenticationState.status === "authenticated") {
     return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(AuthenticationContext.Provider, { value: {
@@ -450,13 +450,10 @@ var AirAuthenticationProviderFactory = (authenticationApiOrigin, cognitoConfig, 
 };
 
 // src/configureAuthentication.tsx
-var configureAuthentication = (authenticationApiOrigin, cognitoConfig, unauthenticatedRedirectPath, Loading) => {
+var configureAuthentication = (config) => {
   return {
     AirAuthenticationProvider: AirAuthenticationProviderFactory(
-      authenticationApiOrigin,
-      cognitoConfig,
-      unauthenticatedRedirectPath,
-      Loading
+      config
     )
   };
 };

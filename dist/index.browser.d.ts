@@ -176,12 +176,17 @@ declare const defineAirNode: <T extends string = string, S extends LsonObject = 
 declare const defineAirNodeSchema: <C extends TreeAirNode[]>(children: C) => TreeAirNode<"root", {}, C>;
 
 type CognitoConfig = {
-    authDomain: string;
+    oauthEndpoint: string;
     clientId: string;
     grantTokenRedirectBasename: string;
 };
 
-declare const configureAuthentication: (authenticationApiOrigin: string, cognitoConfig: CognitoConfig, unauthenticatedRedirectPath: string, Loading: FC) => {
+declare const configureAuthentication: (config: {
+    authenticationApiBaseUrl: string;
+    cognitoConfig: CognitoConfig;
+    unauthenticatedRedirectPath: string;
+    Loading: FC;
+}) => {
     AirAuthenticationProvider: ({ children }: {
         children: react.ReactNode;
     }) => react_jsx_runtime.JSX.Element | undefined;
