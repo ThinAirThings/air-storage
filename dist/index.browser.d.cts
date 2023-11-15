@@ -186,6 +186,9 @@ declare const configureAuthentication: (config: AuthenticationConfig) => {
     AuthenticationProvider: ({ children }: {
         children: react.ReactNode;
     }) => react_jsx_runtime.JSX.Element;
+    ProtectedRoute: FC<{
+        children: react.ReactNode;
+    }>;
 };
 
 export { AirNodeIndexedUnion, AirPresence, AuthenticationConfig, FlatAirNode, ILiveIndexNode, IsEmptyArray, LiveIndexNode, NodeKey, TreeAirNode, TreeToNodeUnion, configureAuthentication, configureStorage, defineAirNode, defineAirNodeSchema };

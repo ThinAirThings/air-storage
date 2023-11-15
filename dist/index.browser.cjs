@@ -416,6 +416,7 @@ var AuthenticationContext = (0, import_react5.createContext)({
   accessToken: null,
   protectedFetch: () => console.error("Protected Fetch not initialized. Check AuthenticationProvider code")
 });
+var useAuthentication = () => (0, import_react5.useContext)(AuthenticationContext);
 var AuthenticationProviderFactory = (config) => ({
   children
 }) => {
@@ -453,12 +454,26 @@ var AuthenticationProviderFactory = (config) => ({
   }, children });
 };
 
+// src/components/AuthenticationProvider/ProtectedRoute.tsx
+var import_react_router_dom2 = require("react-router-dom");
+var import_jsx_runtime3 = require("react/jsx-runtime");
+var ProtectedRoute = ({
+  children
+}) => {
+  const { accessToken } = useAuthentication();
+  if (!accessToken) {
+    return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_react_router_dom2.Navigate, { replace: true, to: "/authenticate" });
+  }
+  return children;
+};
+
 // src/configureAuthentication.tsx
 var configureAuthentication = (config) => {
   return {
     AuthenticationProvider: AuthenticationProviderFactory(
       config
-    )
+    ),
+    ProtectedRoute
   };
 };
 // Annotate the CommonJS export names for ESM import in node:

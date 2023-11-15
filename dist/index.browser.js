@@ -376,6 +376,7 @@ var AuthenticationContext = createContext({
   accessToken: null,
   protectedFetch: () => console.error("Protected Fetch not initialized. Check AuthenticationProvider code")
 });
+var useAuthentication = () => useContext(AuthenticationContext);
 var AuthenticationProviderFactory = (config) => ({
   children
 }) => {
@@ -413,12 +414,26 @@ var AuthenticationProviderFactory = (config) => ({
   }, children });
 };
 
+// src/components/AuthenticationProvider/ProtectedRoute.tsx
+import { Navigate } from "react-router-dom";
+import { jsx as jsx3 } from "react/jsx-runtime";
+var ProtectedRoute = ({
+  children
+}) => {
+  const { accessToken } = useAuthentication();
+  if (!accessToken) {
+    return /* @__PURE__ */ jsx3(Navigate, { replace: true, to: "/authenticate" });
+  }
+  return children;
+};
+
 // src/configureAuthentication.tsx
 var configureAuthentication = (config) => {
   return {
     AuthenticationProvider: AuthenticationProviderFactory(
       config
-    )
+    ),
+    ProtectedRoute
   };
 };
 export {
