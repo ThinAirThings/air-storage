@@ -64,7 +64,7 @@ type ILiveIndexStorageModel<U extends FlatAirNode = FlatAirNode> = {
 
 type ImmutableLsonObject<U extends FlatAirNode> = ReturnType<LiveIndexNode<U>['toImmutable']>['state'];
 
-declare const configureAirStorage: <U extends FlatAirNode, P extends JsonObject = {}>(createClientProps: Parameters<typeof createClient>[0], airNodeSchema: TreeAirNode, liveblocksPresence?: P | undefined) => {
+declare const configureStorage: <U extends FlatAirNode, P extends JsonObject = {}>(createClientProps: Parameters<typeof createClient>[0], airNodeSchema: TreeAirNode, liveblocksPresence?: P | undefined) => {
     useUpdateMyPresence: () => (patch: Partial<AirPresence<U> & P>, options?: {
         addToHistory: boolean;
     } | undefined) => void;
@@ -181,10 +181,10 @@ type CognitoConfig = {
     grantTokenRedirectBasename: string;
 };
 
-declare const configureAirAuthentication: (authenticationApiOrigin: string, cognitoConfig: CognitoConfig, unauthenticatedRedirectPath: string, Loading: FC) => {
+declare const configureAuthentication: (authenticationApiOrigin: string, cognitoConfig: CognitoConfig, unauthenticatedRedirectPath: string, Loading: FC) => {
     AirAuthenticationProvider: ({ children }: {
         children: react.ReactNode;
     }) => react_jsx_runtime.JSX.Element | undefined;
 };
 
-export { AirNodeIndexedUnion, AirPresence, FlatAirNode, ILiveIndexNode, IsEmptyArray, LiveIndexNode, NodeKey, TreeAirNode, TreeToNodeUnion, configureAirAuthentication, configureAirStorage, defineAirNode, defineAirNodeSchema };
+export { AirNodeIndexedUnion, AirPresence, FlatAirNode, ILiveIndexNode, IsEmptyArray, LiveIndexNode, NodeKey, TreeAirNode, TreeToNodeUnion, configureAuthentication, configureStorage, defineAirNode, defineAirNodeSchema };

@@ -19,7 +19,7 @@ import { defineStaticIndexFactory } from "./structures/defineStaticIndexFactory.
 import { createNodeKeyFactory } from "./structures/createNodeKeyFactory.js";
 
 
-export const configureAirStorage = <
+export const configureStorage = <
     U extends FlatAirNode,
     P extends JsonObject={},
 >(

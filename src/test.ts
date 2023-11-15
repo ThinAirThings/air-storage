@@ -1,4 +1,4 @@
-import { configureAirStorage } from "./configureAirStorage.js";
+import { configureAirStorage } from "./configureStorage.js";
 import { defineAirNode, defineAirNodeSchema } from "./defineAirNode.js";
 import { TreeToStaticIndex } from "./extendAirNodeDefinition.js";
 import { TreeToNodeUnion } from "./types.js";

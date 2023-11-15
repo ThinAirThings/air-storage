@@ -4,7 +4,7 @@ var createNodeKeyFactory = () => ({ nodeId, type }) => ({
   type
 });
 
-// src/configureAirStorage.tsx
+// src/configureStorage.tsx
 import { createRoomContext } from "@liveblocks/react";
 
 // src/types/MappedUnion.ts
@@ -17,7 +17,7 @@ var MappedUnion = class extends Map {
   }
 };
 
-// src/configureAirStorage.tsx
+// src/configureStorage.tsx
 import { createClient } from "@liveblocks/client";
 
 // src/components/AirStorageProvider/AirStorageProviderFactory.tsx
@@ -206,8 +206,8 @@ var StaticIndex = class extends Map {
   }
 };
 
-// src/configureAirStorage.tsx
-var configureAirStorage = (createClientProps, airNodeSchema, liveblocksPresence) => {
+// src/configureStorage.tsx
+var configureStorage = (createClientProps, airNodeSchema, liveblocksPresence) => {
   const mappedAirNodeUnion = treeToMappedUnion(airNodeSchema);
   const { suspense: {
     useStorage,
@@ -410,7 +410,7 @@ var AirAuthenticationProviderFactory = (authenticationApiOrigin, cognitoConfig, 
 };
 
 // src/configureAuthentication.tsx
-var configureAirAuthentication = (authenticationApiOrigin, cognitoConfig, unauthenticatedRedirectPath, Loading) => {
+var configureAuthentication = (authenticationApiOrigin, cognitoConfig, unauthenticatedRedirectPath, Loading) => {
   return {
     AirAuthenticationProvider: AirAuthenticationProviderFactory(
       authenticationApiOrigin,
@@ -422,8 +422,8 @@ var configureAirAuthentication = (authenticationApiOrigin, cognitoConfig, unauth
 };
 export {
   LiveIndexNode,
-  configureAirAuthentication,
-  configureAirStorage,
+  configureAuthentication,
+  configureStorage,
   defineAirNode,
   defineAirNodeSchema
 };

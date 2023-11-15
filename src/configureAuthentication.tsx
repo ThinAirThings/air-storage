@@ -4,7 +4,7 @@ import { AirAuthenticationProviderFactory } from "./components/AirAuthentication
 
 
 
-export const configureAirAuthentication = (
+export const configureAuthentication = (
     authenticationApiOrigin: string,
     cognitoConfig: CognitoConfig,
     unauthenticatedRedirectPath: string,

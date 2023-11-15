@@ -31,8 +31,8 @@ var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: tru
 var index_browser_exports = {};
 __export(index_browser_exports, {
   LiveIndexNode: () => LiveIndexNode,
-  configureAirAuthentication: () => configureAirAuthentication,
-  configureAirStorage: () => configureAirStorage,
+  configureAuthentication: () => configureAuthentication,
+  configureStorage: () => configureStorage,
   defineAirNode: () => defineAirNode,
   defineAirNodeSchema: () => defineAirNodeSchema
 });
@@ -44,7 +44,7 @@ var createNodeKeyFactory = () => ({ nodeId, type }) => ({
   type
 });
 
-// src/configureAirStorage.tsx
+// src/configureStorage.tsx
 var import_react2 = require("@liveblocks/react");
 
 // src/types/MappedUnion.ts
@@ -57,7 +57,7 @@ var MappedUnion = class extends Map {
   }
 };
 
-// src/configureAirStorage.tsx
+// src/configureStorage.tsx
 var import_client4 = require("@liveblocks/client");
 
 // src/components/AirStorageProvider/AirStorageProviderFactory.tsx
@@ -246,8 +246,8 @@ var StaticIndex = class extends Map {
   }
 };
 
-// src/configureAirStorage.tsx
-var configureAirStorage = (createClientProps, airNodeSchema, liveblocksPresence) => {
+// src/configureStorage.tsx
+var configureStorage = (createClientProps, airNodeSchema, liveblocksPresence) => {
   const mappedAirNodeUnion = treeToMappedUnion(airNodeSchema);
   const { suspense: {
     useStorage,
@@ -450,7 +450,7 @@ var AirAuthenticationProviderFactory = (authenticationApiOrigin, cognitoConfig, 
 };
 
 // src/configureAuthentication.tsx
-var configureAirAuthentication = (authenticationApiOrigin, cognitoConfig, unauthenticatedRedirectPath, Loading) => {
+var configureAuthentication = (authenticationApiOrigin, cognitoConfig, unauthenticatedRedirectPath, Loading) => {
   return {
     AirAuthenticationProvider: AirAuthenticationProviderFactory(
       authenticationApiOrigin,
@@ -463,8 +463,8 @@ var configureAirAuthentication = (authenticationApiOrigin, cognitoConfig, unauth
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   LiveIndexNode,
-  configureAirAuthentication,
-  configureAirStorage,
+  configureAuthentication,
+  configureStorage,
   defineAirNode,
   defineAirNodeSchema
 });

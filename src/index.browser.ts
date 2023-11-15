@@ -1,5 +1,5 @@
 export * from './types.js'
-export * from './configureAirStorage.js'
+export * from './configureStorage.js'
 export * from './defineAirNode.js'
 export * from './LiveObjects/LiveIndexNode.js'
 export * from './configureAuthentication.js'
