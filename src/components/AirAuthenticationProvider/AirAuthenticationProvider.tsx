@@ -2,6 +2,7 @@ import { FC, ReactNode, createContext, useCallback, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useRefreshToken } from "./hooks/useRefreshToken.js";
 import { useGrantToken } from "./hooks/useGrantToken.js";
+import { AuthenticationConfig } from "../../configureAuthentication.js";
 
 
 export type AuthenticationState = {
@@ -15,22 +16,14 @@ export type AuthenticationState = {
     status: 'pending'
 }
 
-export type CognitoConfig = {
-    oauthEndpoint: string,
-    clientId: string,
-    grantTokenRedirectBasename: string
-}
+
 
 const AuthenticationContext = createContext<{
     accessToken: string,
     protectedFetch: typeof fetch
 }>(null as any)
 
-export const AirAuthenticationProviderFactory = (config: {
-    authenticationApiBaseUrl: string,
-    cognitoConfig: CognitoConfig,
-    Loading: FC
-}) => ({
+export const AirAuthenticationProviderFactory = (config: AuthenticationConfig) => ({
     children
 }: {
     children: ReactNode
@@ -40,8 +33,8 @@ export const AirAuthenticationProviderFactory = (config: {
         status: 'refresh'
     })
     // Effects
-    useRefreshToken(config.authenticationApiBaseUrl, authenticationState, setAuthenticationState)
-    useGrantToken(config.authenticationApiBaseUrl, setAuthenticationState, config.cognitoConfig)
+    useRefreshToken(authenticationState, setAuthenticationState, config)
+    useGrantToken(setAuthenticationState, config)
     // Callbacks
     const protectedFetch = useCallback<typeof fetch>(async (input, init?) => {
         if (authenticationState.status !== 'authenticated') {

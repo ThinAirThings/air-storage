@@ -1,14 +1,16 @@
 import { FC } from "react";
-import { AirAuthenticationProviderFactory, CognitoConfig } from "./components/AirAuthenticationProvider/AirAuthenticationProvider.js";
+import { AirAuthenticationProviderFactory } from "./components/AirAuthenticationProvider/AirAuthenticationProvider.js";
 
 
-
-export const configureAuthentication = (config: {
+export type AuthenticationConfig = {
     authenticationApiBaseUrl: string,
-    cognitoConfig: CognitoConfig,
-    unauthenticatedRedirectPath: string,
+    oauthEndpoint: string,
+    clientId: string,
+    grantTokenRedirectBasename: string
     Loading: FC
-}) => {
+}
+
+export const configureAuthentication = (config: AuthenticationConfig) => {
     return {
         AirAuthenticationProvider: AirAuthenticationProviderFactory(
             config

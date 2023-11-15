@@ -175,21 +175,17 @@ declare const configureStorage: <U extends FlatAirNode, P extends JsonObject = {
 declare const defineAirNode: <T extends string = string, S extends LsonObject = LsonObject, C extends [] | TreeAirNode[] = []>(type: T, defaultInitialState: S, children: C) => TreeAirNode<T, S, C>;
 declare const defineAirNodeSchema: <C extends TreeAirNode[]>(children: C) => TreeAirNode<"root", {}, C>;
 
-type CognitoConfig = {
+type AuthenticationConfig = {
+    authenticationApiBaseUrl: string;
     oauthEndpoint: string;
     clientId: string;
     grantTokenRedirectBasename: string;
-};
-
-declare const configureAuthentication: (config: {
-    authenticationApiBaseUrl: string;
-    cognitoConfig: CognitoConfig;
-    unauthenticatedRedirectPath: string;
     Loading: FC;
-}) => {
+};
+declare const configureAuthentication: (config: AuthenticationConfig) => {
     AirAuthenticationProvider: ({ children }: {
         children: react.ReactNode;
     }) => react_jsx_runtime.JSX.Element | undefined;
 };
 
-export { AirNodeIndexedUnion, AirPresence, FlatAirNode, ILiveIndexNode, IsEmptyArray, LiveIndexNode, NodeKey, TreeAirNode, TreeToNodeUnion, configureAuthentication, configureStorage, defineAirNode, defineAirNodeSchema };
+export { AirNodeIndexedUnion, AirPresence, AuthenticationConfig, FlatAirNode, ILiveIndexNode, IsEmptyArray, LiveIndexNode, NodeKey, TreeAirNode, TreeToNodeUnion, configureAuthentication, configureStorage, defineAirNode, defineAirNodeSchema };

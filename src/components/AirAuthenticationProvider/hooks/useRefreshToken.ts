@@ -1,19 +1,20 @@
 import { useEffect } from "react"
 import { AuthenticationState } from "../AirAuthenticationProvider.js"
+import { AuthenticationConfig } from "../../../configureAuthentication.js"
 
 
 
 export const useRefreshToken = (
-    authenticationApiOrigin: string,
     authenticationState: AuthenticationState,
     setAuthenticationState: (authenticationState: AuthenticationState) => void,
+    config: AuthenticationConfig    
 ) => {
     useEffect(() => {
         if (authenticationState.status === 'refresh') {
             (async () => {
                 try {
                     setAuthenticationState({status: 'pending'})
-                    const authResponse = await fetch(`https://${authenticationApiOrigin}/refresh`, {
+                    const authResponse = await fetch(`https://${config.authenticationApiBaseUrl}/refresh`, {
                         method: 'GET',
                         credentials: 'include',
                         mode: 'cors'
