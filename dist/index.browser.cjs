@@ -379,28 +379,33 @@ var useGrantToken = (setAuthenticationState, config) => {
   (0, import_react4.useEffect)(() => {
     if (location.pathname === "/authentication/token") {
       (async () => {
-        const grantTokenResponse = await fetch(`https://${config.oauthEndpoint}/oauth2/token`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded"
-          },
-          body: new URLSearchParams({
-            "grant_type": "authorization_code",
-            "client_id": `${config.clientId}`,
-            "code": new URLSearchParams(window.location.search).get("code"),
-            "redirect_uri": `${config.grantTokenRedirectBasename}/authentication/token`
-          })
-        });
-        const { refresh_token } = await grantTokenResponse.json();
-        await fetch(`https://${config.authenticationApiBaseUrl}/create-refresh-cookie`, {
-          method: "POST",
-          credentials: "include",
-          body: JSON.stringify({
-            refreshToken: refresh_token
-          }),
-          mode: "cors"
-        });
-        setAuthenticationState({ status: "refresh" });
+        try {
+          const grantTokenResponse = await fetch(`https://${config.oauthEndpoint}/oauth2/token`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: new URLSearchParams({
+              "grant_type": "authorization_code",
+              "client_id": `${config.clientId}`,
+              "code": new URLSearchParams(window.location.search).get("code"),
+              "redirect_uri": `${config.grantTokenRedirectBasename}/authentication/token`
+            })
+          });
+          const { refresh_token } = await grantTokenResponse.json();
+          await fetch(`https://${config.authenticationApiBaseUrl}/create-refresh-cookie`, {
+            method: "POST",
+            credentials: "include",
+            body: JSON.stringify({
+              refreshToken: refresh_token
+            }),
+            mode: "cors"
+          });
+          setAuthenticationState({ status: "refresh" });
+        } catch (error) {
+          console.error(error);
+          setAuthenticationState({ status: "unauthenticated" });
+        }
       })();
     }
   }, [location.pathname]);
