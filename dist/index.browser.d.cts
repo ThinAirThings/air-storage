@@ -189,6 +189,10 @@ declare const configureAuthentication: (config: AuthenticationConfig) => {
     ProtectedRoute: FC<{
         children: react.ReactNode;
     }>;
+    useAuthentication: () => {
+        accessToken: string | null;
+        protectedFetch: typeof fetch;
+    };
 };
 
 export { AirNodeIndexedUnion, AirPresence, AuthenticationConfig, FlatAirNode, ILiveIndexNode, IsEmptyArray, LiveIndexNode, NodeKey, TreeAirNode, TreeToNodeUnion, configureAuthentication, configureStorage, defineAirNode, defineAirNodeSchema };

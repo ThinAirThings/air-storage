@@ -433,7 +433,8 @@ var configureAuthentication = (config) => {
     AuthenticationProvider: AuthenticationProviderFactory(
       config
     ),
-    ProtectedRoute
+    ProtectedRoute,
+    useAuthentication
   };
 };
 export {

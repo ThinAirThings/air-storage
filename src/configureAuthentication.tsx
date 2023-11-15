@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { AuthenticationProviderFactory } from "./components/AuthenticationProvider/AuthenticationProvider.js";
+import { AuthenticationProviderFactory, useAuthentication } from "./components/AuthenticationProvider/AuthenticationProvider.js";
 import { ProtectedRoute } from "./components/AuthenticationProvider/ProtectedRoute.js";
 
 
@@ -16,6 +16,7 @@ export const configureAuthentication = (config: AuthenticationConfig) => {
         AuthenticationProvider: AuthenticationProviderFactory(
             config
         ),
-        ProtectedRoute: ProtectedRoute
+        ProtectedRoute: ProtectedRoute,
+        useAuthentication: useAuthentication
     }
 }

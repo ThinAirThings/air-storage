@@ -473,7 +473,8 @@ var configureAuthentication = (config) => {
     AuthenticationProvider: AuthenticationProviderFactory(
       config
     ),
-    ProtectedRoute
+    ProtectedRoute,
+    useAuthentication
   };
 };
 // Annotate the CommonJS export names for ESM import in node:
