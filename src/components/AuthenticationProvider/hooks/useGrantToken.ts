@@ -36,10 +36,10 @@ export const useGrantToken = (
                         mode: 'cors'
                     })
                     // Trigger Refresh
-                    setAuthenticationState({status: 'refresh'})
+                    setAuthenticationState({status: 'refresh', accessToken: null})
                 } catch (error) {
                     console.error(error)
-                    setAuthenticationState({status: 'unauthenticated'})
+                    setAuthenticationState({status: 'unauthenticated', accessToken: null})
                 }
             })()
         }
