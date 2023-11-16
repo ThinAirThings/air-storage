@@ -3,7 +3,6 @@ import { AirPresence, FlatAirNode, TreeAirNode, TreeToNodeUnion } from "./types.
 import { MappedUnion } from "./types/MappedUnion.js";
 import { ILiveIndexStorageModel } from "./LiveObjects/LiveIndexStorageModel.js";
 import { JsonObject, createClient } from "@liveblocks/client";
-import { AirStorageProviderFactory } from "./components/AirStorageProvider/AirStorageProviderFactory.js";
 import { useCreateNodeFactory } from "./hooks-storage/useCreateNodeFactory.js";
 import { useDeleteNodeFactory } from "./hooks-storage/useDeleteNodeFactory.js";
 import { useSelectNodeStateFactory } from "./hooks-storage/useSelectNodeStateFactory.js";
@@ -17,6 +16,7 @@ import { useSelfFocusedNodeKeyFactory } from "./hooks-presence/useSelfFocusedNod
 import { useSelfFocusedNodeKeyUpdateFactory } from "./hooks-presence/useSelfFocusedNodeKeyUpdateFactory.js";
 import { defineStaticIndexFactory } from "./structures/defineStaticIndexFactory.js";
 import { createNodeKeyFactory } from "./structures/createNodeKeyFactory.js";
+import { StorageProviderFactory } from "./components/StorageProvider/StorageProviderFactory.js";
 
 
 export const configureStorage = <
@@ -83,7 +83,7 @@ export const configureStorage = <
         useRoom,
         useStorage,
         RoomContext,
-        // Air Storage Hooks
+        // Storage Hooks
         useNodeSet: useNodeSetFactory<U>(useStorage),
         useCreateNode: useCreateNodeFactory<U>(
             useMutation, 
@@ -94,7 +94,7 @@ export const configureStorage = <
         useSelectNodeState: useSelectNodeStateFactory<U>(useStorage),
         useUpdateNodeState: useUpdateNodeStateFactory<U>(useMutation),
         useDeleteNode: useDeleteNodeFactory<U>(useMutation, useSelfNodeKeySelectionRemove),
-        AirStorageProvider: AirStorageProviderFactory<U>(
+        StorageProvider: StorageProviderFactory<U>(
             RoomProvider as TypedLiveblocksHooks['RoomProvider'], 
             liveblocksPresence??{}
         ),

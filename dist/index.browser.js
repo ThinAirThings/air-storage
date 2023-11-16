@@ -20,44 +20,12 @@ var MappedUnion = class extends Map {
 // src/configureStorage.tsx
 import { createClient } from "@liveblocks/client";
 
-// src/components/AirStorageProvider/AirStorageProviderFactory.tsx
-import { Suspense } from "react";
-
-// src/LiveObjects/LiveIndexStorageModel.ts
-import { LiveMap } from "@liveblocks/client";
-var LiveIndexStorageModel = class {
-  constructor() {
-    this.liveIndex = new LiveMap();
-  }
-};
-
-// src/components/AirStorageProvider/AirStorageProviderFactory.tsx
-import { jsx } from "react/jsx-runtime";
-var AirStorageProviderFactory = (LiveblocksRoomProvider, initialLiveblocksPresence) => ({
-  storageId,
-  children
-}) => {
-  return /* @__PURE__ */ jsx(
-    LiveblocksRoomProvider,
-    {
-      id: storageId,
-      initialPresence: {
-        ...initialLiveblocksPresence,
-        nodeKeySelection: [],
-        focusedNodeKey: null
-      },
-      initialStorage: new LiveIndexStorageModel(),
-      children: /* @__PURE__ */ jsx(Suspense, { fallback: /* @__PURE__ */ jsx("div", { children: "Loading..." }), children })
-    }
-  );
-};
-
 // src/hooks-storage/useCreateNodeFactory.ts
-import { LiveMap as LiveMap3, LiveObject as LiveObject3 } from "@liveblocks/client";
+import { LiveMap as LiveMap2, LiveObject as LiveObject2 } from "@liveblocks/client";
 
 // src/LiveObjects/LiveIndexNode.ts
-import { LiveObject as LiveObject2 } from "@liveblocks/client";
-var LiveIndexNode = class extends LiveObject2 {
+import { LiveObject } from "@liveblocks/client";
+var LiveIndexNode = class extends LiveObject {
   constructor(data) {
     super(data);
   }
@@ -74,8 +42,8 @@ var useCreateNodeFactory = (useMutation, useSelfFocusedNodeKeyUpdate, createNode
       type: childType,
       parentNodeId: parentNodeKey?.nodeId ?? null,
       parentType: parentNodeKey?.type ?? null,
-      state: new LiveObject3(mappedAirNodeUnion.get(childType).state),
-      childNodeKeyMap: new LiveMap3()
+      state: new LiveObject2(mappedAirNodeUnion.get(childType).state),
+      childNodeKeyMap: new LiveMap2()
     });
     callback?.(newLiveIndexNode);
     storage.get("liveIndex").get(parentNodeKey?.nodeId ?? "")?.get("childNodeKeyMap").set(nodeId, createNodeKey(newLiveIndexNode.toImmutable()));
@@ -206,6 +174,38 @@ var StaticIndex = class extends Map {
   }
 };
 
+// src/components/StorageProvider/StorageProviderFactory.tsx
+import { Suspense } from "react";
+
+// src/LiveObjects/LiveIndexStorageModel.ts
+import { LiveMap as LiveMap3 } from "@liveblocks/client";
+var LiveIndexStorageModel = class {
+  constructor() {
+    this.liveIndex = new LiveMap3();
+  }
+};
+
+// src/components/StorageProvider/StorageProviderFactory.tsx
+import { jsx } from "react/jsx-runtime";
+var StorageProviderFactory = (LiveblocksRoomProvider, initialLiveblocksPresence) => ({
+  storageId,
+  children
+}) => {
+  return /* @__PURE__ */ jsx(
+    LiveblocksRoomProvider,
+    {
+      id: storageId,
+      initialPresence: {
+        ...initialLiveblocksPresence,
+        nodeKeySelection: [],
+        focusedNodeKey: null
+      },
+      initialStorage: new LiveIndexStorageModel(),
+      children: /* @__PURE__ */ jsx(Suspense, { fallback: /* @__PURE__ */ jsx("div", { children: "Loading..." }), children })
+    }
+  );
+};
+
 // src/configureStorage.tsx
 var configureStorage = (createClientProps, airNodeSchema, liveblocksPresence) => {
   const mappedAirNodeUnion = treeToMappedUnion(airNodeSchema);
@@ -250,7 +250,7 @@ var configureStorage = (createClientProps, airNodeSchema, liveblocksPresence) =>
     useRoom,
     useStorage,
     RoomContext,
-    // Air Storage Hooks
+    // Storage Hooks
     useNodeSet: useNodeSetFactory(useStorage),
     useCreateNode: useCreateNodeFactory(
       useMutation,
@@ -261,7 +261,7 @@ var configureStorage = (createClientProps, airNodeSchema, liveblocksPresence) =>
     useSelectNodeState: useSelectNodeStateFactory(useStorage),
     useUpdateNodeState: useUpdateNodeStateFactory(useMutation),
     useDeleteNode: useDeleteNodeFactory(useMutation, useSelfNodeKeySelectionRemove),
-    AirStorageProvider: AirStorageProviderFactory(
+    StorageProvider: StorageProviderFactory(
       RoomProvider,
       liveblocksPresence ?? {}
     ),

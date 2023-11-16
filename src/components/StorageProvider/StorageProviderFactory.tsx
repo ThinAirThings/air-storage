@@ -3,7 +3,7 @@ import { LiveIndexStorageModel, LiveblocksHooks } from "../../LiveObjects/LiveIn
 import { FlatAirNode } from "../../types.js"
 import { JsonObject } from "@liveblocks/client"
 
-export const AirStorageProviderFactory = <
+export const StorageProviderFactory = <
     U extends FlatAirNode,
 >(
     LiveblocksRoomProvider: LiveblocksHooks<U>['RoomProvider'],

@@ -93,7 +93,7 @@ declare const configureStorage: <U extends FlatAirNode, P extends JsonObject = {
     useDeleteNode: () => <T_7 extends U["type"]>(nodeKey: NodeKey<U, T_7>, callback?: ((liveIndexNode: LiveIndexNode<U & {
         type: T_7;
     }>) => void) | undefined) => NodeKey<U, T_7>;
-    AirStorageProvider: ({ storageId, children }: {
+    StorageProvider: ({ storageId, children }: {
         storageId: string;
         children: react.ReactNode;
     }) => react_jsx_runtime.JSX.Element;
