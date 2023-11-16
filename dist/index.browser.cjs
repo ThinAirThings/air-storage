@@ -31,7 +31,6 @@ var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: tru
 var index_browser_exports = {};
 __export(index_browser_exports, {
   LiveIndexNode: () => LiveIndexNode,
-  configureAuthentication: () => configureAuthentication,
   configureStorage: () => configureStorage,
   defineAirNode: () => defineAirNode,
   defineAirNodeSchema: () => defineAirNodeSchema
@@ -338,149 +337,9 @@ var defineAirNode = (type, defaultInitialState, children) => ({
   // destructor?:
 });
 var defineAirNodeSchema = (children) => defineAirNode("root", {}, children);
-
-// src/components/AuthenticationProvider/AuthenticationProvider.tsx
-var import_react5 = require("react");
-
-// src/components/AuthenticationProvider/hooks/useRefreshToken.ts
-var import_react3 = require("react");
-var useRefreshToken = (authenticationState, setAuthenticationState, config) => {
-  (0, import_react3.useEffect)(() => {
-    if (authenticationState.status === "refresh") {
-      (async () => {
-        try {
-          setAuthenticationState({ status: "pending", accessToken: null });
-          const authResponse = await fetch(`https://${config.authenticationApiBaseUrl}/refresh`, {
-            method: "GET",
-            credentials: "include",
-            mode: "cors"
-          });
-          if (!authResponse.ok)
-            throw new Error("Refresh token failed");
-          const { accessToken } = await authResponse.json();
-          setAuthenticationState({
-            status: "authenticated",
-            accessToken
-          });
-        } catch (error) {
-          setAuthenticationState({ status: "unauthenticated", accessToken: null });
-        }
-      })();
-    }
-  }, [authenticationState.status]);
-};
-
-// src/components/AuthenticationProvider/hooks/useGrantToken.ts
-var import_react4 = require("react");
-var import_react_router_dom = require("react-router-dom");
-var useGrantToken = (setAuthenticationState, config) => {
-  const location = (0, import_react_router_dom.useLocation)();
-  (0, import_react4.useEffect)(() => {
-    if (location.pathname === "/authentication/token") {
-      (async () => {
-        try {
-          const grantTokenResponse = await fetch(`https://${config.oauthEndpoint}/oauth2/token`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded"
-            },
-            body: new URLSearchParams({
-              "grant_type": "authorization_code",
-              "client_id": `${config.clientId}`,
-              "code": new URLSearchParams(window.location.search).get("code"),
-              "redirect_uri": `${config.grantTokenRedirectUrl}`
-            })
-          });
-          const { refresh_token } = await grantTokenResponse.json();
-          await fetch(`https://${config.authenticationApiBaseUrl}/create-refresh-cookie`, {
-            method: "POST",
-            credentials: "include",
-            body: JSON.stringify({
-              refreshToken: refresh_token
-            }),
-            mode: "cors"
-          });
-          setAuthenticationState({ status: "refresh", accessToken: null });
-        } catch (error) {
-          console.error(error);
-          setAuthenticationState({ status: "unauthenticated", accessToken: null });
-        }
-      })();
-    }
-  }, [location.pathname]);
-};
-
-// src/components/AuthenticationProvider/AuthenticationProvider.tsx
-var import_jsx_runtime2 = require("react/jsx-runtime");
-var AuthenticationContext = (0, import_react5.createContext)({
-  accessToken: null,
-  protectedFetch: () => console.error("Protected Fetch not initialized. Check AuthenticationProvider code")
-});
-var useAuthentication = () => (0, import_react5.useContext)(AuthenticationContext);
-var AuthenticationProviderFactory = (config) => ({
-  children
-}) => {
-  const [authenticationState, setAuthenticationState] = (0, import_react5.useState)({
-    status: "refresh",
-    accessToken: null
-  });
-  useRefreshToken(authenticationState, setAuthenticationState, config);
-  useGrantToken(setAuthenticationState, config);
-  const protectedFetch = (0, import_react5.useCallback)(async (input, init) => {
-    if (authenticationState.status !== "authenticated") {
-      throw new Error("Cannot call protected fetch while not authenticated");
-    }
-    const response = await fetch(input, {
-      ...init,
-      headers: {
-        ...init?.headers,
-        "Authorization": `Bearer ${authenticationState.accessToken}`
-      }
-    });
-    if (response.status === 401) {
-      setAuthenticationState({
-        status: "unauthenticated",
-        accessToken: null
-      });
-    }
-    return response;
-  }, [authenticationState]);
-  if (authenticationState.status === "pending") {
-    return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(config.Loading, {});
-  }
-  return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(AuthenticationContext.Provider, { value: {
-    accessToken: authenticationState.accessToken,
-    protectedFetch
-  }, children });
-};
-
-// src/components/AuthenticationProvider/ProtectedRoute.tsx
-var import_react_router_dom2 = require("react-router-dom");
-var import_jsx_runtime3 = require("react/jsx-runtime");
-var ProtectedRoute = ({
-  children
-}) => {
-  const { accessToken } = useAuthentication();
-  if (!accessToken) {
-    return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)(import_react_router_dom2.Navigate, { replace: true, to: "/authenticate" });
-  }
-  return children;
-};
-
-// src/configureAuthentication.tsx
-var configureAuthentication = (config) => {
-  return {
-    AuthenticationProvider: AuthenticationProviderFactory(
-      config
-    ),
-    ProtectedRoute,
-    useAuthentication
-  };
-};
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   LiveIndexNode,
-  configureAuthentication,
   configureStorage,
   defineAirNode,
   defineAirNodeSchema

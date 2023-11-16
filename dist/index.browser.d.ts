@@ -1,7 +1,6 @@
 import { LsonObject, LiveObject, LiveMap, JsonObject, createClient } from '@liveblocks/client';
 import * as react_jsx_runtime from 'react/jsx-runtime';
 import * as react from 'react';
-import { FC } from 'react';
 import * as _liveblocks_core from '@liveblocks/core';
 
 type NodeKey<U extends FlatAirNode = FlatAirNode, T extends U['type'] = U['type']> = {
@@ -175,24 +174,4 @@ declare const configureStorage: <U extends FlatAirNode, P extends JsonObject = {
 declare const defineAirNode: <T extends string = string, S extends LsonObject = LsonObject, C extends [] | TreeAirNode[] = []>(type: T, defaultInitialState: S, children: C) => TreeAirNode<T, S, C>;
 declare const defineAirNodeSchema: <C extends TreeAirNode[]>(children: C) => TreeAirNode<"root", {}, C>;
 
-type AuthenticationConfig = {
-    authenticationApiBaseUrl: string;
-    oauthEndpoint: string;
-    clientId: string;
-    grantTokenRedirectUrl: string;
-    Loading: FC;
-};
-declare const configureAuthentication: (config: AuthenticationConfig) => {
-    AuthenticationProvider: ({ children }: {
-        children: react.ReactNode;
-    }) => react_jsx_runtime.JSX.Element;
-    ProtectedRoute: FC<{
-        children: react.ReactNode;
-    }>;
-    useAuthentication: () => {
-        accessToken: string | null;
-        protectedFetch: typeof fetch;
-    };
-};
-
-export { AirNodeIndexedUnion, AirPresence, AuthenticationConfig, FlatAirNode, ILiveIndexNode, IsEmptyArray, LiveIndexNode, NodeKey, TreeAirNode, TreeToNodeUnion, configureAuthentication, configureStorage, defineAirNode, defineAirNodeSchema };
+export { AirNodeIndexedUnion, AirPresence, FlatAirNode, ILiveIndexNode, IsEmptyArray, LiveIndexNode, NodeKey, TreeAirNode, TreeToNodeUnion, configureStorage, defineAirNode, defineAirNodeSchema };
